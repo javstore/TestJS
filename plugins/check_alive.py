@@ -7,15 +7,9 @@ from utils import humanbytes
 
 CMD = ["/", "."]
 
-#@Client.on_message(filters.command("alive", CMD))
-#async def check_alive(_, message):
-#    await message.reply_text("𝖡𝗎𝖽𝖽𝗒 𝖨𝖺𝗆 𝖠𝗅𝗂𝗏𝖾 :) 𝖧𝗂𝗍 /start \n\n𝖧𝗂𝗍 /help 𝖥𝗈𝗋 𝖧𝖾𝗅𝗉 ;)\n\n\n𝖧𝗂𝗍 /ping 𝖳𝗈 𝖢𝗁𝖾𝖼𝗄 𝖡𝗈𝗍 𝖯𝗂𝗇𝗀 😁")
-
-@Client.on_message(filters.command("checkstatus", CMD))
-async def check_status(_, message):
-    bot_username = 'jav_store_robot'  # Replace with your bot's username
-    alive_url = f"https://t.me/jav_store_robot?start=alive"
-    await message.reply_text("𝖡𝗎𝖽𝖽𝗒 𝖨𝖺𝗆 𝖠𝗅𝗂𝗏𝖾 :)")
+@Client.on_message(filters.command("alive", CMD))
+async def check_alive(_, message):
+    await message.reply_text("𝖡𝗎𝖽𝖽𝗒 𝖨𝖺𝗆 𝖠𝗅𝗂𝗏𝖾 :) 𝖧𝗂𝗍 /start \n\n𝖧𝗂𝗍 /help 𝖥𝗈𝗋 𝖧𝖾𝗅𝗉 ;)\n\n\n𝖧𝗂𝗍 /ping 𝖳𝗈 𝖢𝗁𝖾𝖼𝗄 𝖡𝗈𝗍 𝖯𝗂𝗇𝗀 😁")
 
 @Client.on_message(filters.command("help", CMD))
 async def help(_, message):
