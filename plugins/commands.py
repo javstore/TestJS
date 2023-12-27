@@ -64,8 +64,7 @@ async def start(client, message):
         )
         return
     if len(message.command) == 2 and message.command[1] == "help":
-        # Call the function for help action
-        await help_function(client, message)
+        await message.reply_text("Need any help?\nContact Developer @devajoy")
     if AUTH_CHANNEL and not await is_subscribed(client, message):
         try:
             invite_link = await client.create_chat_invite_link(int(AUTH_CHANNEL))
