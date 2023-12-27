@@ -63,6 +63,9 @@ async def start(client, message):
             parse_mode=enums.ParseMode.HTML
         )
         return
+    if len(message.command) == 2 and message.command[1] == "help":
+        # Call the function for help action
+        await help_function(client, message)
     if AUTH_CHANNEL and not await is_subscribed(client, message):
         try:
             invite_link = await client.create_chat_invite_link(int(AUTH_CHANNEL))
