@@ -18,7 +18,7 @@ logger = logging.getLogger(__name__)
 
 BATCH_FILES = {}
 
-async def help_function(client, message):
+async def about_function(client, message):
     await message.reply_text("Need any help?\nContact Developer @devajoy")
 
 @Client.on_message(filters.command("start") & filters.incoming)
@@ -66,8 +66,8 @@ async def start(client, message):
             parse_mode=enums.ParseMode.HTML
         )
         return
-    if len(message.command) == 2 and message.command[1] == "help":
-        await help_function(client, message)
+    if len(message.command) == 2 and message.command[1] == "about":
+        await about_function(client, message)
     if AUTH_CHANNEL and not await is_subscribed(client, message):
         try:
             invite_link = await client.create_chat_invite_link(int(AUTH_CHANNEL))
