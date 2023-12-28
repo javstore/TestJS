@@ -12,17 +12,17 @@ class script(object):
 
 <b>😎 𝖯𝗈𝗐𝖾𝗋𝖾𝖽 𝖻𝗒 @piroxbots</b>"""
 
-    HELP_TXT = """PAY ₹30
-(Gpay, PhonePe, Paytm etc,.)
-upi id : javstore@axl
+    HELP_TXT = """<b>PAY ₹30</b>
+<i>(Gpay, PhonePe, Paytm etc,.)</i>
+upi id : <tt>javstore@axl</tt>
 
 or
 
-Pay $0.5
-(Paypal)
-paypal id : paywithav
+<b>Pay $0.5</b>
+<i>(Paypal)</i>
+paypal id : <tt>paywithav</tt>
 
-NOTE: send your payment SCREENSHOT and VIDEO-ID to @javstore_ssbot then, Get Your Files!"""
+<b>NOTE:</b> <i>send your payment SCREENSHOT and VIDEO-ID to</i> @javstore_ssbot <i>then, Get Your Files!</i>"""
     
     HELP_DEMO_TXT = """🙋🏻‍♂️   𝖧𝖾𝗅𝗅𝗈𝗈𝗈  {} 🤓
 
