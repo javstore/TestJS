@@ -12,19 +12,27 @@ class script(object):
 
 <b>😎 𝖯𝗈𝗐𝖾𝗋𝖾𝖽 𝖻𝗒 @piroxbots</b>"""
 
-    HELP_TXT = """<b>PAY ₹30</b>
+    PAYMENT_TXT = """<b>Want to Watch the video in 1080p?</b>
+
+<b>• 1080p Premium Quality</b>
+<b>• Get the Direct Files</b>
+<b>• No Ads</b>
+
+<b>⚠️ JUST PAY ₹30 AND ENJOY THE VIDEO!</b>"""
+    
+    PAY_TXT = """<b>PAY ₹30</b>
 <i>(Gpay, PhonePe, Paytm etc,.)</i>
-upi id 👉🏻  <code>javstore@axl</code>
+UPI ID 👉🏻   <code>javstore@axl</code>
 
 or
 
 <b>Pay $0.5</b>
-<i>(Paypal)</i>
-paypal id 👉🏻  : <code>paywithav</code>
+<i>(PayPal)</i>
+PayPal ID 👉🏻   <code>paywithav</code>
 
 <b>NOTE:</b> <i>Send the payment screenshot and video-ID to</i> @javstore_ssbot <i>then, Get Your Files!</i>"""
     
-    HELP_DEMO_TXT = """🙋🏻‍♂️   𝖧𝖾𝗅𝗅𝗈𝗈𝗈  {} 🤓
+    HELP_TXT = """🙋🏻‍♂️   𝖧𝖾𝗅𝗅𝗈𝗈𝗈  {} 🤓
 
 ○  𝗂𝗍'𝗌 𝖭𝗈𝗍𝖾 𝖢𝗈𝗆𝗉𝗅𝗂𝖼𝖺𝗍𝖾𝖽...🤓
 
