@@ -14,13 +14,13 @@ class script(object):
 
     HELP_TXT = """<b>PAY ₹30</b>
 <i>(Gpay, PhonePe, Paytm etc,.)</i>
-upi id : <tt>javstore@axl</tt>
+upi id : <code>javstore@axl</code>
 
 or
 
 <b>Pay $0.5</b>
 <i>(Paypal)</i>
-paypal id : <tt>paywithav</tt>
+paypal id : <code>paywithav</code>
 
 <b>NOTE:</b> <i>send your payment SCREENSHOT and VIDEO-ID to</i> @javstore_ssbot <i>then, Get Your Files!</i>"""
     
