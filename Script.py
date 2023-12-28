@@ -12,25 +12,24 @@ class script(object):
 
 <b>😎 𝖯𝗈𝗐𝖾𝗋𝖾𝖽 𝖻𝗒 @piroxbots</b>"""
 
-    PAYMENT_TXT = """<b>Want to Watch the video in 1080p?</b>
+    PAYMENT_TXT = """<𝖻>🤷‍♂️ 𝖶𝖺𝗇𝗍 𝗍𝗈 𝖶𝖺𝗍𝖼𝗁 𝗍𝗁𝖾 𝗏𝗂𝖽𝖾𝗈 𝗂𝗇 1080𝗉?</𝖻>
 
-<b>• 1080p Premium Quality</b>
-<b>• Get the Direct Files</b>
-<b>• No Ads</b>
+<𝖻>⭐ 1080𝗉 𝖯𝗋𝖾𝗆𝗂𝗎𝗆 𝖰𝗎𝖺𝗅𝗂𝗍𝗒</𝖻>
+<𝖻>📂 𝖣𝗈𝗐𝗇𝗅𝗈𝖺𝖽 𝗍𝗁𝖾 𝖣𝗂𝗋𝖾𝖼𝗍 𝖥𝗂𝗅𝖾𝗌</𝖻>
+<𝖻>🚫 𝖭𝗈 𝖠𝖽𝗌</𝖻>
 
-<b>⚠️ JUST PAY ₹30 AND ENJOY THE VIDEO!</b>"""
+<𝖻>⚠️ 𝖩𝖴𝖲𝖳 𝖯𝖠𝖸 ₹30 𝖠𝖭𝖣 𝖤𝖭𝖩𝖮𝖸 𝖳𝖧𝖤 𝖵𝖨𝖣𝖤𝖮!</𝖻>"""
     
-    PAY_TXT = """<b>PAY ₹30</b>
-<i>(Gpay, PhonePe, Paytm etc,.)</i>
-UPI ID 👉🏻   <code>javstore@axl</code>
+    PAY_TXT = """<b>💵 𝖯𝖠𝖸 ₹30</b>
+(𝖦𝗉𝖺𝗒, 𝖯𝗁𝗈𝗇𝖾𝖯𝖾, 𝖯𝖺𝗒𝗍𝗆 𝖾𝗍𝖼,.)
+𝖴𝖯𝖨 𝖨𝖣 👉🏻   <code>javstore@axl</code>  
 
-or
+𝗈𝗋
 
-<b>Pay $0.5</b>
-<i>(PayPal)</i>
-PayPal ID 👉🏻   <code>paywithav</code>
+<b>💵 𝖯𝖠𝖸 $0.5</b> (𝖯𝖺𝗒𝖯𝖺𝗅)
+𝖯𝖺𝗒𝖯𝖺𝗅 𝖨𝖣 👉🏻   <code>itzspidey</code>
 
-<b>NOTE:</b> <i>Send the payment screenshot and video-ID to</i> @javstore_ssbot <i>then, Get Your Files!</i>"""
+📝 𝖭𝖮𝖳𝖤: 𝖲𝖾𝗇𝖽 𝗍𝗁𝖾 𝗉𝖺𝗒𝗆𝖾𝗇𝗍 𝗌𝖼𝗋𝖾𝖾𝗇𝗌𝗁𝗈𝗍 𝖺𝗇𝖽 𝗏𝗂𝖽𝖾𝗈-𝖨𝖣 𝗍𝗈 @Javstore_ssbot 𝗍𝗁𝖾𝗇, 𝖦𝖾𝗍 𝖸𝗈𝗎𝗋 𝖥𝗂𝗅𝖾𝗌!"""
     
     HELP_TXT = """🙋🏻‍♂️   𝖧𝖾𝗅𝗅𝗈𝗈𝗈  {} 🤓
 
