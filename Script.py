@@ -22,7 +22,7 @@ or
 <i>(Paypal)</i>
 paypal id 👉🏻  : <code>paywithav</code>
 
-<b>NOTE:</b> <i>Send the payment SCREENSHOT and VIDEO-ID to</i> @javstore_ssbot <i>then, Get Your Files!</i>"""
+<b>NOTE:</b> <i>Send the payment screenshot and video-ID to</i> @javstore_ssbot <i>then, Get Your Files!</i>"""
     
     HELP_DEMO_TXT = """🙋🏻‍♂️   𝖧𝖾𝗅𝗅𝗈𝗈𝗈  {} 🤓
 
