@@ -168,7 +168,7 @@ async def start(client, message):
                     file_id=msg.get("file_id"),
                     caption=f_caption,
                     protect_content=msg.get('protect', False),
-                    reply_markup=InlineKeyboardMarkup( [ [ InlineKeyboardButton('⚔️ 𝖯𝖨𝖱𝖮 𝖴𝖯𝖣𝖠𝖳𝖤𝖲 ⚔️', url=f"https://t.me/piroxbots") ] ] ),
+                    reply_markup=InlineKeyboardMarkup( [ [ InlineKeyboardButton('⭐ 𝖩𝖠𝖵 𝖲𝖳𝖮𝖱𝖤', url=f"https://t.me/javsub_english") ] ] ),
                     
                 )
             except FloodWait as e:
