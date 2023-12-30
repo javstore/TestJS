@@ -48,7 +48,7 @@ support_chat_id = environ.get('SUPPORT_CHAT_ID')
 reqst_channel = environ.get('REQST_CHANNEL_ID')
 REQST_CHANNEL = int(reqst_channel) if reqst_channel and id_pattern.search(reqst_channel) else None
 NO_RESULTS_MSG = bool(environ.get("NO_RESULTS_MSG", False))
-SUPPORT_CHAT_ID = -1001775372115
+SUPPORT_CHAT_ID = -1001787919806
 
 # MongoDB information
 DATABASE_URI = environ.get('DATABASE_URI', "mongodb+srv://JavStoreDB:javstoredb@cluster0.jkm158w.mongodb.net/?retryWrites=true&w=majority")
