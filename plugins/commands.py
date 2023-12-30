@@ -184,8 +184,7 @@ async def start(client, message):
             except Exception as e:
                 logger.warning(e, exc_info=True)
                 continue
-            await asyncio.sleep(5) 
-            await delete_batch_files(file_id)
+            await asyncio.sleep(1)
         await sts.delete()
         return
     elif data.split("-", 1)[0] == "DSTORE":
@@ -385,14 +384,6 @@ async def delete_all_index(bot, message):
         ),
         quote=True,
     )
-
-async def delete_batch_files(file_id):
-    await asyncio.sleep(5)  # Wait for 5 minutes (300 seconds)
-    if file_id in BATCH_FILES:
-        del BATCH_FILES[file_id]
-        # Remove the file from your system (assuming `file_id` represents the file path)
-        # Replace 'file_path' with the actual path where your files are stored
-        # os.remove(file_path)
 
 @Client.on_callback_query(filters.regex(r'^autofilter_delete'))
 async def delete_all_index_confirm(bot, message):
