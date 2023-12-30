@@ -150,6 +150,7 @@ async def start(client, message):
                 return await client.send_message(LOG_CHANNEL, "UNABLE TO OPEN FILE.")
             os.remove(file)
             BATCH_FILES[file_id] = msgs
+        sent_messages = []
         for msg in msgs:
             title = msg.get("title")
             size=get_size(int(msg.get("size", 0)))
@@ -185,8 +186,9 @@ async def start(client, message):
                 logger.warning(e, exc_info=True)
                 continue
             await asyncio.sleep(1)
-        await jv.delete()
-       # await sts.delete()
+        for msg_id in sent_messages:
+            await client.delete_messages(message.chat.id, msg_id)
+        await sts.delete()
       #  await asyncio.sleep(5)
       #  await js.delete()
         #await jv.delete()
