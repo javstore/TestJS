@@ -185,6 +185,7 @@ async def start(client, message):
                 logger.warning(e, exc_info=True)
                 continue
             await asyncio.sleep(1)
+        await asyncio.sleep(5)
         await js.delete()
         await sts.delete()
         return
