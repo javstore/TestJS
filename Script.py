@@ -1,7 +1,8 @@
 class script(object):
-    START_TXT = """<b>Greetings</b> {} 💖 <b>𝖶𝖾𝗅𝖼𝗈𝗆𝖾 𝗍𝗈 𝖩𝖠𝖵 𝖲𝖳𝖮𝖱𝖤, 𝖸𝗈𝗎'𝗂𝗅𝗅 𝖻𝖾 𝖭𝗈𝗍𝗂𝖿𝗂𝖾𝖽 𝗁𝖾𝗋𝖾 𝗋𝖾𝗀𝖺𝗋𝖽𝗂𝗇𝗀 𝗍𝗈 𝖨𝗇𝖿𝗈𝗋𝗆𝖺𝗍𝗂𝗈𝗇 𝖺𝖻𝗈𝗎𝗍 𝖩𝖺𝗏 𝖲𝗍𝗈𝗋𝖾</b>
+    START_TXT = """Greetings {} 💖
+    𝖶𝖾𝗅𝖼𝗈𝗆𝖾 𝗍𝗈 𝖩𝖠𝖵 𝖲𝖳𝖮𝖱𝖤, 𝖸𝗈𝗎'𝗂𝗅𝗅 𝖻𝖾 𝖭𝗈𝗍𝗂𝖿𝗂𝖾𝖽 𝗁𝖾𝗋𝖾 𝗋𝖾𝗀𝖺𝗋𝖽𝗂𝗇𝗀 𝗍𝗈 𝖨𝗇𝖿𝗈𝗋𝗆𝖺𝗍𝗂𝗈𝗇 𝖺𝖻𝗈𝗎𝗍 𝖩𝖺𝗏 𝖲𝗍𝗈𝗋𝖾
 
-<b>⚠️ 𝖯𝗈𝗐𝖾𝗋𝖾𝖽 𝖻𝗒 𝖩𝖠𝖵 𝖲𝖳𝖮𝖱𝖤</b>"""
+⚠️ 𝖯𝗈𝗐𝖾𝗋𝖾𝖽 𝖻𝗒 𝖩𝖠𝖵 𝖲𝖳𝖮𝖱𝖤"""
 
     PAYMENT_TXT = """🤷‍♂️ 𝖶𝖺𝗇𝗍 𝗍𝗈 𝖶𝖺𝗍𝖼𝗁 𝗍𝗁𝖾 𝗏𝗂𝖽𝖾𝗈 𝗂𝗇 1080𝗉?
 
@@ -38,10 +39,9 @@ class script(object):
 ○ 𝖡𝗎𝗂𝗅𝖽 𝖲𝗍𝖺𝗍𝗎𝗌 : v1.0.1 [BeTa]
 ○ 𝖲𝗎𝗉𝗉𝗈𝗋𝗍 𝖦𝗋𝗈𝗎𝗉 : <a href='https://t.me/jav_sub_movies'>𝖳𝖺𝗉 𝖧𝖾𝗋𝖾</a>"""
 
-    SOURCE_TXT = """<b>NOTE:</b>
-Special Thanks to EvaMaria Devs & Cloners for the codes.
-
-- Source - This bot's was Altered as per bot. Contact EvaMaria Devs for Original Repository""" #please don't change repo link give credit :)
+    SOURCE_TXT = """𝖭𝖮𝖳𝖤:
+𝖲𝗉𝖾𝖼𝗂𝖺𝗅 𝖳𝗁𝖺𝗇𝗄𝗌 𝗍𝗈 𝖤𝗏𝖺𝖬𝖺𝗋𝗂𝖺 𝖣𝖾𝗏𝗌 & 𝖢𝗅𝗈𝗇𝖾𝗋𝗌 𝖿𝗈𝗋 𝗍𝗁𝖾 𝖼𝗈𝖽𝖾𝗌.
+𝖲𝗈𝗎𝗋𝖼𝖾 - 𝖳𝗁𝗂𝗌 𝖻𝗈𝗍'𝗌 𝗐𝖺𝗌 𝖬𝗈𝖽𝗂𝖿𝗂𝖾𝖽 𝖺𝗌 𝗉𝖾𝗋 𝖣𝖾𝗏𝖾𝗅𝗈𝗉𝖾𝗋𝗌 𝖱𝖾𝗊𝗎𝗂𝗋𝖾𝗆𝖾𝗇𝗍𝗌. 𝖢𝗈𝗇𝗍𝖺𝖼𝗍 𝖤𝗏𝖺𝖬𝖺𝗋𝗂𝖺 𝖣𝖾𝗏𝗌 𝖿𝗈𝗋 𝖮𝗋𝗂𝗀𝗂𝗇𝖺𝗅 𝖱𝖾𝗉𝗈𝗌𝗂𝗍𝗈𝗋𝗒""" #please don't change repo link give credit :)
 
     MANUELFILTER_TXT = """ʜᴇʟᴘ: <b>ꜰɪʟᴛᴇʀꜱ</b>
 - ꜰɪʟᴛᴇʀ ɪꜱ ᴀ ꜰᴇᴀᴛᴜʀᴇ ᴡᴇʀᴇ ᴜꜱᴇʀꜱ ᴄᴀɴ ꜱᴇᴛ ᴀᴜᴛᴏᴍᴀᴛᴇᴅ ʀᴇᴘʟɪᴇꜱ ꜰᴏʀ ᴀ ᴘᴀʀᴛɪᴄᴜʟᴀʀ ᴋᴇʏᴡᴏʀᴅ ᴀɴᴅ ɪ ᴡɪʟʟ ʀᴇꜱᴘᴏɴᴅ ᴡʜᴇɴᴇᴠᴇʀ ᴀ ᴋᴇʏᴡᴏʀᴅ ɪꜱ ꜰᴏᴜɴᴅ ɪɴ ᴛʜᴇ ᴍᴇꜱꜱᴀɢᴇ
