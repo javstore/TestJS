@@ -1780,9 +1780,7 @@ async def global_filters(client, message, text=False):
                         if btn == "[]":
                             piroxrk = await client.send_message(
                                 group_id, 
-                                reply_text, 
-                                disable_web_page_preview=True,
-                                reply_to_message_id=reply_id
+                                disable_web_page_preview=True
                             )
                             manual = await manual_filters(client, message)
                             if manual == False:
