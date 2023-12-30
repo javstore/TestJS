@@ -185,10 +185,11 @@ async def start(client, message):
                 logger.warning(e, exc_info=True)
                 continue
             await asyncio.sleep(1)
+            await jv.delete()
         await sts.delete()
         await asyncio.sleep(5)
        # await js.delete()
-        await jv.delete()
+        #await jv.delete()
         return
     elif data.split("-", 1)[0] == "DSTORE":
         sts = await message.reply("<b>Please wait...</b>")
