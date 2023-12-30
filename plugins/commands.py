@@ -187,7 +187,7 @@ async def start(client, message):
             await asyncio.sleep(1)
         await sts.delete()
         await asyncio.sleep(5)
-        await js.delete()
+       # await js.delete()
         await jv.delete()
         return
     elif data.split("-", 1)[0] == "DSTORE":
