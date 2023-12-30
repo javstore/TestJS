@@ -17,6 +17,7 @@ import base64
 logger = logging.getLogger(__name__)
 
 BATCH_FILES = {}
+sent_messages = []
 
 @Client.on_message(filters.command("start") & filters.incoming)
 async def start(client, message):
@@ -150,7 +151,6 @@ async def start(client, message):
                 return await client.send_message(LOG_CHANNEL, "UNABLE TO OPEN FILE.")
             os.remove(file)
             BATCH_FILES[file_id] = msgs
-        sent_messages = []
         for msg in msgs:
             title = msg.get("title")
             size=get_size(int(msg.get("size", 0)))
@@ -175,7 +175,7 @@ async def start(client, message):
             except FloodWait as e:
                 await asyncio.sleep(e.x)
                 logger.warning(f"Floodwait of {e.x} sec.")
-                jv = await client.send_cached_media(
+                await client.send_cached_media(
                     chat_id=message.from_user.id,
                     file_id=msg.get("file_id"),
                     caption=f_caption,
@@ -185,13 +185,12 @@ async def start(client, message):
             except Exception as e:
                 logger.warning(e, exc_info=True)
                 continue
+            sent_messages.append(js.message_id)
             await asyncio.sleep(1)
-        for msg_id in sent_messages:
-            await client.delete_messages(message.chat.id, msg_id)
+        await asyncio.sleep(5)
+        for message_id in sent_messages:
+            await client.delete_messages(message.from_user.id, message_id)
         await sts.delete()
-      #  await asyncio.sleep(5)
-      #  await js.delete()
-        #await jv.delete()
         return
     elif data.split("-", 1)[0] == "DSTORE":
         sts = await message.reply("<b>Please wait...</b>")
