@@ -163,7 +163,7 @@ async def start(client, message):
             if f_caption is None:
                 f_caption = f"{title}"
             try:
-                await client.send_cached_media(
+                javstore = await client.send_cached_media(
                     chat_id=message.from_user.id,
                     file_id=msg.get("file_id"),
                     caption=f_caption,
@@ -184,7 +184,8 @@ async def start(client, message):
             except Exception as e:
                 logger.warning(e, exc_info=True)
                 continue
-            await asyncio.sleep(1) 
+            await asyncio.sleep(5) 
+            await javstore.delete()
         await sts.delete()
         return
     elif data.split("-", 1)[0] == "DSTORE":
