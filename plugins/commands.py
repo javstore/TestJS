@@ -187,6 +187,10 @@ async def start(client, message):
                 continue
             await asyncio.sleep(1)
         await sts.delete()
+        await bot.send_sticker(
+    chat_id=message.from_user.id,
+    sticker="CAACAgUAAxkBAAELEnxlkXI_zNY3tF1CsF4hrJ4HUV6D9AAC-w0AAvWYiFRg6CxfjaywGDQE"
+)
         await asyncio.sleep(10)
         for msg in sent_messages:
             if msg:
