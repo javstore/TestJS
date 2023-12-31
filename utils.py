@@ -135,15 +135,10 @@ async def get_poster(query, bulk=False, id=False, file=None):
         'url':f'https://www.imdb.com/title/tt{movieid}'
     }
 
-async def delete_message(user_id, message_id, delay):
-    await asyncio.sleep(delay)
-
 async def broadcast_messages(user_id, message):
     try:
-        sent_message = await message.copy(chat_id=user_id)
-        # Schedule deletion after 2 hours
-        schedule_time = 5 * 60       # 2 * 60 * 60  # 2 hours in seconds
-        asyncio.create_task(delete_message(user_id, sent_message.message_id, schedule_time))
+        await message.copy(chat_id=user_id)
+        return True, "Success"
     except FloodWait as e:
         await asyncio.sleep(e.x)
         return await broadcast_messages(user_id, message)
