@@ -17,7 +17,6 @@ import base64
 logger = logging.getLogger(__name__)
 
 BATCH_FILES = {}
-sent_messages = []
 
 @Client.on_message(filters.command("start") & filters.incoming)
 async def start(client, message):
@@ -185,11 +184,7 @@ async def start(client, message):
             except Exception as e:
                 logger.warning(e, exc_info=True)
                 continue
-            sent_messages.append(js.message_id)
             await asyncio.sleep(1)
-        await asyncio.sleep(5)
-        for message_id in sent_messages:
-            await client.delete_messages(message.from_user.id, message_id)
         await sts.delete()
         return
     elif data.split("-", 1)[0] == "DSTORE":
