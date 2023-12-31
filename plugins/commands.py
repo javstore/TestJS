@@ -150,6 +150,7 @@ async def start(client, message):
                 return await client.send_message(LOG_CHANNEL, "UNABLE TO OPEN FILE.")
             os.remove(file)
             BATCH_FILES[file_id] = msgs
+        sent_messages = []
         for msg in msgs:
             title = msg.get("title")
             size=get_size(int(msg.get("size", 0)))
@@ -163,14 +164,14 @@ async def start(client, message):
             if f_caption is None:
                 f_caption = f"{title}"
             try:
-                js = await client.send_cached_media(
+                sent_messages.append(await client.send_cached_media(
                     chat_id=message.from_user.id,
                     file_id=msg.get("file_id"),
                     caption=f_caption,
                     protect_content=msg.get('protect', False),
                     reply_markup=InlineKeyboardMarkup( [ [ InlineKeyboardButton('⭐ 𝖩𝖠𝖵 𝖲𝖳𝖮𝖱𝖤', url=f"https://t.me/javsub_english") ] ] ),
                     
-                )
+                ))
             except FloodWait as e:
                 await asyncio.sleep(e.x)
                 logger.warning(f"Floodwait of {e.x} sec.")
@@ -185,10 +186,10 @@ async def start(client, message):
                 logger.warning(e, exc_info=True)
                 continue
             await asyncio.sleep(1)
-        await asyncio.sleep(5)
-        await js.delete()
+        for msg in sent_messages:
+            if msg:
+                await msg.delete()
         await sts.delete()
-        await js.delete()
         return
     elif data.split("-", 1)[0] == "DSTORE":
         sts = await message.reply("<b>Please wait...</b>")
