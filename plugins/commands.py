@@ -32,10 +32,10 @@ async def start(client, message):
         await db.add_user(message.from_user.id, message.from_user.first_name)
         await client.send_message(LOG_CHANNEL, script.LOG_TEXT_P.format(message.from_user.id, message.from_user.mention))
     if len(message.command) != 2:
-        buttons = [
+        buttons = [[
                     InlineKeyboardButton('⚙️ 𝖧𝖾𝗅𝗉', callback_data='help'),
                     InlineKeyboardButton('📨 𝖲𝗎𝗉𝗉𝗈𝗋𝗍 𝖢𝗁𝖺𝗍', url=f"https://t.me/{SUPPORT_CHAT}")
-        ]
+        ]]
         reply_markup = InlineKeyboardMarkup(buttons)
         await message.reply_photo(
             photo=random.choice(PICS),
