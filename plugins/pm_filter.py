@@ -964,9 +964,9 @@ async def cb_handler(client: Client, query: CallbackQuery):
         )
     
     elif query.data == "help":
-        buttons = [
+        buttons = [[
                     InlineKeyboardButton('🏠 𝖦𝗈 𝖡𝖺𝖼𝗄', callback_data='start')
-        ]
+        ]]
         
         reply_markup = InlineKeyboardMarkup(buttons)
         await client.edit_message_media(
