@@ -43,6 +43,7 @@ async def start(client, message):
             reply_markup=reply_markup,
             parse_mode=enums.ParseMode.HTML
         )
+        await asyncio.sleep(30)
         await oii.edit_caption(
             caption=script.START_TXT.format(message.from_user.mention, temp.U_NAME, temp.B_NAME)
         )
