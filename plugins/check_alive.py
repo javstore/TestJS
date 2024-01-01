@@ -22,7 +22,7 @@ async def help(_, message):
 async def admin_panel(client, message):
     oii = await client.send_photo(
         photo=random.choice(PICS),
-        caption=script.ADMIN_TXT.format(message.from_user.mention, temp.U_NAME, temp.B_NAME)
+        caption=script.ADMIN_TXT
     )
 
 @Client.on_message(filters.command("moviessss", CMD))
