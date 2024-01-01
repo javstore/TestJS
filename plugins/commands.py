@@ -244,8 +244,13 @@ async def start(client, message):
                 except:
                     return
             await msg.edit_caption(f_caption)
-            await asyncio.sleep(10)
+            wow = await client.send_sticker(
+    chat_id=message.from_user.id,
+    sticker="CAACAgUAAxkBAAELEnxlkXI_zNY3tF1CsF4hrJ4HUV6D9AAC-w0AAvWYiFRg6CxfjaywGDQE"
+)
+            await asyncio.sleep(300)
             await msg.delete()
+            await wow.delete()
             return
         except:
             pass
