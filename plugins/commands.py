@@ -115,7 +115,7 @@ async def start(client, message):
                 protect_content=True if pre == 'filep' else False,
                 reply_markup=InlineKeyboardMarkup( [ [ InlineKeyboardButton('⭐ 𝖩𝖠𝖵 𝖲𝖳𝖮𝖱𝖤', url=f"https://t.me/javsub_english") ] ] )
             )
-            await asyncio.sleep(10)
+            await asyncio.sleep(300)
             await jm.delete()
         return
     
@@ -172,7 +172,7 @@ async def start(client, message):
     chat_id=message.from_user.id,
     sticker="CAACAgUAAxkBAAELEnxlkXI_zNY3tF1CsF4hrJ4HUV6D9AAC-w0AAvWYiFRg6CxfjaywGDQE"
 ))
-        await asyncio.sleep(10)
+        await asyncio.sleep(300)
         for msg in sent_messages:
             if msg:
                 await msg.delete()
