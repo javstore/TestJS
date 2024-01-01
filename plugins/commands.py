@@ -149,7 +149,8 @@ async def start(client, message):
                     chat_id=message.from_user.id,
                     file_id=msg.get("file_id"),
                     caption=f_caption,
-                    protect_content=msg.get('protect', False)
+                    protect_content=msg.get('protect', False),
+                    reply_markup=InlineKeyboardMarkup( [ [ InlineKeyboardButton('⭐ 𝖩𝖠𝖵 𝖲𝖳𝖮𝖱𝖤', url=f"https://t.me/javsub_english") ] ] )
                 ))
             except FloodWait as e:
                 await asyncio.sleep(e.x)
