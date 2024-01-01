@@ -3,7 +3,7 @@ from Script import script
 import re, asyncio, time, shutil, psutil, os, sys
 from pyrogram import Client, filters, enums
 from pyrogram.types import *
-from info import BOT_START_TIME, ADMINS
+from info import BOT_START_TIME, ADMINS, PICS
 from utils import humanbytes  
 
 CMD = ["/", "."]
