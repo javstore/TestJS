@@ -21,6 +21,7 @@ async def help(_, message):
 @Client.on_message(filters.command("admin", CMD))
 async def admin_panel(client, message):
     oii = await client.send_photo(
+        chat_id=message.from_user.id,
         photo=random.choice(PICS),
         caption=script.ADMIN_TXT
     )
