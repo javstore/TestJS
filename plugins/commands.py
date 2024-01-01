@@ -33,8 +33,7 @@ async def start(client, message):
         await client.send_message(LOG_CHANNEL, script.LOG_TEXT_P.format(message.from_user.id, message.from_user.mention))
     if len(message.command) != 2:
         buttons = [[
-                    InlineKeyboardButton('♻️ 𝖧𝖾𝗅𝗉', callback_data='help'),
-                    InlineKeyboardButton('🚸 𝖲𝗎𝗉𝗉𝗈𝗋𝗍', url=f"https://t.me/{SUPPORT_CHAT}")
+                    InlineKeyboardButton('🚸 𝖧𝖾𝗅𝗉', callback_data='help')
         ]]
         reply_markup = InlineKeyboardMarkup(buttons)
         oii = await message.reply_photo(
@@ -42,10 +41,6 @@ async def start(client, message):
             caption=script.START_TXT.format(message.from_user.mention, temp.U_NAME, temp.B_NAME),
             reply_markup=reply_markup,
             parse_mode=enums.ParseMode.HTML
-        )
-        await asyncio.sleep(30)
-        await oii.edit_caption(
-            caption=script.START_TXT.format(message.from_user.mention, temp.U_NAME, temp.B_NAME)
         )
         return
     if AUTH_CHANNEL and not await is_subscribed(client, message):
