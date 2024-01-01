@@ -20,7 +20,7 @@ async def help(_, message):
 
 @Client.on_message(filters.command("admin") & filters.user(ADMINS))
 async def admin_panel(client, message):
-    oii = await message.reply_photo(
+    oii = await client.send_photo(
         photo=random.choice(PICS),
         caption=script.ADMIN_TXT.format(message.from_user.mention, temp.U_NAME, temp.B_NAME)
     )
