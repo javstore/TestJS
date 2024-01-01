@@ -108,15 +108,15 @@ async def start(client, message):
                     f_caption=f_caption
             if f_caption is None:
                 f_caption = f"{file.file_name}"
-            jm= await client.send_cached_media(
+            jm = await client.send_cached_media(
                 chat_id=message.from_user.id,
                 file_id=file.file_id,
                 caption=f_caption,
                 protect_content=True if pre == 'filep' else False,
-                reply_markup=InlineKeyboardMarkup( [ [ InlineKeyboardButton('⭐ 𝖩𝖠𝖵 𝖲𝖳𝖮𝖱𝖤', url=f"https://t.me/javsub_english") ] ] ),
+                reply_markup=InlineKeyboardMarkup( [ [ InlineKeyboardButton('⭐ 𝖩𝖠𝖵 𝖲𝖳𝖮𝖱𝖤', url=f"https://t.me/javsub_english") ] ] )
             )
             await asyncio.sleep(10)
-            await jm.delete
+            await jm.delete()
         return
     
     if data.split("-", 1)[0] == "BATCH":
