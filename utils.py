@@ -138,6 +138,11 @@ async def get_poster(query, bulk=False, id=False, file=None):
 async def broadcast_messages(user_id, message):
     try:
         await message.copy(chat_id=user_id)
+        await asyncio.sleep(10)  # 3600 seconds = 1 hour
+        
+        # Delete the message
+        await bot.delete_message(chat_id=user_id, message_id=message.message_id)
+
         return True, "Success"
     except FloodWait as e:
         await asyncio.sleep(e.x)
