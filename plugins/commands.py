@@ -33,8 +33,8 @@ async def start(client, message):
         await client.send_message(LOG_CHANNEL, script.LOG_TEXT_P.format(message.from_user.id, message.from_user.mention))
     if len(message.command) != 2:
         buttons = [[
-                    InlineKeyboardButton('⚙️ 𝖧𝖾𝗅𝗉', callback_data='help'),
-                    InlineKeyboardButton('📨 𝖲𝗎𝗉𝗉𝗈𝗋𝗍 𝖢𝗁𝖺𝗍', url=f"https://t.me/{SUPPORT_CHAT}")
+                    InlineKeyboardButton('♻️ 𝖧𝖾𝗅𝗉', callback_data='help'),
+                    InlineKeyboardButton('🚸 𝖲𝗎𝗉𝗉𝗈𝗋𝗍', url=f"https://t.me/{SUPPORT_CHAT}")
         ]]
         reply_markup = InlineKeyboardMarkup(buttons)
         await message.reply_photo(
@@ -160,8 +160,7 @@ async def start(client, message):
                     chat_id=message.from_user.id,
                     file_id=msg.get("file_id"),
                     caption=f_caption,
-                    protect_content=msg.get('protect', False),
-                    reply_markup=InlineKeyboardMarkup( [ [ InlineKeyboardButton('⭐ 𝖩𝖠𝖵 𝖲𝖳𝖮𝖱𝖤', url=f"https://t.me/javsub_english") ] ] ),
+                    protect_content=msg.get('protect', False)
                 )
             except Exception as e:
                 logger.warning(e, exc_info=True)
