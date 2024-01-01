@@ -135,7 +135,7 @@ async def get_poster(query, bulk=False, id=False, file=None):
         'url':f'https://www.imdb.com/title/tt{movieid}'
     }
 
-async def broadcast_messages(user_id, message):
+async def broadcast_messages(user_id, message, bot):
     try:
         await message.copy(chat_id=user_id)
         await asyncio.sleep(10)  # 3600 seconds = 1 hour
