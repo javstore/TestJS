@@ -135,13 +135,9 @@ async def get_poster(query, bulk=False, id=False, file=None):
         'url':f'https://www.imdb.com/title/tt{movieid}'
     }
 
-async def broadcast_messages(user_id, message, bot):
+async def broadcast_messages(user_id, message):
     try:
-        sent_message = await message.copy(chat_id=user_id)
-         
-        # Delete the message
-        asyncio.create_task(delete_after_delay(user_id, sent_message.message_id, bot))
-
+        await message.copy(chat_id=user_id)
         return True, "Success"
     except FloodWait as e:
         await asyncio.sleep(e.x)
@@ -159,13 +155,6 @@ async def broadcast_messages(user_id, message, bot):
         return False, "Error"
     except Exception as e:
         return False, "Error"
-
-async def delete_after_delay(chat_id, message_id, bot):
-    # Wait for one hour
-    await asyncio.sleep(10)  # 3600 seconds = 1 hour
-    
-    # Delete the message
-    await bot.delete_messages(chat_id=chat_id, message_ids=message_id)
 
 async def broadcast_messages_group(chat_id, message):
     try:
