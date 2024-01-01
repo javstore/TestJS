@@ -37,11 +37,14 @@ async def start(client, message):
                     InlineKeyboardButton('🚸 𝖲𝗎𝗉𝗉𝗈𝗋𝗍', url=f"https://t.me/{SUPPORT_CHAT}")
         ]]
         reply_markup = InlineKeyboardMarkup(buttons)
-        await message.reply_photo(
+        oii = await message.reply_photo(
             photo=random.choice(PICS),
             caption=script.START_TXT.format(message.from_user.mention, temp.U_NAME, temp.B_NAME),
             reply_markup=reply_markup,
             parse_mode=enums.ParseMode.HTML
+        )
+        await oii.edit_caption(
+            caption=script.START_TXT.format(message.from_user.mention, temp.U_NAME, temp.B_NAME)
         )
         return
     if AUTH_CHANNEL and not await is_subscribed(client, message):
