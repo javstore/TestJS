@@ -26,7 +26,6 @@ class script(object):
  /info - User info
  /ping - To get your ping
  /id - User id
- /broadcast - Broadcast (𝖮𝗐𝗇𝖾𝗋 𝖮𝗇𝗅𝗒)
 
 😎 𝖯𝗈𝗐𝖾𝗋𝖾𝖽 𝖻𝗒 𝖩𝖠𝖵 𝖲𝖳𝖮𝖱𝖤"""
 
