@@ -1,4 +1,5 @@
 import random
+from Script import script
 import re, asyncio, time, shutil, psutil, os, sys
 from pyrogram import Client, filters, enums
 from pyrogram.types import *
@@ -17,6 +18,12 @@ async def check_alive(client, message):
 async def help(_, message):
     await message.reply_text("𝖦𝖾𝗍𝗍𝗂𝗇𝗀 𝖳𝗋𝗈𝗎𝖻𝗅𝖾 𝗂𝗇 𝖲𝗈𝗆𝖾𝗍𝗂𝗆𝖾?\n𝖱𝖾𝗉𝗈𝗋𝗍 𝖧𝖾𝗋𝖾 𝗐𝗂𝗍𝗁 #𝖺𝖽𝗆𝗂𝗇\n\n⚠️ @jav_sub_movies")
 
+@Client.on_message(filters.command("admin") & filters.user(ADMINS))
+async def admin_panel(_, message):
+oii = await message.reply_photo(
+            photo=random.choice(PICS),
+            caption=script.START_TXT.format(message.from_user.mention, temp.U_NAME, temp.B_NAME)
+)
 
 @Client.on_message(filters.command("moviessss", CMD))
 async def movie(_, message):
