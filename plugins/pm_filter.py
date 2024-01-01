@@ -893,8 +893,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
 
     elif query.data == "start":
         buttons = [[
-                    InlineKeyboardButton('♻️ 𝖧𝖾𝗅𝗉', callback_data='help'),
-                    InlineKeyboardButton('🚸 𝖲𝗎𝗉𝗉𝗈𝗋𝗍 𝖢𝗁𝖺𝗍', url=f"https://t.me/{SUPPORT_CHAT}")
+                    InlineKeyboardButton('⚙️ 𝖧𝖾𝗅𝗉', callback_data='help')
         ]]
         
         reply_markup = InlineKeyboardMarkup(buttons)
