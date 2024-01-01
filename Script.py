@@ -26,7 +26,6 @@ class script(object):
  /info - User info
  /ping - To get your ping
  /id - User id
- /stats - Db status  
  /broadcast - Broadcast (𝖮𝗐𝗇𝖾𝗋 𝖮𝗇𝗅𝗒)
 
 😎 𝖯𝗈𝗐𝖾𝗋𝖾𝖽 𝖻𝗒 𝖩𝖠𝖵 𝖲𝖳𝖮𝖱𝖤"""
@@ -186,7 +185,7 @@ Message <b>: {}</b>"""
     CAPTION = """
 📂 <b>File Name</b>: <code>{file_name}</code> 
 
-❤️‍🔥 </b>Join</b> [𝖩𝖠𝖵 𝖲𝖳𝖮𝖱𝖤](https://t.me/javsub_english)  
+🌟 </b>Join</b> [𝖩𝖠𝖵 𝖲𝖳𝖮𝖱𝖤](https://t.me/javsub_english)  
 """
 
     IMDB_TEMPLATE_TXT = """
