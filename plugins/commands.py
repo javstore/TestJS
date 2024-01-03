@@ -226,6 +226,11 @@ async def start(client, message):
     if not files_:
         pre, file_id = ((base64.urlsafe_b64decode(data + "=" * (-len(data) % 4))).decode("ascii")).split("_", 1)
         try:
+            filetype = msg.media
+            file = getattr(msg, filetype.value)
+            title = file.file_name
+            size=get_size(file.file_size)
+            f_caption = f"<code>{title}</code>"
             if CUSTOM_FILE_CAPTION:
                 try:
                     f_caption = CUSTOM_FILE_CAPTION.format(file_name='' if title is None else title,
