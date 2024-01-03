@@ -9,9 +9,12 @@ from utils import humanbytes
 CMD = ["/", "."]
 
 @Client.on_message(filters.command("alive", CMD))
-async def check_alive(_, message):
-    await message.reply_sticker(sticker="CAACAgIAAxkBAAELEzdlkq3YLomvHK4QAXUdHKwhqpmH6gADGgACFLvwSLdQCDPPbD-TNAQ"
-)
+async def check_alive(client, message):
+    await client.send_sticker(
+        chat_id=message.chat.id,
+        sticker="CAACAgIAAxkBAAELEzdlkq3YLomvHK4QAXUdHKwhqpmH6gADGgACFLvwSLdQCDPPbD-TNAQ"
+    )
+
 
 @Client.on_message(filters.command("help", CMD))
 async def help(_, message):
