@@ -9,8 +9,8 @@ from utils import humanbytes
 CMD = ["/", "."]
 
 @Client.on_message(filters.command("alive", CMD))
-async def check_alive(client, message):
-    await client.send_sticker(
+async def check_alive(_, message):
+    await message.send_sticker(
     chat_id=message.from_user.id, sticker="CAACAgIAAxkBAAELEzdlkq3YLomvHK4QAXUdHKwhqpmH6gADGgACFLvwSLdQCDPPbD-TNAQ"
 )
 
