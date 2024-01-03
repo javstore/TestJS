@@ -237,14 +237,13 @@ async def start(client, message):
             file = getattr(msg, filetype.value)
             title = file.file_name
             size=get_size(file.file_size)
-            #f_caption=msg.get("caption", "")
             f_caption = f"<code>{title}</code>"
             if CUSTOM_FILE_CAPTION:
                 try:
                     f_caption=CUSTOM_FILE_CAPTION.format(file_name= '' if title is None else title, file_size='' if size is None else size, file_caption='')
                 except:
                     return
-            await msg.edit_caption(f_caption)        
+            await msg.edit_caption(f_caption)    
             wow = await client.send_sticker(
     chat_id=message.from_user.id,
     sticker="CAACAgUAAxkBAAELEnxlkXI_zNY3tF1CsF4hrJ4HUV6D9AAC-w0AAvWYiFRg6CxfjaywGDQE"
