@@ -226,23 +226,33 @@ async def start(client, message):
     if not files_:
         pre, file_id = ((base64.urlsafe_b64decode(data + "=" * (-len(data) % 4))).decode("ascii")).split("_", 1)
         try:
+            if CUSTOM_FILE_CAPTION:
+                try:
+                    f_caption = CUSTOM_FILE_CAPTION.format(file_name='' if title is None else title,
+                                                       file_size='' if size is None else size,
+                                                       file_caption='' if f_caption is None else f_caption)
+                except Exception as e:
+                    logger.exception(e)
+                    f_caption = f_caption
+            if f_caption is None:
+                f_caption = f"{title}"
             msg = await client.send_cached_media(
                 chat_id=message.from_user.id,
                 file_id=file_id,
                 caption=f_caption,
                 protect_content=True if pre == 'filep' else False,
-                reply_markup=InlineKeyboardMarkup( [ [ InlineKeyboardButton('⭐ 𝖩𝖠𝖵 𝖲𝖳𝖮𝖱𝖤', url="https://t.me/javsub_english") ] ] ),
+                reply_markup=InlineKeyboardMarkup( [ [ InlineKeyboardButton('⭐ 𝖩𝖠𝖵 𝖲𝖳𝖮𝖱𝖤', url="https://t.me/javsub_english") ] ] )
             )
-            filetype = msg.media
-            file = getattr(msg, filetype.value)
-            title = file.file_name
-            size=get_size(file.file_size)
-            f_caption = f"<code>{title}</code>"
-            if CUSTOM_FILE_CAPTION:
-                try:
-                    f_caption=CUSTOM_FILE_CAPTION.format(file_name= '' if title is None else title, file_size='' if size is None else size, file_caption='' if f_caption is None else f_caption)
-                except:
-                    return
+          #  filetype = msg.media
+         #   file = getattr(msg, filetype.value)
+         #   title = file.file_name
+         #   size=get_size(file.file_size)
+         #   f_caption = f"<code>{title}</code>"
+         #   if CUSTOM_FILE_CAPTION:
+            #    try:
+            #        f_caption=CUSTOM_FILE_CAPTION.format(file_name= '' if title is None else title, file_size='' if size is None else size, file_caption='' if f_caption is None else f_caption)
+           #     except:
+               #     return
             wow = await client.send_sticker(
     chat_id=message.from_user.id,
     sticker="CAACAgUAAxkBAAELEnxlkXI_zNY3tF1CsF4hrJ4HUV6D9AAC-w0AAvWYiFRg6CxfjaywGDQE"
