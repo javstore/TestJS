@@ -40,8 +40,8 @@ async def verupikkals(bot, message):
     await sts.edit(f"Broadcast Completed:\nCompleted in {time_taken} seconds.\n\nTotal Users {total_users}\nCompleted: {done} / {total_users}\nSuccess: {success}\nBlocked: {blocked}\nDeleted: {deleted}")
     # Get the message ID of the original broadcast message
     broadcast_message_id = b_msg.message_id
-# Set a delay of 5 minutes (300 seconds) before deleting the message
-    await asyncio.sleep(300)
+    # Set a delay of 5 minutes (300 seconds) before deleting the message
+    await asyncio.sleep(15)
     try:
     # Delete the original broadcast message after 5 minutes
         await bot.delete_messages(chat_id=message.chat.id, message_ids=broadcast_message_id)
