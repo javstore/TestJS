@@ -757,23 +757,24 @@ async def send_msg(bot, message):
 
 @Client.on_message(filters.command("post") & filters.private & filters.reply & filters.user(ADMINS))
 async def send_to_channel(bot, message):
-    if " " in message.text:
-        chat_id = int(message.text.split()[1])
-    else:
-        await message.reply_text("Please provide a chat ID.")
-        return
-
     try:
+        text = message.text.split()
+        if len(text) < 2:
+            await message.reply_text("Please provide a chat ID.")
+            return
+        
+        chat_id = int(text[1])
+        
         user = await bot.get_chat_member(
             chat_id=chat_id,
             user_id=message.from_user.id
         )
-        if user.can_post_messages != True:
+        
+        if not user.can_post_messages:
             await message.reply_text("You can't do that")
             return
     except Exception as e:
-        print(e)
-        await message.reply_text("An error occurred while checking permissions.")
+        await message.reply_text(f"An error occurred: {e}")
         return
 
     try:
@@ -782,12 +783,7 @@ async def send_to_channel(bot, message):
         await message.reply_text(
             text="Posted Successfully",
             reply_markup=InlineKeyboardMarkup(
-                [[InlineKeyboardButton(text="Post", url=post_link)]]
-            )
-        )
-    except Exception as error:
-        print(error)
-        await message.reply_text(f"Error: {error}")
+                [[InlineKeyboardButton(text="Post", url=pos
 
 
 @Client.on_message(filters.command("gsend") & filters.user(ADMINS))
