@@ -580,18 +580,37 @@ async def send_msg(bot, message):
             await message.reply_text(f"<b>Error: {e}</b>")
     else:
         await message.reply_text("<b>Use this command as a reply to any message using the target chat id. For eg: /send userid</b>")
-
+        
 @Client.on_message(filters.command("post"))
-async def requestsd(bot, message):
-    # ... (existing code)
-
+async def requests(bot, message):
     if message.text.startswith("/post") and message.reply_to_message:
-        content = message.reply_to_message.text
+        replied_message = message.reply_to_message
+        
         try:
-            await bot.send_message(chat_id=-1002135192951, text=content) #REQST_CHANNEL
+            # Handling different message types
+            if replied_message.text:
+                content = replied_message.text
+                await bot.send_message(chat_id=REQST_CHANNEL, text=content)
+            elif replied_message.photo:
+                # Handle photos
+                photo = replied_message.photo[-1]  # Get the largest available photo
+                caption = replied_message.caption if replied_message.caption else None
+                await bot.send_photo(chat_id=REQST_CHANNEL, photo=photo.file_id, caption=caption)
+            elif replied_message.video:
+                # Handle videos
+                video = replied_message.video
+                caption = replied_message.caption if replied_message.caption else None
+                await bot.send_video(chat_id=REQST_CHANNEL, video=video.file_id, caption=caption)
+            # Add more conditions for other types if needed
+
+            # Check for inline buttons
+            if replied_message.reply_markup:
+                await bot.send_message(chat_id=REQST_CHANNEL, text="Buttons:", reply_markup=replied_message.reply_markup)
+
             await message.reply_text("Message forwarded to the request channel!")
         except Exception as e:
             await message.reply_text(f"Error forwarding message: {e}")
+
 
 
 @Client.on_message(filters.command('set_template'))
