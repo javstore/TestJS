@@ -755,22 +755,32 @@ async def send_msg(bot, message):
     else:
         await message.reply_text("<b>Use this command as a reply to any message using the target chat id. For eg: /send userid</b>")
 
-@Client.on_message(filters.command("post") & filters.user(ADMINS))
-async def post_msg(bot, message):
-    if message.reply_to_message:
-        channel_id = message.text.split()[1]  # Extract the channel ID from the command
-        success = False
+@Client.on_message(filters.command(["post", "Post"]) & filters.group)
+async def handle_post_command(bot, message):
+    # Extract the content after the command
+    content = message.text.replace('/post', '').replace('/Post', '').strip()
+    
+    if content:
+        # Check if the content is a chat ID
         try:
-            channel = await bot.get_chat(channel_id)
-            await message.reply_to_message.forward(channel_id)
-            success = True
-            if success:
-                await message.reply_text(f"<b>Your message has been successfully posted to {channel.title}.</b>")
-        except Exception as e:
-            await message.reply_text(f"<b>Error: {e}</b>")
+            target_channel_id = int(content)
+            
+            # Ask the user to reply with a message
+            await message.reply_text("Please reply to this message with the content you want to send to the specified channel.")
+            
+            # Wait for the user's reply
+            response = await bot.listen(filters=Filters.reply & Filters.private & Filters.user(message.from_user.id))
+            
+            # Send the message to the specified channel
+            try:
+                await bot.send_message(chat_id=target_channel_id, text=response.text)
+                await message.reply_text("Message sent to the specified channel!")
+            except Exception as e:
+                await message.reply_text(f"Error: {e}")
+        except ValueError:
+            await message.reply_text("Please provide a valid chat ID after the /post command.")
     else:
-        await message.reply_text("<b>Use this command as a reply to any message using the target channel ID. For example: /post channel_id</b>")
-
+        await message.reply_text("Please provide the channel ID after the /post command.")
 
 @Client.on_message(filters.command("gsend") & filters.user(ADMINS))
 async def send_chatmsg(bot, message):
