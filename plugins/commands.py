@@ -755,50 +755,6 @@ async def send_msg(bot, message):
     else:
         await message.reply_text("<b>Use this command as a reply to any message using the target chat id. For eg: /send userid</b>")
 
-@Bot.on_message(filters.private & filters.reply & filters.command(["post"]), group=1)
-async def post(bot, update):
-    chat_id = update.chat.id
-    admins = await bot.get_chat_administrators(chat_id)
-    admin_ids = [admin.user.id for admin in admins]
-    
-    if ((update.text == "post") or (" " not in update.text)) or (update.from_user.id not in admin_ids):
-        return
-    
-    if " " in update.text:
-        target_chat_id = int(update.text.split()[1])
-    
-    try:
-        user = await bot.get_chat_member(
-            chat_id=target_chat_id,
-            user_id=update.from_user.id
-        )
-        if user.can_post_messages != True:
-            await update.reply_text(
-                text="You can't do that"
-            )
-            return
-    except Exception:
-        return
-    
-    try:
-        post = await bot.copy_message(
-            chat_id=target_chat_id,
-            from_chat_id=update.reply_to_message.chat.id,
-            message_id=update.reply_to_message.message_id,
-            reply_markup=update.reply_to_message.reply_markup
-        )
-        post_link = f"https://telegram.me/c/{post.chat.id}/{post.message_id}"
-        await update.reply_text(
-            text="Posted Successfully",
-            reply_markup=InlineKeyboardMarkup(
-                [[InlineKeyboardButton(text="Post", url=post_link)]]
-            )
-        )
-    except Exception as error:
-        print(error)
-        await update.reply_text(error)
-
-
 @Client.on_message(filters.command("gsend") & filters.user(ADMINS))
 async def send_chatmsg(bot, message):
     if message.reply_to_message:
