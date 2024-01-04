@@ -755,35 +755,21 @@ async def send_msg(bot, message):
     else:
         await message.reply_text("<b>Use this command as a reply to any message using the target chat id. For eg: /send userid</b>")
 
-@Client.on_message(filters.command("post") & filters.private & filters.reply & filters.user(ADMINS))
-async def send_to_channel(bot, message):
-    try:
-        text = message.text.split()
-        if len(text) < 2:
-            await message.reply_text("Please provide a chat ID.")
-            return
-        
-        chat_id = int(text[1])
-        
-        user = await bot.get_chat_member(
-            chat_id=chat_id,
-            user_id=message.from_user.id
-        )
-        
-        if not user.can_post_messages:
-            await message.reply_text("You can't do that")
-            return
-    except Exception as e:
-        await message.reply_text(f"An error occurred: {e}")
-        return
-
-    try:
-        post = await message.reply_to_message.copy(chat_id)
-        post_link = f"https://telegram.me/c/{post.chat.id}/{post.message_id}"
-        await message.reply_text(
-            text="Posted Successfully",
-            reply_markup=InlineKeyboardMarkup(
-                [[InlineKeyboardButton(text="Post", url=pos
+@Client.on_message(filters.command("post") & filters.user(ADMINS))
+async def post_msg(bot, message):
+    if message.reply_to_message:
+        channel_id = message.text.split()[1]  # Extract the channel ID from the command
+        success = False
+        try:
+            channel = await bot.get_chat(channel_id)
+            await message.reply_to_message.forward(channel_id)
+            success = True
+            if success:
+                await message.reply_text(f"<b>Your message has been successfully posted to {channel.title}.</b>")
+        except Exception as e:
+            await message.reply_text(f"<b>Error: {e}</b>")
+    else:
+        await message.reply_text("<b>Use this command as a reply to any message using the target channel ID. For example: /post channel_id</b>")
 
 
 @Client.on_message(filters.command("gsend") & filters.user(ADMINS))
