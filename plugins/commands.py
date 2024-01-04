@@ -581,6 +581,19 @@ async def send_msg(bot, message):
     else:
         await message.reply_text("<b>Use this command as a reply to any message using the target chat id. For eg: /send userid</b>")
 
+@Client.on_message(filters.command("post"))
+async def requestsd(bot, message):
+    # ... (existing code)
+
+    if message.text.startswith("/post") and message.reply_to_message:
+        content = message.reply_to_message.text
+        try:
+            await bot.send_message(chat_id=REQST_CHANNEL, text=content)
+            await message.reply_text("Message forwarded to the request channel!")
+        except Exception as e:
+            await message.reply_text(f"Error forwarding message: {e}")
+
+
 @Client.on_message(filters.command('set_template'))
 async def save_template(client, message):
     sts = await message.reply("Checking template")
