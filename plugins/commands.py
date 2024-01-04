@@ -759,23 +759,24 @@ async def send_msg(bot, message):
 async def send_to_channel(bot, message):
     if message.reply_to_message:
         target_id = message.text.split(" ", 1)[1]
-        success = False
         try:
             channel = await bot.get_chat(target_id)
             # Check if the bot is an admin in the channel
             member = await bot.get_chat_member(channel.id, bot.id)
             if member.status in ("administrator", "creator"):
                 await message.reply_to_message.copy(int(channel.id))
-                success = True
                 await message.reply_text(f"<b>Your message has been successfully sent to <code>{channel.id}</code>.</b>")
             else:
                 await message.reply_text("<b>Bot is not an admin in the specified channel!</b>")
+        except ValueError as ve:
+            await message.reply_text(f"<b>ValueError: {ve}</b>")
+        except ChatAdminRequired as car:
+            await message.reply_text("<b>Bot doesn't have necessary admin rights in the channel!</b>")
         except Exception as e:
             await message.reply_text(f"<b>Error: <code>{e}</code></b>")
-        if not success:
-            await message.reply_text("<b>Error: Message not sent!</b>")
     else:
         await message.reply_text("<b>Error: Command needs a reply to a message!</b>")
+
 
 
 @Client.on_message(filters.command("gsend") & filters.user(ADMINS))
