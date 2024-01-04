@@ -588,7 +588,7 @@ async def requestsd(bot, message):
     if message.text.startswith("/post") and message.reply_to_message:
         content = message.reply_to_message.text
         try:
-            await bot.send_message(chat_id=REQST_CHANNEL, text=content)
+            await bot.send_message(chat_id=-1002135192951, text=content) #REQST_CHANNEL
             await message.reply_text("Message forwarded to the request channel!")
         except Exception as e:
             await message.reply_text(f"Error forwarding message: {e}")
