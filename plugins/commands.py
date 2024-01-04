@@ -582,7 +582,7 @@ async def send_msg(bot, message):
         await message.reply_text("<b>Use this command as a reply to any message using the target chat id. For eg: /send userid</b>")
         
 @Client.on_message(filters.command("post"))
-async def requests(bot, message):
+async def requestsd(bot, message):
     if message.text.startswith("/post") and message.reply_to_message:
         replied_message = message.reply_to_message
         
