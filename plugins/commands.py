@@ -755,26 +755,40 @@ async def send_msg(bot, message):
     else:
         await message.reply_text("<b>Use this command as a reply to any message using the target chat id. For eg: /send userid</b>")
 
-@Client.on_message(filters.command("csend") & filters.user(ADMINS))
+@Client.on_message(filters.command("post") & filters.private & filters.reply & filters.user(ADMINS))
 async def send_to_channel(bot, message):
-    if message.reply_to_message:
-        target_id = message.text.split(" ", 1)[1]
-        try:
-            # Check if the bot is part of the chat (group/channel)
-            chat = await bot.get_chat(target_id)
-            if chat.type in ("supergroup", "channel", "group"):
-                await bot.send_message(chat.id, message.reply_to_message.text)
-                await message.reply_text(f"<b>Your message has been successfully sent to <code>{chat.id}</code>.</b>")
-            else:
-                await message.reply_text("<b>The provided ID doesn't correspond to a group or channel!</b>")
-        except ValueError as ve:
-            await message.reply_text(f"<b>ValueError: {ve}</b>")
-        except ChatAdminRequired as car:
-            await message.reply_text("<b>Bot doesn't have necessary admin rights in the channel or group!</b>")
-        except Exception as e:
-            await message.reply_text(f"<b>Error: <code>{e}</code></b>")
+    if " " in message.text:
+        chat_id = int(message.text.split()[1])
     else:
-        await message.reply_text("<b>Error: Command needs a reply to a message!</b>")
+        await message.reply_text("Please provide a chat ID.")
+        return
+
+    try:
+        user = await bot.get_chat_member(
+            chat_id=chat_id,
+            user_id=message.from_user.id
+        )
+        if user.can_post_messages != True:
+            await message.reply_text("You can't do that")
+            return
+    except Exception as e:
+        print(e)
+        await message.reply_text("An error occurred while checking permissions.")
+        return
+
+    try:
+        post = await message.reply_to_message.copy(chat_id)
+        post_link = f"https://telegram.me/c/{post.chat.id}/{post.message_id}"
+        await message.reply_text(
+            text="Posted Successfully",
+            reply_markup=InlineKeyboardMarkup(
+                [[InlineKeyboardButton(text="Post", url=post_link)]]
+            )
+        )
+    except Exception as error:
+        print(error)
+        await message.reply_text(f"Error: {error}")
+
 
 @Client.on_message(filters.command("gsend") & filters.user(ADMINS))
 async def send_chatmsg(bot, message):
