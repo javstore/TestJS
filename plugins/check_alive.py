@@ -14,6 +14,7 @@ async def check_alive(client, message):
         chat_id=message.chat.id,
         sticker="CAACAgIAAxkBAAELEzdlkq3YLomvHK4QAXUdHKwhqpmH6gADGgACFLvwSLdQCDPPbD-TNAQ"
     )
+    await message.delete()
 
 
 @Client.on_message(filters.command("help", CMD))
