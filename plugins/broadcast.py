@@ -37,16 +37,7 @@ async def verupikkals(bot, message):
         if not done % 20:
             await sts.edit(f"Broadcast in progress:\n\nTotal Users {total_users}\nCompleted: {done} / {total_users}\nSuccess: {success}\nBlocked: {blocked}\nDeleted: {deleted}")    
     time_taken = datetime.timedelta(seconds=int(time.time()-start_time))
-    if b_msg and b_msg.reply_to_message:
-        broadcast_message_id = b_msg.reply_to_message.message_id
-    # Set a delay of 5 minutes (300 seconds) before deleting the message
-        await asyncio.sleep(15)
-        try:
-    # Delete the original broadcast message after 5 minutes
-            await bot.delete_messages(chat_id=message.chat.id, message_ids=broadcast_message_id)
-        except exceptions.MessageDeleteForbidden:
-    # Handling if the bot doesn't have permission to delete the message
-            pass  # Or log an error message
+    await sts.edit(f"Broadcast Completed:\nCompleted in {time_taken} seconds.\n\nTotal Users {total_users}\nCompleted: {done} / {total_users}\nSuccess: {success}\nBlocked: {blocked}\nDeleted: {deleted}")
 
 
 @Client.on_message(filters.command("group_broadcast") & filters.user(ADMINS) & filters.reply)
