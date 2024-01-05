@@ -582,27 +582,27 @@ async def send_msg(bot, message):
         await message.reply_text("<b>Use this command as a reply to any message using the target chat id. For eg: /send userid</b>")
         
 
-SUPPORT_CHANNEL = -1002047962547  # Replace with your actual support channel ID
-
-
 @Client.on_message(filters.command("csend") & filters.user(ADMINS))
-async def send_to_support_channel(bot, message):
+async def send_channel_msg(bot, message):
     if message.reply_to_message:
+        target_id = message.text.split(" ", 1)[1]
+        success = False
         try:
-            # Fetch the replied message
-            replied_message = message.reply_to_message
+            chat = await bot.get_chat(target_id)
+            if chat.type == "channel":
+                await message.reply_to_message.copy(int(chat.id))
+                success = True
+            else:
+                success = False
 
-            # Forward the replied message to the support channel
-            await bot.forward_messages(chat_id=SUPPORT_CHANNEL, from_chat_id=message.chat.id, message_ids=replied_message.message_id)
-
-            # Send a success message to the user
-            await message.reply_text("<b>Your message has been successfully sent to the support channel.</b>")
+            if success:
+                await message.reply_text(f"<b>Your message has been successfully sent to channel {chat.title}.</b>")
+            else:
+                await message.reply_text("<b>An Error Occurred!</b>")
         except Exception as e:
             await message.reply_text(f"<b>Error: {e}</b>")
     else:
-        await message.reply_text("<b>Error: Please reply to a message to send to the support channel.</b>")
-
-
+        await message.reply_text("<b>Error: No message to send!</b>")
 
 
 @Client.on_message(filters.command('set_template'))
