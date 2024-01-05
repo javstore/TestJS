@@ -581,26 +581,27 @@ async def send_msg(bot, message):
     else:
         await message.reply_text("<b>Use this command as a reply to any message using the target chat id. For eg: /send userid</b>")
         
-target_id = None  # Initialize target_id globally
+target_id = None  # Initially set to None
 
-@Client.on_message(filters.command("set_target_ch") & filters.user(ADMINS))
-async def set_target_channel(bot, message):
-    global target_id  # Access the global variable
-    if message.reply_to_message:
-        try:
-            target_id = int(message.text.split(" ", 1)[1])  # Extract ID from command
-            chat = await bot.get_chat(target_id)  # Check if the channel exists
-            await message.reply_text(f"Target channel set to: <code>{chat.id}</code>")
-        except Exception as e:
-            await message.reply_text(f"Error: {e}")
-            target_id = None  # Reset if an error occurs
-    else:
-        await message.reply_text("<b>Error: Please reply to a message from the target channel to set it.</b>")
+@Client.on_message(filters.command("set_target") & filters.user(ADMINS))
+async def set_target_id(bot, message):
+    global target_id
+    try:
+        if len(message.command) == 2:
+            target_id = int(message.command[1])
+            await message.reply_text(f"<b>Target ID has been set to {target_id}</b>")
+        else:
+            await message.reply_text("<b>Error: Invalid command format!</b>")
+    except ValueError:
+        await message.reply_text("<b>Error: Invalid ID format!</b>")
 
 @Client.on_message(filters.command("csend") & filters.user(ADMINS))
 async def send_channelmsg(bot, message):
-    global target_id  # Access the global variable
-    if message.reply_to_message and target_id:
+    global target_id
+    if message.reply_to_message:
+        if target_id is None:
+            await message.reply_text("<b>Error: Target ID not set! Use /set_target {target_id}</b>")
+            return
         try:
             chat = await bot.get_chat(target_id)
             await message.reply_to_message.copy(int(chat.id))
@@ -608,7 +609,7 @@ async def send_channelmsg(bot, message):
         except Exception as e:
             await message.reply_text(f"<b>Error :- <code>{e}</code></b>")
     else:
-        await message.reply_text("<b>Error: Please set a target channel using /set_target_ch or reply to a message from the target channel.</b>")
+        await message.reply_text("<b>Error: Command Incomplete!</b>")
 
 
 @Client.on_message(filters.command('set_template'))
