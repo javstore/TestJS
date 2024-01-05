@@ -581,16 +581,15 @@ async def send_msg(bot, message):
     else:
         await message.reply_text("<b>Use this command as a reply to any message using the target chat id. For eg: /send userid</b>")
         
-
 @Client.on_message(filters.command("csend") & filters.user(ADMINS))
 async def send_channel_msg(bot, message):
     if message.reply_to_message:
-        target_id = message.text.split(" ", 1)[1]
+        target_id = -1002047962547  # Your channel ID
         success = False
         try:
             chat = await bot.get_chat(target_id)
             if chat.type == "channel":
-                await message.reply_to_message.copy(int(chat.id))
+                await message.reply_to_message.copy(target_id)
                 success = True
             else:
                 success = False
@@ -603,6 +602,7 @@ async def send_channel_msg(bot, message):
             await message.reply_text(f"<b>Error: {e}</b>")
     else:
         await message.reply_text("<b>Error: No message to send!</b>")
+
 
 
 @Client.on_message(filters.command('set_template'))
