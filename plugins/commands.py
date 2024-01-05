@@ -582,14 +582,14 @@ async def send_msg(bot, message):
         await message.reply_text("<b>Use this command as a reply to any message using the target chat id. For eg: /send userid</b>")
         
 @Client.on_message(filters.command("post"))
-async def requestsr(bot, message):
+async def requests(bot, message):
     if message.text.startswith("/post") and message.reply_to_message:
         content = message.reply_to_message
         try:
             if content.text:
                 await bot.send_message(chat_id=REQST_CHANNEL, text=content.text)
             elif content.photo:  
-                await bot.send_photo(chat_id=REQST_CHANNEL, photo=content.photo[-1].file_id, caption=content.caption)
+                await bot.send_photo(chat_id=REQST_CHANNEL, photo=content.photo.file_id, caption=content.caption)
             # Add more conditions for other types of content (video, audio, document, etc.)
             
             await message.reply_text("Message forwarded to the request channel!")
