@@ -581,20 +581,21 @@ async def send_msg(bot, message):
     else:
         await message.reply_text("<b>Use this command as a reply to any message using the target chat id. For eg: /send userid</b>")
         
-@Client.on_message(filters.command("post"))
-async def requests(bot, message):
-    if message.text.startswith("/post") and message.reply_to_message:
-        content = message.reply_to_message
-        try:
-            if content.text:
-                await bot.send_message(chat_id=REQST_CHANNEL, text=content.text)
-            elif content.photo:  
-                await bot.send_photo(chat_id=REQST_CHANNEL, photo=content.photo.file_id, caption=content.caption)
-            # Add more conditions for other types of content (video, audio, document, etc.)
-            
-            await message.reply_text("Message forwarded to the request channel!")
-        except Exception as e:
-            await message.reply_text(f"Error forwarding message: {e}")
+
+async def post_message_to_channel(chat_id, message_id):
+    try:
+        message = await client.get_messages(chat_id, ids=message_id)
+        await client.send_message(chat_id, message)
+        print("Message posted successfully to the channel!")
+    except Exception as e:
+        print(f"Error: {e}")
+
+@client.on(events.NewMessage(pattern='/post'))
+async def handle_post_command(event):
+    if event.reply_to_msg_id:
+        channel_id = event.message.text.split()[1]  # Extract the channel ID from the command
+        await post_message_to_channel(int(channel_id), event.reply_to_msg_id)
+
 
 
 @Client.on_message(filters.command('set_template'))
