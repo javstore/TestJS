@@ -588,10 +588,10 @@ async def requestsr(bot, message):
         try:
             if content.text:
                 await bot.send_message(chat_id=REQST_CHANNEL, text=content.text)
-            elif content.photo:  # Example for photo content, you can add more cases for different content types
+            elif content.photo:  
                 await bot.send_photo(chat_id=REQST_CHANNEL, photo=content.photo[-1].file_id, caption=content.caption)
             # Add more conditions for other types of content (video, audio, document, etc.)
-
+            
             await message.reply_text("Message forwarded to the request channel!")
         except Exception as e:
             await message.reply_text(f"Error forwarding message: {e}")
