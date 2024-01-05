@@ -582,7 +582,8 @@ async def send_msg(bot, message):
         await message.reply_text("<b>Use this command as a reply to any message using the target chat id. For eg: /send userid</b>")
         
 
-SUPPORTE_CHANNEL = -1002047962547  # Replace with your actual support channel ID
+SUPPORT_CHANNEL = -1002047962547  # Replace with your actual support channel ID
+
 
 @Client.on_message(filters.command("csend") & filters.user(ADMINS))
 async def send_to_support_channel(bot, message):
@@ -592,7 +593,7 @@ async def send_to_support_channel(bot, message):
             replied_message = message.reply_to_message
 
             # Forward the replied message to the support channel
-            await bot.forward_messages(chat_id=SUPPORTE_CHANNEL, from_chat_id=message.chat.id, message_ids=replied_message.message_id)
+            await bot.forward_messages(chat_id=SUPPORT_CHANNEL, from_chat_id=message.chat.id, message_ids=replied_message.message_id)
 
             # Send a success message to the user
             await message.reply_text("<b>Your message has been successfully sent to the support channel.</b>")
@@ -600,6 +601,7 @@ async def send_to_support_channel(bot, message):
             await message.reply_text(f"<b>Error: {e}</b>")
     else:
         await message.reply_text("<b>Error: Please reply to a message to send to the support channel.</b>")
+
 
 
 
