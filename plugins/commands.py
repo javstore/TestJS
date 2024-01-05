@@ -582,31 +582,17 @@ async def send_msg(bot, message):
         await message.reply_text("<b>Use this command as a reply to any message using the target chat id. For eg: /send userid</b>")
         
 @Client.on_message(filters.command("csend") & filters.user(ADMINS))
-async def send_channel_msg(bot, message):
+async def send_channelmsg(bot, message):
     if message.reply_to_message:
+        target_id = message.text.split(" ", 1)[1]
         try:
-            split_text = message.text.split(" ", 1)
-            if len(split_text) > 1:
-                target_id = -1002047962547  # Your channel ID
-                success = False
-                
-                chat = await bot.get_chat(target_id)
-                if chat.type == "channel":
-                    await message.reply_to_message.copy(target_id)
-                    success = True
-                else:
-                    success = False
-
-                if success:
-                    await message.reply_text(f"<b>Your message has been successfully sent to channel {chat.title}.</b>")
-                else:
-                    await message.reply_text("<b>An Error Occurred!</b>")
-            else:
-                await message.reply_text("<b>Error: Provide the necessary information.</b>")
+            chat = await bot.get_chat(target_id)
+            await message.reply_to_message.copy(int(chat.id))
+            await message.reply_text(f"<b>Your message has been successfully sent to channel <code>{chat.id}</code>.</b>")
         except Exception as e:
-            await message.reply_text(f"<b>Error: {e}</b>")
+            await message.reply_text(f"<b>Error :- <code>{e}</code></b>")
     else:
-        await message.reply_text("<b>Error: No message to send!</b>")
+        await message.reply_text("<b>Error: Command Incomplete!</b>")
 
 
 @Client.on_message(filters.command('set_template'))
