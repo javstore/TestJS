@@ -584,7 +584,7 @@ async def send_msg(bot, message):
 @Client.on_message(filters.command("csend") & filters.user(ADMINS))
 async def send_channelmsg(bot, message):
     if message.reply_to_message:
-        target_id = message.text.split(" ", 1)[1]
+        target_id = -1002047962547  # Hardcoded channel ID
         try:
             chat = await bot.get_chat(target_id)
             await message.reply_to_message.copy(int(chat.id))
