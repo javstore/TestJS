@@ -5,6 +5,7 @@ from database.users_chats_db import db
 from info import ADMINS
 from utils import broadcast_messages, broadcast_messages_group
 import asyncio
+import logging
 
 
 @Client.on_message(filters.command("broadcast") & filters.user(ADMINS) & filters.reply)
@@ -49,7 +50,8 @@ async def verupikkals(bot, message):
     # Schedule message deletion after 5 minutes
     await asyncio.sleep(300)  # 5 minutes in seconds
     try:
-        await bot.delete_messages(chat_id=message.chat_id, message_ids=[message.id])
+        await bot.delete_messages(chat_id=message.chat.id, message_ids=[message.id])
+
     except Exception as e:
         logging.error(f"Failed to delete broadcast message: {e}")
 
