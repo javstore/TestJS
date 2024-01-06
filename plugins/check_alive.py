@@ -12,7 +12,7 @@ CMD = ["/", "."]
 @Client.on_message(filters.command("find", CMD))
 async def find_content(_, message):
     content_id = message.text.split()[1]  # Extracting content ID from the command
-    url = f"https://api.guest.com/keyword={content_id}"
+    url = f"https://api.dmm.com/affiliate/v3/ItemList?affiliate_id=dmmidofbot-990&api_id=bYga4ba5HUvnZzsvH30U&site=FANZA&keyword={content_id}"
     response = requests.get(url)
 
     if response.status_code == 200:
