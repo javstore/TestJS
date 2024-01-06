@@ -5,8 +5,50 @@ from pyrogram import Client, filters, enums
 from pyrogram.types import *
 from info import BOT_START_TIME, ADMINS, PICS
 from utils import humanbytes  
+import requests
 
 CMD = ["/", "."]
+
+@Client.on_message(filters.command("find", CMD))
+async def find_content(_, message):
+    content_id = message.text.split()[1]  # Extracting content ID from the command
+    url = f"https://api.guest.com/keyword={content_id}"
+    response = requests.get(url)
+
+    if response.status_code == 200:
+        data = response.json()
+        if 'result' in data and 'items' in data['result'] and len(data['result']['items']) > 0:
+            item = data['result']['items'][0]
+            items = data['result']['items'][1]
+
+            title = item['title']
+            product_id = items['maker_product']
+            image_url = item['imageURL']['large']
+            review = item['review']['average'] if 'review' in item else None
+            release_date = item['date'] if 'date' in item else None
+            genres = [genre['name'] for genre in item['iteminfo']['genre']] if 'genre' in item['iteminfo'] else None
+            genres_string = ', '.join(genres) if genres else None
+
+            item_info = item['iteminfo']
+            actress_names = [actress['name'] for actress in item_info['actress']] if 'actress' in item_info else None
+            series_name = item_info['series'][0]['name'] if 'series' in item_info else None
+            label_name = item_info['label'][0]['name'] if 'label' in item_info else None
+            director_name = item_info['director'][0]['name'] if 'director' in item_info else None
+
+            actress_info = "Actress: " + ", ".join(actress_names) if actress_names else "Actress: N/A"
+            series_info = f"Series: {series_name}" if series_name else "Series: N/A"
+            label_info = f"Label: {label_name}" if label_name else "Label: N/A"
+            director_info = f"Director: {director_name}" if director_name else "Director: N/A"
+
+            caption = f"Title: {title}\nProduct ID: {product_id}\nRating: {review if review else 'N/A'}\nRelease Date: {release_date}\nGenres: {genres_string if genres_string else 'No genre information available.'}\n{actress_info}\n{director_info}\n{series_info}\n{label_info}"
+
+            # Sending photo with caption
+            await message.reply_photo(image_url, caption=caption)
+        else:
+            await message.reply_text("No item information available for the given content ID.")
+    else:
+        await message.reply_text("Error: Unable to fetch data.")
+
 
 @Client.on_message(filters.command("alive", CMD))
 async def check_alive(client, message):
