@@ -17,13 +17,31 @@ async def find_content(_, message):
 
     if response.status_code == 200:
         data = response.json()
+        
+        # Extract Maker_Product
+        if 'result' in data and 'items' in data['result']:
+        if len(data['result']['items']) > 1:
+            itemz = data['result']['items'][1]
+            product_id = itemz.get('maker_product')
+        else:
+            item = data['result']['items'][0]
+            product_id = item.get('maker_product')
+    
+        # Extracting Image URL
+        if 'result' in data and 'items' in data['result']:
+        if len(data['result']['items']) > 1:
+            itemz = data['result']['items'][1]
+            image_url = itemz['imageURL']['large'] if 'imageURL' in itemz and 'large' in itemz['imageURL'] else None
+        else:
+            item = data['result']['items'][0]
+            image_url = item['imageURL']['large'] if 'imageURL' in item and 'large' in item['imageURL'] else None
+
+        # Extract Other Information
         if 'result' in data and 'items' in data['result'] and len(data['result']['items']) > 0:
             item = data['result']['items'][0]
             items = data['result']['items'][1]
 
             title = item['title']
-            product_id = items['maker_product']
-            image_url = item['imageURL']['large']
             review = item['review']['average'] if 'review' in item else None
             release_date = item['date'] if 'date' in item else None
             genres = [genre['name'] for genre in item['iteminfo']['genre']] if 'genre' in item['iteminfo'] else None
