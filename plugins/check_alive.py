@@ -12,54 +12,48 @@ CMD = ["/", "."]
 @Client.on_message(filters.command("find", CMD))
 async def find_content(_, message):
     content_id = message.text.split()[1]  # Extracting content ID from the command
-    url = f"https://api.dmm.com/affiliate/v3/ItemList?affiliate_id=dmmidofbot-990&api_id=bYga4ba5HUvnZzsvH30U&site=FANZA&keyword={content_id}"
-    response = requests.get(url)
+    url = f"https://api.javinfo.eu.org/jav/search?code={content_id}&provider=r18&includeActressUrl=true"
 
-    if response.status_code == 200:
+    try:
+        response = requests.get(url)
         data = response.json()
 
-        if 'result' in data and 'items' in data['result']:
-            if len(data['result']['items']) > 1:
-                itemz = data['result']['items'][1]
-                product_id = itemz.get('maker_product')
-                image_url = itemz['imageURL']['large'] if 'imageURL' in itemz and 'large' in itemz['imageURL'] else None
-            else:
-                item = data['result']['items'][0]
-                product_id = item.get('maker_product')
-                image_url = item['imageURL']['large'] if 'imageURL' in item and 'large' in item['imageURL'] else None
+        # Extracting information from the JSON structure
+        movie_id = data['id']
+        title = data['title']
 
-            if len(data['result']['items']) > 0:
-                item = data['result']['items'][0]
-                title = item['title']
-                review = item['review']['average'] if 'review' in item else None
-                release_date = item['date'] if 'date' in item else None
-                genres = [genre['name'] for genre in item['iteminfo']['genre']] if 'genre' in item['iteminfo'] else None
-                genres_string = ', '.join(genres) if genres else None
-
-                item_info = item['iteminfo']
-                actress_names = [actress['name'] for actress in item_info['actress']] if 'actress' in item_info else None
-                series_name = item_info['series'][0]['name'] if 'series' in item_info else None
-                label_name = item_info['label'][0]['name'] if 'label' in item_info else None
-                director_name = item_info['director'][0]['name'] if 'director' in item_info else None
-
-                actress_info = "Actress: " + ", ".join(actress_names) if actress_names else "Actress: N/A"
-                series_info = f"Series: {series_name}" if series_name else "Series: N/A"
-                label_info = f"Label: {label_name}" if label_name else "Label: N/A"
-                director_info = f"Director: {director_name}" if director_name else "Director: N/A"
-
-                caption = f"Title: {title}\nProduct ID: {product_id}\nRating: {review if review else 'N/A'}\nRelease Date: {release_date}\nGenres: {genres_string if genres_string else 'No genre information available.'}\n{actress_info}\n{director_info}\n{series_info}\n{label_info}\nImage URL: {image_url if image_url else 'N/A'}"
-
-                # Sending photo with caption
-                if image_url:
-                    await message.reply_photo(image_url, caption=caption)
-                else:
-                    await message.reply_text("No image available for the given content ID.")
-            else:
-                await message.reply_text("No item information available for the given content ID.")
+        # Checking if 'details' exist and handling 'director' field
+        if 'details' in data:
+            details = data['details']
+            director = details['director'] if 'director' in details and details['director'] is not None else 'N/A'
+            release_date = details['release_date'] if 'release_date' in details else 'N/A'
+            runtime = details['runtime'] if 'runtime' in details else 'N/A'
+            studio = details['studio'] if 'studio' in details else 'N/A'
         else:
-            await message.reply_text("No item information available for the given content ID.")
-    else:
-        await message.reply_text("Error: Unable to fetch data.")
+            director = 'N/A'
+            release_date = 'N/A'
+            runtime = 'N/A'
+            studio = 'N/A'
+
+        # Handling different cases for actresses or no actress information
+        if 'actress' in data:
+            if isinstance(data['actress'], list) and len(data['actress']) > 0:
+                actresses = [actress['name'] for actress in data['actress']]
+            else:
+                actresses = ['N/A']
+        else:
+            actresses = ['N/A']
+
+        tags = data['tags']
+        screenshots = data['screenshots']
+        poster = data['poster']
+        preview = data['preview']
+
+        # Sending the poster as a photo and other information as caption
+        await message.reply_photo(poster, caption=f"Content ID: {movie_id}\nTitle: {title}\nRelease Date: {release_date}\nRuntime: {runtime}\nTags: {', '.join(tags)}\nStudio: {studio}\nActresses: {', '.join(actresses)}\nDirector: {director}\nScreenshots: {', '.join(screenshots)}\nPreview: {preview}")
+
+    except requests.RequestException as e:
+        await message.reply_text(f"Error fetching data: {e}")
 
 
 @Client.on_message(filters.command("alive", CMD))
