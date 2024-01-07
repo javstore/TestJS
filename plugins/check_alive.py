@@ -25,10 +25,10 @@ async def find_content(_, message):
         # Checking if 'details' exist and handling 'director' field
         if 'details' in data:
             details = data['details']
-            director = details['director'] if 'director' in details and details['director'] is not None else 'N/A'
-            release_date = details['release_date'] if 'release_date' in details else 'N/A'
-            runtime = details['runtime'] if 'runtime' in details else 'N/A'
-            studio = details['studio'] if 'studio' in details else 'N/A'
+            director = details.get('director', 'N/A')
+            release_date = details.get('release_date', 'N/A')
+            runtime = details.get('runtime', 'N/A')
+            studio = details.get('studio', 'N/A')
         else:
             director = 'N/A'
             release_date = 'N/A'
@@ -36,13 +36,7 @@ async def find_content(_, message):
             studio = 'N/A'
 
         # Handling different cases for actresses or no actress information
-        if 'actress' in data:
-            if isinstance(data['actress'], list) and len(data['actress']) > 0:
-                actresses = [actress['name'] for actress in data['actress']]
-            else:
-                actresses = ['N/A']
-        else:
-            actresses = ['N/A']
+        actresses = data.get('actress', ['N/A']) if isinstance(data.get('actress'), list) else ['N/A']
 
         tags = data['tags']
         screenshots = data['screenshots']
@@ -50,7 +44,7 @@ async def find_content(_, message):
         preview = data['preview']
 
         # Sending the poster as a photo and other information as caption
-        await message.reply_photo(poster, caption=f"Content ID: {movie_id}\nTitle: {title}\nRelease Date: {release_date}\nRuntime: {runtime}\nTags: {', '.join(tags)}\nStudio: {studio}\nActresses: {', '.join(actresses)}\nDirector: {director}\nScreenshots: {', '.join(screenshots)}\nPreview: {preview}")
+        await message.reply_photo(poster, caption=f"Content ID: {movie_id}\nTitle: {title}\nRelease Date: {release_date}\nRuntime: {runtime}\nTags: {', '.join(tags)}\nStudio: {studio}\nActresses: {', '.join(actresses)}\nDirector: {director}\n\n⚠️ JAV STORE")
 
     except requests.RequestException as e:
         await message.reply_text(f"Error fetching data: {e}")
