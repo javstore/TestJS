@@ -19,19 +19,19 @@ async def find_content(_, message):
         data = response.json()
         
     # Extract Maker_Product
-    if 'result' in data and 'items' in data['result']:
-        if len(data['result']['items']) > 1:
+        if 'result' in data and 'items' in data['result']:
+            if len(data['result']['items']) > 1:
             itemz = data['result']['items'][1]
             product_id = itemz.get('maker_product')
         else:
             item = data['result']['items'][0]
             product_id = item.get('maker_product')
     
-        # Extracting Image URL
+    # Extracting Image URL
         if 'result' in data and 'items' in data['result']:
-        if len(data['result']['items']) > 1:
-            itemz = data['result']['items'][1]
-            image_url = itemz['imageURL']['large'] if 'imageURL' in itemz and 'large' in itemz['imageURL'] else None
+            if len(data['result']['items']) > 1:
+                itemz = data['result']['items'][1]
+                image_url = itemz['imageURL']['large'] if 'imageURL' in itemz and 'large' in itemz['imageURL'] else None
         else:
             item = data['result']['items'][0]
             image_url = item['imageURL']['large'] if 'imageURL' in item and 'large' in item['imageURL'] else None
