@@ -39,8 +39,6 @@ async def find_content(_, message):
         # Extract Other Information
         if 'result' in data and 'items' in data['result'] and len(data['result']['items']) > 0:
             item = data['result']['items'][0]
-            items = data['result']['items'][1]
-
             title = item['title']
             review = item['review']['average'] if 'review' in item else None
             release_date = item['date'] if 'date' in item else None
