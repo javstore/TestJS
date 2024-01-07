@@ -26,14 +26,13 @@ async def find_content(_, message):
         runtime = details.get('runtime', 'N/A')
         studio = details.get('studio', 'N/A')
 
-        actresses = [actress['name'] for actress in data.get('actress', ['N/A'])] if isinstance(data.get('actress'), list) else ['N/A']
-
+        actresses = [actress['name'] for actress in data['actress']]
         tags = data.get('tags', [])
         screenshots = data.get('screenshots', [])
         poster = data.get('poster', 'N/A')
         preview = data.get('preview', 'N/A')
 
-        caption = f"Content ID: {movie_id}\nTitle: {title}\nRelease Date: {release_date}\nRuntime: {runtime}\nTags: {', '.join(tags)}\nStudio: {studio}\nActresses: {', '.join(actresses)}\nDirector: {director}\nScreenshots: {', '.join(screenshots)}\nPreview: {preview}"
+        caption = f"Content ID: {movie_id}\nTitle: {title}\nRelease Date: {release_date}\nRuntime: {runtime}\nTags: {', '.join(tags)}\nStudio: {studio}\nActresses: {', '.join(actresses)}\nDirector: {director}"
 
         # Sending photo with caption
         if poster != 'N/A':
