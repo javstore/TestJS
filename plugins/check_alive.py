@@ -18,8 +18,8 @@ async def find_content(_, message):
     if response.status_code == 200:
         data = response.json()
         
-        # Extract Maker_Product
-        if 'result' in data and 'items' in data['result']:
+    # Extract Maker_Product
+    if 'result' in data and 'items' in data['result']:
         if len(data['result']['items']) > 1:
             itemz = data['result']['items'][1]
             product_id = itemz.get('maker_product')
