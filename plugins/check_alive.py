@@ -17,49 +17,45 @@ async def find_content(_, message):
 
     if response.status_code == 200:
         data = response.json()
-        
-    # Extract Maker_Product
-        if 'result' in data and 'items' in data['result']:
-            if len(data['result']['items']) > 1:
-            itemz = data['result']['items'][1]
-            product_id = itemz.get('maker_product')
-        else:
-            item = data['result']['items'][0]
-            product_id = item.get('maker_product')
-    
-    # Extracting Image URL
+
         if 'result' in data and 'items' in data['result']:
             if len(data['result']['items']) > 1:
                 itemz = data['result']['items'][1]
+                product_id = itemz.get('maker_product')
                 image_url = itemz['imageURL']['large'] if 'imageURL' in itemz and 'large' in itemz['imageURL'] else None
-        else:
-            item = data['result']['items'][0]
-            image_url = item['imageURL']['large'] if 'imageURL' in item and 'large' in item['imageURL'] else None
+            else:
+                item = data['result']['items'][0]
+                product_id = item.get('maker_product')
+                image_url = item['imageURL']['large'] if 'imageURL' in item and 'large' in item['imageURL'] else None
 
-        # Extract Other Information
-        if 'result' in data and 'items' in data['result'] and len(data['result']['items']) > 0:
-            item = data['result']['items'][0]
-            title = item['title']
-            review = item['review']['average'] if 'review' in item else None
-            release_date = item['date'] if 'date' in item else None
-            genres = [genre['name'] for genre in item['iteminfo']['genre']] if 'genre' in item['iteminfo'] else None
-            genres_string = ', '.join(genres) if genres else None
+            if len(data['result']['items']) > 0:
+                item = data['result']['items'][0]
+                title = item['title']
+                review = item['review']['average'] if 'review' in item else None
+                release_date = item['date'] if 'date' in item else None
+                genres = [genre['name'] for genre in item['iteminfo']['genre']] if 'genre' in item['iteminfo'] else None
+                genres_string = ', '.join(genres) if genres else None
 
-            item_info = item['iteminfo']
-            actress_names = [actress['name'] for actress in item_info['actress']] if 'actress' in item_info else None
-            series_name = item_info['series'][0]['name'] if 'series' in item_info else None
-            label_name = item_info['label'][0]['name'] if 'label' in item_info else None
-            director_name = item_info['director'][0]['name'] if 'director' in item_info else None
+                item_info = item['iteminfo']
+                actress_names = [actress['name'] for actress in item_info['actress']] if 'actress' in item_info else None
+                series_name = item_info['series'][0]['name'] if 'series' in item_info else None
+                label_name = item_info['label'][0]['name'] if 'label' in item_info else None
+                director_name = item_info['director'][0]['name'] if 'director' in item_info else None
 
-            actress_info = "Actress: " + ", ".join(actress_names) if actress_names else "Actress: N/A"
-            series_info = f"Series: {series_name}" if series_name else "Series: N/A"
-            label_info = f"Label: {label_name}" if label_name else "Label: N/A"
-            director_info = f"Director: {director_name}" if director_name else "Director: N/A"
+                actress_info = "Actress: " + ", ".join(actress_names) if actress_names else "Actress: N/A"
+                series_info = f"Series: {series_name}" if series_name else "Series: N/A"
+                label_info = f"Label: {label_name}" if label_name else "Label: N/A"
+                director_info = f"Director: {director_name}" if director_name else "Director: N/A"
 
-            caption = f"Title: {title}\nProduct ID: {product_id}\nRating: {review if review else 'N/A'}\nRelease Date: {release_date}\nGenres: {genres_string if genres_string else 'No genre information available.'}\n{actress_info}\n{director_info}\n{series_info}\n{label_info}"
+                caption = f"Title: {title}\nProduct ID: {product_id}\nRating: {review if review else 'N/A'}\nRelease Date: {release_date}\nGenres: {genres_string if genres_string else 'No genre information available.'}\n{actress_info}\n{director_info}\n{series_info}\n{label_info}\nImage URL: {image_url if image_url else 'N/A'}"
 
-            # Sending photo with caption
-            await message.reply_photo(image_url, caption=caption)
+                # Sending photo with caption
+                if image_url:
+                    await message.reply_photo(image_url, caption=caption)
+                else:
+                    await message.reply_text("No image available for the given content ID.")
+            else:
+                await message.reply_text("No item information available for the given content ID.")
         else:
             await message.reply_text("No item information available for the given content ID.")
     else:
