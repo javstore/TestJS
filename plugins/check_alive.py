@@ -18,36 +18,32 @@ async def find_content(_, message):
         response = requests.get(url)
         data = response.json()
 
-        # Extracting information from the JSON structure
-        movie_id = data['id']
-        title = data['title']
+        details = data.get('details', {})
+        movie_id = data.get('id', 'N/A')
+        title = data.get('title', 'N/A')
+        director = details.get('director', 'N/A')
+        release_date = details.get('release_date', 'N/A')
+        runtime = details.get('runtime', 'N/A')
+        studio = details.get('studio', 'N/A')
 
-        # Checking if 'details' exist and handling 'director' field
-        if 'details' in data:
-            details = data['details']
-            director = details.get('director', 'N/A')
-            release_date = details.get('release_date', 'N/A')
-            runtime = details.get('runtime', 'N/A')
-            studio = details.get('studio', 'N/A')
+        actresses = [actress['name'] for actress in data.get('actress', ['N/A'])] if isinstance(data.get('actress'), list) else ['N/A']
+
+        tags = data.get('tags', [])
+        screenshots = data.get('screenshots', [])
+        poster = data.get('poster', 'N/A')
+        preview = data.get('preview', 'N/A')
+
+        caption = f"Content ID: {movie_id}\nTitle: {title}\nRelease Date: {release_date}\nRuntime: {runtime}\nTags: {', '.join(tags)}\nStudio: {studio}\nActresses: {', '.join(actresses)}\nDirector: {director}\nScreenshots: {', '.join(screenshots)}\nPreview: {preview}"
+
+        # Sending photo with caption
+        if poster != 'N/A':
+            await message.reply_photo(poster, caption=caption)
         else:
-            director = 'N/A'
-            release_date = 'N/A'
-            runtime = 'N/A'
-            studio = 'N/A'
-
-        # Handling different cases for actresses or no actress information
-        actresses = data.get('actress', ['N/A']) if isinstance(data.get('actress'), list) else ['N/A']
-
-        tags = data['tags']
-        screenshots = data['screenshots']
-        poster = data['poster']
-        preview = data['preview']
-
-        # Sending the poster as a photo and other information as caption
-        await message.reply_photo(poster, caption=f"Content ID: {movie_id}\nTitle: {title}\nRelease Date: {release_date}\nRuntime: {runtime}\nTags: {', '.join(tags)}\nStudio: {studio}\nActresses: {', '.join(actresses)}\nDirector: {director}\n\n⚠️ JAV STORE")
+            await message.reply_text("No poster available for the given content ID.")
 
     except requests.RequestException as e:
         await message.reply_text(f"Error fetching data: {e}")
+
 
 
 @Client.on_message(filters.command("alive", CMD))
