@@ -3,7 +3,7 @@ from Script import script
 import re, asyncio, time, shutil, psutil, os, sys
 from pyrogram import Client, filters, enums
 from pyrogram.types import *
-from info import BOT_START_TIME, ADMINS, PICS, AV_TXT
+from info import BOT_START_TIME, ADMINS, PICS
 from utils import humanbytes  
 import requests
 
@@ -43,7 +43,7 @@ async def av_command(_, message):
 
                 # Send the poster as a photo
                 
-                await message.reply_photo(photo=poster, caption=f"AV_TXT")
+                await message.reply_photo(photo=poster, caption=f"𝖳𝗂𝗍𝗅𝖾: {title}\n𝖢𝗈𝗇𝗍𝖾𝗇𝗍 𝖨𝖣: {content_id}\n𝖳𝖺𝗀𝗌: {tags}\n𝖱𝖾𝗅𝖾𝖺𝗌𝖾 𝖣𝖺𝗍𝖾: {release_date}\n𝖱𝗎𝗇𝗍𝗂𝗆𝖾: {runtime} Minutes\n𝖠𝖼𝗍𝗋𝖾𝗌𝗌𝖾𝗌: {actresses}\n𝖣𝗂𝗋𝖾𝖼𝗍𝗈𝗋: {director}\n𝖲𝖾𝗋𝗂𝖾𝗌: {series_name_en}/n𝖲𝗍𝗎𝖽𝗂𝗈: {studio}/n/n⚠️ 𝗂𝖭𝖥𝖮 𝖻𝗒 𝖩𝖠𝖵 𝖲𝖳𝖮𝖱𝖤")
             else:
                 await message.reply_text("No content ID found for the provided DVD ID")
 
