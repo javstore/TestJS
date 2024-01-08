@@ -78,17 +78,7 @@ FILE_STORE_CHANNEL = [int(ch) for ch in (environ.get('FILE_STORE_CHANNEL', '-100
 MELCOW_NEW_USERS = is_enabled((environ.get('MELCOW_NEW_USERS', "True")), True)
 PROTECT_CONTENT = is_enabled((environ.get('PROTECT_CONTENT', "False")), False)
 PUBLIC_FILE_STORE = is_enabled((environ.get('PUBLIC_FILE_STORE', "False")), False)
-AV_TXT = environ.get("AV_TXT","""𝖳𝗂𝗍𝗅𝖾: {title}
-𝖢𝗈𝗇𝗍𝖾𝗇𝗍 𝖨𝖣: {content_id}
-𝖳𝖺𝗀𝗌: {tags}
-𝖱𝖾𝗅𝖾𝖺𝗌𝖾 𝖣𝖺𝗍𝖾: {release_date}
-𝖱𝗎𝗇𝗍𝗂𝗆𝖾: {runtime} Minutes
-𝖠𝖼𝗍𝗋𝖾𝗌𝗌𝖾𝗌: {actresses}
-𝖣𝗂𝗋𝖾𝖼𝗍𝗈𝗋: {director}
-𝖲𝖾𝗋𝗂𝖾𝗌: {series_name_en}
-𝖲𝗍𝗎𝖽𝗂𝗈: {studio}
 
-⚠️ 𝗂𝖭𝖥𝖮 𝖻𝗒 𝖩𝖠𝖵 𝖲𝖳𝖮𝖱𝖤""")
 
 LOG_STR = "Current Cusomized Configurations are:-\n"
 LOG_STR += ("IMDB Results are enabled, Bot will be showing imdb details for you queries.\n" if IMDB else "IMBD Results are disabled.\n")
