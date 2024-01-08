@@ -39,7 +39,7 @@ async def av_command(_, message):
                 tags = ', '.join([category['name_en'] for category in combined_data['categories']]) if 'categories' in combined_data else 'N/A'
 
                 # Send the poster as a photo
-                await message.reply_photo(photo=poster, caption=f"Title: {title}\nRelease Date: {release_date}\nRuntime: {runtime} Minutes\nStudio: {studio}\nDirector: {director}\nActresses: {actresses}\nSeries: {series_name_en}\nTags: {tags}")
+                await message.reply_photo(photo=poster, caption=f"𝖳𝗂𝗍𝗅𝖾: {title}\n𝖢𝗈𝗇𝗍𝖾𝗇𝗍 𝖨𝖣: {content_id}\n𝖦𝖾𝗇𝗋𝖾: {tags}\n𝖱𝖾𝗅𝖾𝖺𝗌𝖾 𝖣𝖺𝗍𝖾: {release_date}\n𝖱𝗎𝗇𝗍𝗂𝗆𝖾: {runtime} Minutes\n𝖠𝖼𝗍𝗋𝖾𝗌𝗌: {actresses}\n𝖣𝗂𝗋𝖾𝖼𝗍𝗈𝗋: {director}\n𝖲𝖾𝗋𝗂𝖾𝗌: {series_name_en}\n𝖲𝗍𝗎𝖽𝗂𝗈: {studio}\n")
             else:
                 await message.reply_text("No content ID found for the provided DVD ID")
 
