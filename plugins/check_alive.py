@@ -9,6 +9,44 @@ import requests
 
 CMD = ["/", "."]
 
+@Client.on_message(filters.command("av", CMD))
+async def av_command(_, message):
+    command = message.text.split(maxsplit=1)
+    if len(command) == 2:
+        dvd_id = command[1]
+        
+        url = f'https://r18.dev/videos/vod/movies/detail/-/dvd_id={dvd_id}/json'
+
+        try:
+            response = requests.get(url)
+            data = response.json()
+            
+            if 'content_id' in data:
+                content_id = data['content_id']
+                combined_url = f"https://r18.dev/videos/vod/movies/detail/-/combined={content_id}/json"
+                combined_response = requests.get(combined_url)
+                combined_data = combined_response.json()
+
+                # Extracting information from the JSON structure
+                title = combined_data['title_en']
+                poster = combined_data['jacket_full_url']
+                release_date = combined_data['release_date']
+                runtime = combined_data['runtime_mins']
+                studio = combined_data['maker_name_en']
+                director = combined_data['directors'][0]['name_romaji'] if 'directors' in combined_data and len(combined_data['directors']) > 0 else 'N/A'
+                actresses = ', '.join([actress['name_romaji'] for actress in combined_data['actresses']]) if 'actresses' in combined_data and len(combined_data['actresses']) > 0 else 'N/A'
+                series_name_en = combined_data['series_name_en'] if 'series_name_en' in combined_data else 'N/A'
+                tags = ', '.join([category['name_en'] for category in combined_data['categories']]) if 'categories' in combined_data else 'N/A'
+
+                # Send the poster as a photo
+                await message.reply_photo(photo=poster, caption=f"Title: {title}\nRelease Date: {release_date}\nRuntime: {runtime} Minutes\nStudio: {studio}\nDirector: {director}\nActresses: {actresses}\nSeries: {series_name_en}\nTags: {tags}")
+            else:
+                await message.reply_text("No content ID found for the provided DVD ID")
+
+        except requests.RequestException as e:
+            await message.reply_text(f"Error fetching data: {e}")
+    else:
+        await message.reply_text("Please provide a valid DVD ID after the command.")
 
 
 @Client.on_message(filters.command("alive", CMD))
