@@ -43,7 +43,7 @@ async def av_command(_, message):
 
                 # Send the poster as a photo
                 
-                await message.reply_photo(photo=poster, caption=AV_TXT)
+                await message.reply_photo(photo=poster, caption=f"AV_TXT")
             else:
                 await message.reply_text("No content ID found for the provided DVD ID")
 
