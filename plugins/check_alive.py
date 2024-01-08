@@ -11,12 +11,12 @@ CMD = ["/", "."]
 
 @Client.on_message(filters.command("av", CMD))
 async def av_command(_, message):
-    # Get the DVD ID from the command
+    
     command = message.text.split(maxsplit=1)
     if len(command) == 2:
         dvd_id = command[1]
         
-        # Construct the URL using the DVD ID
+        
         url = f'https://r18.dev/videos/vod/movies/detail/-/dvd_id={dvd_id}/json'
 
         try:
@@ -42,7 +42,7 @@ async def av_command(_, message):
                 tags = ', '.join([category['name_en'] for category in combined_data['categories']]) if 'categories' in combined_data else 'N/A'
 
                 # Send the poster as a photo
-                await message.reply_photo(photo=poster, caption=f"Title: {title}\nRelease Date: {release_date}\nRuntime: {runtime} Minutes\nStudio: {studio}\nDirector: {director}\nActresses: {actresses}\nSeries: {series_name_en}\nTags: {tags}")
+                await message.reply_photo(photo=poster, caption=script.AV_TXT)
             else:
                 await message.reply_text("No content ID found for the provided DVD ID")
 
