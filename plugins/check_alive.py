@@ -9,39 +9,47 @@ import requests
 
 CMD = ["/", "."]
 
-@Client.on_message(filters.command("find", CMD))
-async def find_content(_, message):
-    content_id = message.text.split()[1]  # Extracting content ID from the command
-    url = f"https://api.javinfo.eu.org/jav/search?code={content_id}&provider=r18&includeActressUrl=true"
+@Client.on_message(filters.command("av", CMD))
+async def av_command(_, message):
+    # Get the DVD ID from the command
+    command = message.text.split(maxsplit=1)
+    if len(command) == 2:
+        dvd_id = command[1]
+        
+        # Construct the URL using the DVD ID
+        url = f'https://r18.dev/videos/vod/movies/detail/-/dvd_id={dvd_id}/json'
 
-    try:
-        response = requests.get(url)
-        data = response.json()
+        try:
+            response = requests.get(url)
+            data = response.json()
 
-        details = data.get('details', {})
-        movie_id = data.get('id', 'N/A')
-        title = data.get('title', 'N/A')
-        director = details.get('director', 'N/A')
-        release_date = details.get('release_date', 'N/A')
-        runtime = details.get('runtime', 'N/A')
-        studio = details.get('studio', 'N/A')
+            # Proceed only if content_id is available
+            if 'content_id' in data:
+                content_id = data['content_id']
+                combined_url = f"https://r18.dev/videos/vod/movies/detail/-/combined={content_id}/json"
+                combined_response = requests.get(combined_url)
+                combined_data = combined_response.json()
 
-        actresses = [actress['name'] for actress in data['actress']]
-        tags = data.get('tags', [])
-        screenshots = data.get('screenshots', [])
-        poster = data.get('poster', 'N/A')
-        preview = data.get('preview', 'N/A')
+                # Extracting information from the JSON structure
+                title = combined_data['title_en']
+                poster = combined_data['jacket_full_url']
+                release_date = combined_data['release_date']
+                runtime = combined_data['runtime_mins']
+                studio = combined_data['maker_name_en']
+                director = combined_data['directors'][0]['name_romaji'] if 'directors' in combined_data and len(combined_data['directors']) > 0 else 'N/A'
+                actresses = ', '.join([actress['name_romaji'] for actress in combined_data['actresses']]) if 'actresses' in combined_data and len(combined_data['actresses']) > 0 else 'N/A'
+                series_name_en = combined_data['series_name_en'] if 'series_name_en' in combined_data else 'N/A'
+                tags = ', '.join([category['name_en'] for category in combined_data['categories']]) if 'categories' in combined_data else 'N/A'
 
-        caption = f"Content ID: {movie_id}\nTitle: {title}\nRelease Date: {release_date}\nRuntime: {runtime}\nTags: {', '.join(tags)}\nStudio: {studio}\nActresses: {', '.join(actresses)}\nDirector: {director}"
+                # Send the poster as a photo
+                await message.reply_photo(photo=poster, caption=f"Title: {title}\nRelease Date: {release_date}\nRuntime: {runtime} Minutes\nStudio: {studio}\nDirector: {director}\nActresses: {actresses}\nSeries: {series_name_en}\nTags: {tags}")
+            else:
+                await message.reply_text("No content ID found for the provided DVD ID")
 
-        # Sending photo with caption
-        if poster != 'N/A':
-            await message.reply_photo(poster, caption=caption)
-        else:
-            await message.reply_text("No poster available for the given content ID.")
-
-    except requests.RequestException as e:
-        await message.reply_text(f"Error fetching data: {e}")
+        except requests.RequestException as e:
+            await message.reply_text(f"Error fetching data: {e}")
+    else:
+        await message.reply_text("Please provide a valid DVD ID after the command.")
 
 
 
