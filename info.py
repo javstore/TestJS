@@ -78,7 +78,7 @@ FILE_STORE_CHANNEL = [int(ch) for ch in (environ.get('FILE_STORE_CHANNEL', '-100
 MELCOW_NEW_USERS = is_enabled((environ.get('MELCOW_NEW_USERS', "True")), True)
 PROTECT_CONTENT = is_enabled((environ.get('PROTECT_CONTENT', "False")), False)
 PUBLIC_FILE_STORE = is_enabled((environ.get('PUBLIC_FILE_STORE', "False")), False)
-AV_TXT = environ.get("AV_TXT","""𝖳𝗂𝗍𝗅𝖾: {title}
+AV_TXT = environ.get("AV_TXT",f"""𝖳𝗂𝗍𝗅𝖾: {title}
 𝖢𝗈𝗇𝗍𝖾𝗇𝗍 𝖨𝖣: {content_id}
 𝖳𝖺𝗀𝗌: {tags}
 𝖱𝖾𝗅𝖾𝖺𝗌𝖾 𝖣𝖺𝗍𝖾: {release_date}
