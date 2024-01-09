@@ -9,7 +9,7 @@ from html_telegraph_poster import TelegraphPoster
 import requests
 
 
-def post_to_telegraph(image_urls):
+def post_to_telegraph(image_urls, dvd):
     t = TelegraphPoster(use_api=True)
     t.create_api_token('JAV STORE')
 
