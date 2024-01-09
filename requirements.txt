@@ -5,6 +5,7 @@ motor==2.5.1
 marshmallow==3.14.1
 umongo==3.0.1
 requests
+html-telegraph-poster==0.5.0
 bs4
 git+https://github.com/Joelkb/cinemagoer
 datetime
