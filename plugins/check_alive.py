@@ -19,7 +19,7 @@ def post_to_telegraph(image_urls):
         text_content += f'<img src="{url}">'
 
     # Post to Telegra.ph
-    telegraph_post = t.post(title=f'Screenshots of {dvd_id}', author='JAV STORE', text=text_content)
+    telegraph_post = t.post(title=f'Screenshots of {dvd}', author='JAV STORE', text=text_content)
     return telegraph_post['url']
 
 CMD = ["/", "."]
