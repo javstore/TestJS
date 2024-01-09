@@ -4,10 +4,10 @@ import re, asyncio, time, shutil, psutil, os, sys
 from pyrogram import Client, filters, enums
 from pyrogram.types import *
 from info import BOT_START_TIME, ADMINS, PICS
-from utils import humanbytes  
+from utils import humanbytes
+from html_telegraph_poster import TelegraphPoster
 import requests
 
-CMD = ["/", "."]
 
 def post_to_telegraph(image_urls):
     t = TelegraphPoster(use_api=True)
@@ -22,6 +22,7 @@ def post_to_telegraph(image_urls):
     telegraph_post = t.post(title=f'Screenshots of {dvd_id}', author='JAV STORE', text=text_content)
     return telegraph_post['url']
 
+CMD = ["/", "."]
 
 @Client.on_message(filters.command("av", CMD))
 async def av_command(_, message):
