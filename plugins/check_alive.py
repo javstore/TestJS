@@ -44,6 +44,7 @@ async def av_command(_, message):
                 combined_data = combined_response.json()
 
                 # Extracting information from the JSON structure
+                page = f"https://r18.dev/videos/vod/movies/detail/-/id={content_id}"
                 dvd = combined_data['dvd_id']
                 title = combined_data['title_en']
                 preview = combined_data['sample_url']
@@ -72,9 +73,15 @@ async def av_command(_, message):
                         InlineKeyboardButton('𝖯𝗋𝖾𝗏𝗂𝖾𝗐', url=f"{preview}"),
                         InlineKeyboardButton('𝖲𝖼𝗋𝖾𝖾𝗇𝗌𝗁𝗈𝗍𝗌', url=f"{telegraph_url}")
                     ])
+                    buttons.append([
+                        InlineKeyboardButton('𝖵𝗂𝖾𝗐', url=f"{page}")
+                    ])
                 else:
                     buttons.append([
                         InlineKeyboardButton('𝖲𝖼𝗋𝖾𝖾𝗇𝗌𝗁𝗈𝗍𝗌', url=f"{telegraph_url}")
+                    ])
+                    buttons.append([
+                        InlineKeyboardButton('𝖵𝗂𝖾𝗐', url=f"{page}")
                     ])
 
                 reply_markup = InlineKeyboardMarkup(buttons)
