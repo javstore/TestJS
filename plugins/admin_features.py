@@ -64,7 +64,7 @@ async def av_command(_, message):
                 director = combined_data['directors'][0]['name_romaji'] if 'directors' in combined_data and len(combined_data['directors']) > 0 else 'N/A'
                 actresses = ', '.join([actress['name_romaji'] for actress in combined_data['actresses']]) if 'actresses' in combined_data and len(combined_data['actresses']) > 0 else 'N/A'
                 series_name_en = combined_data['series_name_en'] if 'series_name_en' in combined_data else 'N/A'
-                tags = ', '.join([category['name_en'] for category in combined_data['categories']]) if 'categories' in combined_data else 'N/A'
+                tags = ', '.join([f"#{category['name_en']}" for category in combined_data['categories']]) if 'categories' in combined_data else 'N/A'
                 screenshots = [image['image_full'] for image in combined_data['gallery']] if 'gallery' in combined_data else []
                 # Loop through the screenshots and modify the URLs
                 for i, screenshot in enumerate(screenshots):
@@ -98,17 +98,17 @@ async def av_command(_, message):
 
                 caption=f"""{dvd} | {title}
                 
-                <b>𝖣ᴠᴅ ɪᴅ:</b> {dvd}
-                <b>𝖦ᴇɴʀᴇ:</b> {tags}
-                <b>𝖱ᴇʟᴇᴀꜱᴇ 𝖣ᴀᴛᴇ:</b> {release_date}
-                <b>𝖱ᴜɴᴛɪᴍᴇ:</b> {runtime} Minutes
-                <b>𝖠ᴄᴛʀᴇꜱꜱ:</b> {actresses}
-                <b>𝖣ɪʀᴇᴄᴛᴏʀ:</b> {director}
-                <b>𝖲ᴇʀɪᴇꜱ:</b> {series_name_en}
-                <b>𝖲ᴛᴜᴅɪᴏ:</b> {studio}
+<b>𝖣ᴠᴅ ɪᴅ:</b> {dvd}
+<b>𝖦ᴇɴʀᴇ:</b> {tags}
+<b>𝖱ᴇʟᴇᴀꜱᴇ 𝖣ᴀᴛᴇ:</b> {release_date}
+<b>𝖱ᴜɴᴛɪᴍᴇ:</b> {runtime} Minutes
+<b>𝖠ᴄᴛʀᴇꜱꜱ:</b> {actresses}
+<b>𝖣ɪʀᴇᴄᴛᴏʀ:</b> {director}
+<b>𝖲ᴇʀɪᴇꜱ:</b> {series_name_en}
+<b>𝖲ᴛᴜᴅɪᴏ:</b> {studio}
                 
-                <b>⚠️ ɪɴꜰᴏ ʙʏ Jᴀᴠ Sᴛᴏʀᴇ</b>
-                """
+<b>⚠️ ɪɴꜰᴏ ʙʏ Jᴀᴠ Sᴛᴏʀᴇ</b>
+"""
 
                 # Send the photo with caption and inline button              
                 await message.reply_photo(photo=poster, caption=caption, reply_markup=reply_markup, parse_mode=enums.ParseMode.HTML)
