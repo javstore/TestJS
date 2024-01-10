@@ -67,12 +67,12 @@ async def av_command(_, message):
                 # Send the poster as a photo
                 # Create inline buttons
                 inline_buttons = InlineKeyboardMarkup(
-                    [
+                    [[
                         [
                             InlineKeyboardButton("Preview", url=f'https://t.me'),
                             InlineKeyboardButton("Screenshots", url=f'https://t.me'),
                         ]
-                    ]
+                    ]]
                 )
 
                 # Send the photo with caption and inline buttons
