@@ -64,12 +64,19 @@ async def av_command(_, message):
                 # Posting screenshots to Telegraph and getting the URL
                 telegraph_url = post_to_telegraph(screenshots, dvd)
                 
-                # Send the poster as a photo
                 # Create inline buttons
-                buttons = [[
-                            InlineKeyboardButton('𝖯𝗋𝖾𝗏𝗂𝖾𝗐', url=f"{preview}"),
-                            InlineKeyboardButton('𝖲𝖼𝗋𝖾𝖾𝗇𝗌𝗁𝗈𝗍𝗌', url=f"{telegraph_url}")
-                ]]
+                buttons = []
+
+                if preview is not None:
+                    buttons.append([
+                        InlineKeyboardButton('𝖯𝗋𝖾𝗏𝗂𝖾𝗐', url=f"{preview}"),
+                        InlineKeyboardButton('𝖲𝖼𝗋𝖾𝖾𝗇𝗌𝗁𝗈𝗍𝗌', url=f"{telegraph_url}")
+                    ])
+                else:
+                    buttons.append([
+                        InlineKeyboardButton('𝖲𝖼𝗋𝖾𝖾𝗇𝗌𝗁𝗈𝗍𝗌', url=f"{telegraph_url}")
+                    ])
+
                 reply_markup = InlineKeyboardMarkup(buttons)
 
                 # Send the photo with caption and inline button              
