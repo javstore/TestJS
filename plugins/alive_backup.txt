@@ -4,12 +4,28 @@ import re, asyncio, time, shutil, psutil, os, sys
 from pyrogram import Client, filters, enums
 from pyrogram.types import *
 from info import BOT_START_TIME, ADMINS, PICS
-from utils import humanbytes  
+from utils import humanbytes
+from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
+from html_telegraph_poster import TelegraphPoster
 import requests
+
+
+def post_to_telegraph(image_urls, dvd):
+    t = TelegraphPoster(use_api=True)
+    t.create_api_token('JAV STORE')
+
+    # Create the text for the post
+    text_content = "<blockquote>Provided by JAV STORE</blockquote>"
+    for url in image_urls:
+        text_content += f'<img src="{url}">'
+
+    # Post to Telegra.ph
+    telegraph_post = t.post(title=f'Screenshots of {dvd}', author='JAV STORE', text=text_content)
+    return telegraph_post['url']
 
 CMD = ["/", "."]
 
-@Client.on_message(filters.command("av", CMD))
+@Client.on_message(filters.command("avinfo" , CMD))
 async def av_command(_, message):
     command = message.text.split(maxsplit=1)
     if len(command) == 2:
@@ -40,9 +56,32 @@ async def av_command(_, message):
                 series_name_en = combined_data['series_name_en'] if 'series_name_en' in combined_data else 'N/A'
                 tags = ', '.join([category['name_en'] for category in combined_data['categories']]) if 'categories' in combined_data else 'N/A'
                 screenshots = [image['image_full'] for image in combined_data['gallery']] if 'gallery' in combined_data else []
+                # Loop through the screenshots and modify the URLs
+                for i, screenshot in enumerate(screenshots):
+                    if 'jp-' not in screenshot:
+                        screenshots[i] = screenshot.replace('-', 'jp-', 1)
 
+                # Posting screenshots to Telegraph and getting the URL
+                telegraph_url = post_to_telegraph(screenshots, dvd)
+                
                 # Send the poster as a photo
-                await message.reply_photo(photo=poster, caption=f"𝖳𝗂𝗍𝗅𝖾: {title}\n𝖣𝖵𝖣 𝖨𝖣: {dvd}\n𝖦𝖾𝗇𝗋𝖾: {tags}\n𝖱𝖾𝗅𝖾𝖺𝗌𝖾 𝖣𝖺𝗍𝖾: {release_date}\n𝖱𝗎𝗇𝗍𝗂𝗆𝖾: {runtime} Minutes\n𝖠𝖼𝗍𝗋𝖾𝗌𝗌: {actresses}\n𝖣𝗂𝗋𝖾𝖼𝗍𝗈𝗋: {director}\n𝖲𝖾𝗋𝗂𝖾𝗌: {series_name_en}\n𝖲𝗍𝗎𝖽𝗂𝗈: {studio}\n\n⚠️ 𝗂𝖭𝖥𝖮 𝖻𝗒 𝖩𝖠𝖵 𝖲𝖳𝖮𝖱𝖤")
+                # Create inline buttons
+                #buttons = [[
+                 #           InlineKeyboardButton('Preview', url=f"https://t.me"),
+                  #          InlineKeyboardButton('Screenshots', url=f"https://t.me")
+               # ]]
+              #  reply_markup = InlineKeyboardMarkup(buttons)
+
+                # Send the photo with caption and inline buttons
+             #   await message.reply_photo(
+             #       photo=poster,
+             #       caption=f"𝖳𝗂𝗍𝗅𝖾: {title}\n𝖣𝖵𝖣 𝖨𝖣: {dvd}\n𝖦𝖾𝗇𝗋𝖾: {tags}\n𝖱𝖾𝗅𝖾𝖺𝗌𝖾 𝖣𝖺𝗍𝖾: {release_date}\n𝖱𝗎𝗇𝗍𝗂𝗆𝖾: {runtime} Minutes\n𝖠𝖼𝗍𝗋𝖾𝗌𝗌: {actresses}\n𝖣𝗂𝗋𝖾𝖼𝗍𝗈𝗋: {director}\n𝖲𝖾𝗋𝗂𝖾𝗌: {series_name_en}\n𝖲𝗍𝗎𝖽𝗂𝗈: {studio}\n\n⚠️ 𝗂𝖭𝖥𝖮 𝖻𝗒 𝖩𝖠𝖵 𝖲𝖳𝖮𝖱𝖤",
+                #    reply_markup=reply_markup,
+             #       parse_mode=enums.ParseMode.HTML
+             #   )
+
+                
+                await message.reply_photo(photo=poster, caption=f"𝖳𝗂𝗍𝗅𝖾: {title}\n𝖣𝖵𝖣 𝖨𝖣: {dvd}\n𝖦𝖾𝗇𝗋𝖾: {tags}\n𝖱𝖾𝗅𝖾𝖺𝗌𝖾 𝖣𝖺𝗍𝖾: {release_date}\n𝖱𝗎𝗇𝗍𝗂𝗆𝖾: {runtime} Minutes\n𝖠𝖼𝗍𝗋𝖾𝗌𝗌: {actresses}\n𝖣𝗂𝗋𝖾𝖼𝗍𝗈𝗋: {director}\n𝖲𝖾𝗋𝗂𝖾𝗌: {series_name_en}\n𝖲𝗍𝗎𝖽𝗂𝗈: {studio}\nTelegraph URL: {telegraph_url}\nPreview: {preview}\n\n⚠️ 𝗂𝖭𝖥𝖮 𝖻𝗒 𝖩𝖠𝖵 𝖲𝖳𝖮𝖱𝖤")
             else:
                 await message.reply_text("No content ID found for the provided DVD ID")
 
