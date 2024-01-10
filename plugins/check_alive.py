@@ -68,8 +68,8 @@ async def av_command(_, message):
                 # Create inline buttons
                 buttons = [[
                     [
-                    InlineKeyboardButton('🛡 𝖮𝗐𝗇𝖾𝗋', callback_data="owner_info"),
-                    InlineKeyboardButton('🧩 𝖲𝗎𝗉𝗉𝗈𝗋𝗍 𝖦𝗋𝗈𝗎𝗉', url=f"https://t.me/{SUPPORT_CHAT}")
+                    InlineKeyboardButton('Preview', url=f"https://t.me"),
+                    InlineKeyboardButton('Screenshots', url=f"https://t.me")
                     ]
                   ]]
                 reply_markup = InlineKeyboardMarkup(buttons)
