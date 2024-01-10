@@ -5,6 +5,7 @@ from pyrogram import Client, filters, enums
 from pyrogram.types import *
 from info import BOT_START_TIME, ADMINS, PICS
 from utils import humanbytes
+from pyrogram import InlineKeyboardButton, InlineKeyboardMarkup
 from html_telegraph_poster import TelegraphPoster
 import requests
 
@@ -64,7 +65,25 @@ async def av_command(_, message):
                 telegraph_url = post_to_telegraph(screenshots, dvd)
                 
                 # Send the poster as a photo
-                await message.reply_photo(photo=poster, caption=f"𝖳𝗂𝗍𝗅𝖾: {title}\n𝖣𝖵𝖣 𝖨𝖣: {dvd}\n𝖦𝖾𝗇𝗋𝖾: {tags}\n𝖱𝖾𝗅𝖾𝖺𝗌𝖾 𝖣𝖺𝗍𝖾: {release_date}\n𝖱𝗎𝗇𝗍𝗂𝗆𝖾: {runtime} Minutes\n𝖠𝖼𝗍𝗋𝖾𝗌𝗌: {actresses}\n𝖣𝗂𝗋𝖾𝖼𝗍𝗈𝗋: {director}\n𝖲𝖾𝗋𝗂𝖾𝗌: {series_name_en}\n𝖲𝗍𝗎𝖽𝗂𝗈: {studio}\nTelegraph URL: {telegraph_url}\nPreview: {preview}\n\n⚠️ 𝗂𝖭𝖥𝖮 𝖻𝗒 𝖩𝖠𝖵 𝖲𝖳𝖮𝖱𝖤")
+                # Create inline buttons
+                inline_buttons = InlineKeyboardMarkup(
+                    [
+                        [
+                            InlineKeyboardButton("Preview", url=preview),
+                            InlineKeyboardButton("Screenshots", url=telegraph_url),
+                        ]
+                    ]
+                )
+
+                # Send the photo with caption and inline buttons
+                await message.reply_photo(
+                    photo=poster,
+                    caption=f"𝖳𝗂𝗍𝗅𝖾: {title}\n𝖣𝖵𝖣 𝖨𝖣: {dvd}\n𝖦𝖾𝗇𝗋𝖾: {tags}\n𝖱𝖾𝗅𝖾𝖺𝗌𝖾 𝖣𝖺𝗍𝖾: {release_date}\n𝖱𝗎𝗇𝗍𝗂𝗆𝖾: {runtime} Minutes\n𝖠𝖼𝗍𝗋𝖾𝗌𝗌: {actresses}\n𝖣𝗂𝗋𝖾𝖼𝗍𝗈𝗋: {director}\n𝖲𝖾𝗋𝗂𝖾𝗌: {series_name_en}\n𝖲𝗍𝗎𝖽𝗂𝗈: {studio}\n\n⚠️ 𝗂𝖭𝖥𝖮 𝖻𝗒 𝖩𝖠𝖵 𝖲𝖳𝖮𝖱𝖤",
+                    reply_markup=inline_buttons,
+                )
+
+                
+                #await message.reply_photo(photo=poster, caption=f"𝖳𝗂𝗍𝗅𝖾: {title}\n𝖣𝖵𝖣 𝖨𝖣: {dvd}\n𝖦𝖾𝗇𝗋𝖾: {tags}\n𝖱𝖾𝗅𝖾𝖺𝗌𝖾 𝖣𝖺𝗍𝖾: {release_date}\n𝖱𝗎𝗇𝗍𝗂𝗆𝖾: {runtime} Minutes\n𝖠𝖼𝗍𝗋𝖾𝗌𝗌: {actresses}\n𝖣𝗂𝗋𝖾𝖼𝗍𝗈𝗋: {director}\n𝖲𝖾𝗋𝗂𝖾𝗌: {series_name_en}\n𝖲𝗍𝗎𝖽𝗂𝗈: {studio}\nTelegraph URL: {telegraph_url}\nPreview: {preview}\n\n⚠️ 𝗂𝖭𝖥𝖮 𝖻𝗒 𝖩𝖠𝖵 𝖲𝖳𝖮𝖱𝖤")
             else:
                 await message.reply_text("No content ID found for the provided DVD ID")
 
