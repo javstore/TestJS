@@ -67,7 +67,8 @@ async def av_command(_, message):
                 # Send the poster as a photo
                 # Create inline buttons
                 buttons = [[
-                            InlineKeyboardButton('Preview', url=f"https://t.me")
+                            InlineKeyboardButton('𝖯𝗋𝖾𝗏𝗂𝖾𝗐', url=f"https://t.me")
+                            InlineKeyboardButton('𝖲𝖼𝗋𝖾𝖾𝗇𝗌𝗁𝗈𝗍𝗌', url=f"https://t.me")
                 ]]
                 reply_markup = InlineKeyboardMarkup(buttons)
 
