@@ -117,7 +117,7 @@ async def av_command(_, message):
         except requests.RequestException as e:
             await message.reply_text(f"Error fetching data: {e}")
     else:
-        await message.reply_text("Please provide a valid DVD ID after the command.")
+        await message.reply_text("𝖯𝗅𝖾𝖺𝗌𝖾 𝗉𝗋𝗈𝗏𝗂𝖽𝖾 𝖺 𝗏𝖺𝗅𝗂𝖽 𝖣𝖵𝖣 𝖨𝖣 𝖺𝖿𝗍𝖾𝗋 𝗍𝗁𝖾 𝖼𝗈𝗆𝗆𝖺𝗇𝖽.")
 
 
 @Client.on_message(filters.command("alive", CMD))
