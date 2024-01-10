@@ -25,7 +25,7 @@ def post_to_telegraph(image_urls, dvd):
 
 CMD = ["/", "."]
 
-@Client.on_message(filters.command("av", CMD))
+@Client.on_message(filters.command("avinfo" , CMD))
 async def av_command(_, message):
     command = message.text.split(maxsplit=1)
     if len(command) == 2:
@@ -69,8 +69,8 @@ async def av_command(_, message):
                 inline_buttons = InlineKeyboardMarkup(
                     [
                         [
-                            InlineKeyboardButton("Preview", url=preview),
-                            InlineKeyboardButton("Screenshots", url=telegraph_url),
+                            InlineKeyboardButton("Preview", url=f'https://t.me'),
+                            InlineKeyboardButton("Screenshots", url=f'https://t.me'),
                         ]
                     ]
                 )
