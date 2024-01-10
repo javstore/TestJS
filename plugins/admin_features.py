@@ -96,7 +96,7 @@ async def av_command(_, message):
                 reply_markup = InlineKeyboardMarkup(buttons)
 
 
-                caption=f"""{dvd} | {title}         
+                caption=f"""<code>{dvd}</code> | <b>{title}</b>         
 <b>𝖣ᴠᴅ ɪᴅ:</b> {dvd}
 <b>𝖦ᴇɴʀᴇ:</b> {tags}
 <b>𝖱ᴇʟᴇᴀꜱᴇ 𝖣ᴀᴛᴇ:</b> {release_date}
