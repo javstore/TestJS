@@ -60,7 +60,8 @@ async def av_command(_, message):
                 poster = combined_data['jacket_full_url']
                 release_date = combined_data['release_date']
                 runtime = combined_data['runtime_mins']
-                studio = combined_data['label_name_en']
+                studio = combined_data['maker_name_en']
+                studio = studio.replace('\n', '')
                 director = combined_data['directors'][0]['name_romaji'] if 'directors' in combined_data and len(combined_data['directors']) > 0 else 'N/A'
                 actresses = ', '.join([actress['name_romaji'] for actress in combined_data['actresses']]) if 'actresses' in combined_data and len(combined_data['actresses']) > 0 else 'N/A'
                 series_name_en = combined_data['series_name_en'] if 'series_name_en' in combined_data else 'N/A'
