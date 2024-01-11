@@ -71,6 +71,7 @@ async def av_command(_, message):
                 director = combined_data['directors'][0]['name_romaji'] if 'directors' in combined_data and len(combined_data['directors']) > 0 else 'N/A'
                 actresses = ', '.join([actress['name_romaji'] for actress in combined_data['actresses']]) if 'actresses' in combined_data and len(combined_data['actresses']) > 0 else 'N/A'
                 series_name_en = combined_data['series_name_en'] if 'series_name_en' in combined_data else 'N/A'
+                series_name_en = series_name_en.replace('\n', '')
                 tags = ' '.join([f"#{category['name_en'].replace(' ', '').replace('-', '')}" for category in combined_data['categories']]) if 'categories' in combined_data else 'N/A'
                 tags = tags.replace("'", "")
                 screenshots = [image['image_full'] for image in combined_data['gallery']] if 'gallery' in combined_data else []
