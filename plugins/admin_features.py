@@ -25,7 +25,7 @@ def post_to_telegraph(image_urls, dvd):
 
 def mins_to_hms(minutes):
     h, m = divmod(minutes, 60)
-    return f"{int(h):02d}:{int(m):02d}:00"
+    return f"{int(h):02d}h {int(m):02d}minutes"
 
 
 CMD = ["/", "."]
@@ -108,7 +108,7 @@ async def av_command(_, message):
 𝖣𝖵𝖣 𝖨𝖣:  {dvd}
 𝖦𝖾𝗇𝗋𝖾:  {tags}
 𝖱𝖾𝗅𝖾𝖺𝗌𝖾 𝖣𝖺𝗍𝖾:  {release_date}
-𝖱𝗎𝗇𝗍𝗂𝗆𝖾:  {runtime} Minutes
+𝖱𝗎𝗇𝗍𝗂𝗆𝖾:  {runtime}
 𝖠𝖼𝗍𝗋𝖾𝗌𝗌:  {actresses}
 𝖣𝗂𝗋𝖾𝖼𝗍𝗈𝗋:  {director}
 𝖲𝖾𝗋𝗂𝖾𝗌:  {series_name_en}
