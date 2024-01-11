@@ -23,6 +23,11 @@ def post_to_telegraph(image_urls, dvd):
     telegraph_post = t.post(title=f'Screenshots of {dvd}', author='JAV STORE', text=text_content)
     return telegraph_post['url']
 
+def mins_to_hms(minutes):
+    h, m = divmod(minutes, 60)
+    return f"{int(h):02d}:{int(m):02d}:00"
+
+
 CMD = ["/", "."]
 
 @Client.on_message(filters.command("avinfo" , CMD))
@@ -60,6 +65,7 @@ async def av_command(_, message):
                 poster = combined_data['jacket_full_url']
                 release_date = combined_data['release_date']
                 runtime = combined_data['runtime_mins']
+                runtime = mins_to_hms(runtime)
                 studio = combined_data['maker_name_en']
                 studio = studio.replace('\n', '')
                 director = combined_data['directors'][0]['name_romaji'] if 'directors' in combined_data and len(combined_data['directors']) > 0 else 'N/A'
