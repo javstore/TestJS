@@ -60,7 +60,7 @@ async def av_command(_, message):
                 poster = combined_data['jacket_full_url']
                 release_date = combined_data['release_date']
                 runtime = combined_data['runtime_mins']
-                studio = combined_data['maker_name_en']
+                studio = combined_data['label_name_en']
                 director = combined_data['directors'][0]['name_romaji'] if 'directors' in combined_data and len(combined_data['directors']) > 0 else 'N/A'
                 actresses = ', '.join([actress['name_romaji'] for actress in combined_data['actresses']]) if 'actresses' in combined_data and len(combined_data['actresses']) > 0 else 'N/A'
                 series_name_en = combined_data['series_name_en'] if 'series_name_en' in combined_data else 'N/A'
@@ -98,14 +98,14 @@ async def av_command(_, message):
 
 
                 caption=f"""<code>{dvd}</code> | {title}
-<b>𝖣𝖵𝖣 𝖨𝖣:</b>  {dvd}
-<b>𝖦𝖾𝗇𝗋𝖾:</b>  {tags}
-<b>𝖱𝖾𝗅𝖾𝖺𝗌𝖾 𝖣𝖺𝗍𝖾:</b>  {release_date}
-<b>𝖱𝗎𝗇𝗍𝗂𝗆𝖾:</b>  {runtime} Minutes
-<b>𝖠𝖼𝗍𝗋𝖾𝗌𝗌:</b>  {actresses}
-<b>𝖣𝗂𝗋𝖾𝖼𝗍𝗈𝗋:</b>  {director}
-<b>𝖲𝖾𝗋𝗂𝖾𝗌:</b>  {series_name_en}
-<b>𝖲𝗍𝗎𝖽𝗂𝗈:</b>  {studio}
+𝖣𝖵𝖣 𝖨𝖣:  {dvd}
+𝖦𝖾𝗇𝗋𝖾:  {tags}
+𝖱𝖾𝗅𝖾𝖺𝗌𝖾 𝖣𝖺𝗍𝖾:  {release_date}
+𝖱𝗎𝗇𝗍𝗂𝗆𝖾:  {runtime} Minutes
+𝖠𝖼𝗍𝗋𝖾𝗌𝗌:  {actresses}
+𝖣𝗂𝗋𝖾𝖼𝗍𝗈𝗋:  {director}
+𝖲𝖾𝗋𝗂𝖾𝗌:  {series_name_en}
+𝖲𝗍𝗎𝖽𝗂𝗈:  {studio}
                 
 <b>⚠️ ɪɴꜰᴏ ʙʏ Jᴀᴠ Sᴛᴏʀᴇ</b>
 """
