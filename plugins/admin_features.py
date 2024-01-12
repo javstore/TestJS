@@ -25,7 +25,7 @@ def post_to_telegraph(image_urls, dvd):
 
 def mins_to_hms(minutes):
     h, m = divmod(minutes, 60)
-    return f"{int(h):02d}h {int(m):02d}minutes"
+    return f"{int(h):2d}h {int(m):02d}min"
 
 
 CMD = ["/", "."]
