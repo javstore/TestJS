@@ -68,6 +68,7 @@ async def av_command(_, message):
                 runtime = mins_to_hms(runtime)
                 studio = combined_data['maker_name_en']
                 studio = studio.replace('\n', '')
+                label = combined_data['label_name_en']
                 director = combined_data['directors'][0]['name_romaji'] if 'directors' in combined_data and len(combined_data['directors']) > 0 else 'N/A'
                 actresses = ', '.join([actress['name_romaji'] for actress in combined_data['actresses']]) if 'actresses' in combined_data and len(combined_data['actresses']) > 0 else 'N/A'
                 series_name_en = combined_data['series_name_en'] if 'series_name_en' in combined_data else 'N/A'
@@ -114,7 +115,8 @@ async def av_command(_, message):
 𝖣𝗂𝗋𝖾𝖼𝗍𝗈𝗋:  {director}
 𝖲𝖾𝗋𝗂𝖾𝗌:  {series_name_en}
 𝖲𝗍𝗎𝖽𝗂𝗈:  {studio}
-                
+𝖫𝖺𝖻𝖾𝗅: {label}
+
 <b>⚠️ ɪɴꜰᴏ ʙʏ Jᴀᴠ Sᴛᴏʀᴇ</b>
 """
 
