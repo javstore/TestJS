@@ -206,18 +206,10 @@ def get_message_id(client, text):
     if text:
         pattern = "https://t.me/(?:c/)?(.*)/(\d+)"
         matches = re.match(pattern, text)
-        if not matches:
-            return 0
-        channel_id = matches.group(1)
-        msg_id = int(matches.group(2))
-        if channel_id.isdigit():
-            if f"-100{channel_id}" == str(client.db_channel.id):
-                return msg_id
-        else:
-            if channel_id == client.db_channel.username:
-                return msg_id
-    else:
-        return 0
+        if matches:
+            msg_id = int(matches.group(2))
+            return msg_id
+    return 0
 
 @Client.on_message(filters.command("genlink", CMD) & filters.chat(Db_channel_id))
 async def generate_link(client, message):
