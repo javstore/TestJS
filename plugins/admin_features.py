@@ -194,8 +194,6 @@ async def stop_button(bot, message):
 # LINK GENERATOR PHASE
 Db_channel_id = -1002071457616
 
-import re
-
 async def encode(string):
     string_bytes = string.encode("ascii")
     base64_bytes = base64.urlsafe_b64encode(string_bytes)
@@ -237,5 +235,7 @@ async def generate_link(client, message):
             await message.reply_text(f"<b>Here is your link</b>\n\n{link}", quote=True, reply_markup=reply_markup)
 
     except Exception as e:
-        # Log the exception traceback
-        print(f"Error occurred: {e}")
+        # Send the exception message as a reply
+        await message.reply_text(f"Error occurred: {e}")
+
+# Rest of your code...
