@@ -179,7 +179,7 @@ async def start(client, message):
         return
     
     elif data.split("-", 1)[0] == "SINGLE":
-        sts = await message.reply("<b>Please wait...</b>")
+        sts = await message.reply("<b>Please wait..</b>")
         file_id = data.split("-", 1)[1]
     
         try:
