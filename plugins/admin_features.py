@@ -193,4 +193,34 @@ async def stop_button(bot, message):
 
 # LINK GENERATOR PHASE
 
+async def encode(string):
+    string_bytes = string.encode("ascii")
+    base64_bytes = base64.urlsafe_b64encode(string_bytes)
+    base64_string = (base64_bytes.decode("ascii")).strip("=")
+    return base64_string
 
+@Client.on_message(filters.command("genlink", CMD) & filters.chat(Db_channel_id))
+async def generate_link(client, message):
+    try:
+        # Extracting the post link from the command message
+        post_link = message.text.split(" ", 1)[1].strip()
+
+        # Get the message ID of the post
+        channel_message = await client.get_messages(Db_channel_id, post_link)
+        msg_id = channel_message.message_id
+
+        # Calculating the base64-encoded string using the provided encode function
+        base64_string = await encode(f"get-{msg_id * abs(Db_channel_id)}")
+
+        # Creating the link and reply markup
+        link = f"https://t.me/{client.username}?start={base64_string}"
+        reply_markup = InlineKeyboardMarkup(
+            [[InlineKeyboardButton("🔁 Share URL", url=f'https://telegram.me/share/url?url={link}')]]
+        )
+
+        # Sending the generated link as a reply to the command message
+        await message.reply_text(f"<b>Here is your link</b>\n\n{link}", quote=True, reply_markup=reply_markup)
+
+    except Exception as e:
+        # Log the exception traceback
+        print(f"Error: {e}")
