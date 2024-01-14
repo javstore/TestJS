@@ -130,22 +130,57 @@ async def gen_link_batch(bot, message):
 @Client.on_message(filters.command(['single']) & filters.create(allowed))
 async def gen_link_single(bot, message):
     if " " not in message.text:
-        return await message.reply("Provide the link to the single file.")
+        return await message.reply("Use correct format.\nExample <code>/single https://t.me/piroxbots/10</code>.")
+    
     link = message.text.strip().split(" ")[1]
-
+    
     regex = re.compile("(https://)?(t\.me/|telegram\.me/|telegram\.dog/)(c/)?(\d+|[a-zA-Z_0-9]+)/(\d+)$")
     match = regex.match(link)
+    
     if not match:
         return await message.reply('Invalid link')
-    f_chat_id = match.group(4)
-    f_msg_id = int(match.group(5))
+
+    chat_id = int(match.group(4))
+    msg_id = int(match.group(5))
 
     try:
-        chat_id = (await bot.get_chat(f_chat_id)).id
-        message = await bot.get_messages(chat_id, ids=f_msg_id)
-        file = message.photo  # or message.video, message.audio, etc.
-        file_id = file.file_id
-        link = f"https://telegram.me/{temp.U_NAME}?start=FILE-{file_id}"
-        await message.reply(f"Here's the link to the file:\n{link}")
+        chat_id = (await bot.get_chat(chat_id)).id
+    except ChannelInvalid:
+        return await message.reply('This may be a private channel / group. Make me an admin over there to index the file.')
+    except (UsernameInvalid, UsernameNotModified):
+        return await message.reply('Invalid Link specified.')
     except Exception as e:
-        await message.reply(f"Error: {e}")
+        return await message.reply(f'Errors - {e}')
+
+    sts = await message.reply("Generating link for your message.")
+    
+    if chat_id in FILE_STORE_CHANNEL:
+        string = f"{msg_id}_{chat_id}_single"
+        b_64 = base64.urlsafe_b64encode(string.encode("ascii")).decode().strip("=")
+        return await sts.edit(f"Here is your link https://telegram.me/{temp.U_NAME}?start=DSTORE-{b_64}")
+
+    try:
+        msg = await bot.get_messages(chat_id, msg_id)
+        file_type = msg.media
+        file = getattr(msg, file_type.value)
+        caption = getattr(msg, 'caption', '')
+        if caption:
+            caption = caption.html
+        if file:
+            file = {
+                "file_id": file.file_id,
+                "caption": caption,
+                "title": getattr(file, "file_name", ""),
+                "size": file.file_size,
+                "protect": False,  # Assuming single file doesn't need protection
+            }
+            await sts.edit("Generating Link...\nStatus: `Saving Message`")
+            with open(f"singlemode_{message.from_user.id}.json", "w+") as out:
+                json.dump([file], out)
+
+            post = await bot.send_document(LOG_CHANNEL, f"singlemode_{message.from_user.id}.json", file_name="Single.json", caption="⚠️Generated for filestore.")
+            os.remove(f"singlemode_{message.from_user.id}.json")
+            file_id, ref = unpack_new_file_id(post.document.file_id)
+            return await sts.edit(f"Here is your link\nContains `1` file.\n https://telegram.me/{temp.U_NAME}?start=SINGLE-{file_id}")
+    except:
+        return await sts.edit("Error retrieving or processing the message.")
