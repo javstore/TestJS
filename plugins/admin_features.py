@@ -235,6 +235,4 @@ async def generate_link(client, message):
 
     except Exception as e:
         # Log the exception traceback
-        print(f"Error: {e}")
-
-# Rest of your code...
+        print(f"Error occurred: {e}")
