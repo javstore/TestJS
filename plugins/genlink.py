@@ -141,9 +141,11 @@ async def gen_link_single(bot, message):
         return await message.reply('Invalid link')
 
     chat_id = int(match.group(4))
-    msg_id = int(match.group(5))
-    if isinstance(chat_id, int):
-        chat_id = int("-100" + int(chat_id))
+    msg_id = (match.group(5)
+    chat_id = -1002071457616
+    if chat_id
+       # chat_id  = int(("-100" + chat_id))
+        
 
     try:
         chat_id = (await bot.get_chat(chat_id)).id
