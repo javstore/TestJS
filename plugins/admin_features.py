@@ -213,7 +213,7 @@ async def generate_link(client, message):
         base64_string = await encode(f"get-{msg_id * abs(Db_channel_id)}")
 
         # Creating the link and reply markup
-        link = f"https://t.me/jav_stote_robot?start={base64_string}"
+        link = f"https://t.me/jav_store_robot?start={base64_string}"
         reply_markup = InlineKeyboardMarkup(
             [[InlineKeyboardButton("🔁 Share URL", url=f'https://telegram.me/share/url?url={link}')]]
         )
