@@ -2,7 +2,7 @@
   <img src="assets/logo.jpg">
 </p>
 <h1 align="center">
-  <b>PiroAutoFilterBot</b>
+  <b>JAV STORE BOT</b>
 </h1>
 
 ![Typing SVG](https://readme-typing-svg.herokuapp.com/?lines=PIRO+MOVIE+SEARCH+BOT+!;CREATED+BY+PIRO!;A+ADVANCE+BOT+WITH+COOL+FEATURES!)</p>
