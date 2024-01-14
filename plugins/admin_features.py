@@ -192,7 +192,7 @@ async def stop_button(bot, message):
     os.execl(sys.executable, sys.executable, *sys.argv)
 
 # LINK GENERATOR PHASE
-
+Db_channel_id = -1002071457616
 async def encode(string):
     string_bytes = string.encode("ascii")
     base64_bytes = base64.urlsafe_b64encode(string_bytes)
