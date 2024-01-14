@@ -193,27 +193,47 @@ async def stop_button(bot, message):
 
 # LINK GENERATOR PHASE
 Db_channel_id = -1002071457616
+
+# Assuming CMD is defined somewhere in your code
+
 async def encode(string):
     string_bytes = string.encode("ascii")
     base64_bytes = base64.urlsafe_b64encode(string_bytes)
     base64_string = (base64_bytes.decode("ascii")).strip("=")
     return base64_string
 
+def get_message_id(client, text):
+    if text:
+        pattern = "https://t.me/(?:c/)?(.*)/(\d+)"
+        matches = re.match(pattern, text)
+        if not matches:
+            return 0
+        channel_id = matches.group(1)
+        msg_id = int(matches.group(2))
+        if channel_id.isdigit():
+            if f"-100{channel_id}" == str(client.db_channel.id):
+                return msg_id
+        else:
+            if channel_id == client.db_channel.username:
+                return msg_id
+    else:
+        return 0
+
 @Client.on_message(filters.command("genlink", CMD) & filters.chat(Db_channel_id))
 async def generate_link(client, message):
     try:
-        # Extracting the post link from the command message
-        post_link = message.text.split(" ", 1)[1].strip()
+        # Get the message ID using the get_message_id function
+        msg_id = get_message_id(client, message.text)
 
-        # Get the message ID of the post
-        channel_message = await client.get_messages(Db_channel_id, post_link)
-        msg_id = channel_message.message_id
+        if not msg_id:
+            # Return or log an error if the message ID is not valid
+            return
 
         # Calculating the base64-encoded string using the provided encode function
         base64_string = await encode(f"get-{msg_id * abs(Db_channel_id)}")
 
         # Creating the link and reply markup
-        link = f"https://t.me/jav_store_robot?start={base64_string}"
+        link = f"https://t.me/{client.username}?start={base64_string}"
         reply_markup = InlineKeyboardMarkup(
             [[InlineKeyboardButton("🔁 Share URL", url=f'https://telegram.me/share/url?url={link}')]]
         )
@@ -224,3 +244,5 @@ async def generate_link(client, message):
     except Exception as e:
         # Log the exception traceback
         print(f"Error: {e}")
+
+# Rest of your code...
