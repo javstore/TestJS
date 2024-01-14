@@ -140,13 +140,13 @@ async def gen_link_single(bot, message):
     if not match:
         return await message.reply('Invalid link')
 
-    mchat_id = int(match.group(4))
+    chat_id = int(match.group(4))
     msg_id = int(match.group(5))
-    if mchat_id.isnumeric():
-        mchat_id  = int(("-100" + mchat_id))
+    if chat_id.isnumeric():
+        chat_id  = int(("-100" + chat_id))
 
     try:
-        chat_id = (await bot.get_chat(mchat_id)).id
+        chat_id = (await bot.get_chat(chat_id)).id
     except ChannelInvalid:
         return await message.reply('This may be a private channel / group. Make me an admin over there to index the file.')
     except (UsernameInvalid, UsernameNotModified):
