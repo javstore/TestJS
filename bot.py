@@ -45,13 +45,6 @@ class Bot(Client):
         temp.U_NAME = me.username
         temp.B_NAME = me.first_name
         self.username = '@' + me.username
-        try:
-            db_channel = await self.get_chat(LOG_CHANNEL)
-            self.db_channel = db_channel
-            test = await self.send_message(chat_id=db_channel.id, text="Test Message")
-        except Exception as e:
-            # Handle any exceptions or log if needed
-            logging.info(f"Error setting db_channel: {e}")
         logging.info(f"{me.first_name} with for Pyrogram v{__version__} (Layer {layer}) started on {me.username}.")
         logging.info(LOG_STR)
         logging.info(script.LOGO)
