@@ -142,8 +142,8 @@ async def gen_link_single(bot, message):
 
     chat_id = int(match.group(4))
     msg_id = int(match.group(5))
-    if chat_id.isnumeric():
-        chat_id  = int(("-100" + chat_id))
+    if isinstance(chat_id, int):
+        chat_id = int("-100" + int(chat_id))
 
     try:
         chat_id = (await bot.get_chat(chat_id)).id
