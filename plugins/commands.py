@@ -176,6 +176,64 @@ async def start(client, message):
             if msg:
                 await msg.delete()
         return
+    
+    elif data.split("-", 1)[0] == "SINGLE":
+        sts = await message.reply("<b>Please wait...</b>")
+        file_id = data.split("-", 1)[1]
+    
+        try:
+            msg = SINGLE_FILES.get(file_id)
+            if not msg:
+                file = await client.download_media(file_id)
+                try:
+                    with open(file) as file_data:
+                        msg = json.loads(file_data.read())
+                except:
+                    await sts.edit("FAILED")
+                    return await client.send_message(LOG_CHANNEL, "UNABLE TO OPEN FILE.")
+                os.remove(file)
+                SINGLE_FILES[file_id] = msg
+
+            title = msg.get("title")
+            size = get_size(int(msg.get("size", 0)))
+            f_caption = msg.get("caption", "")
+
+            if f_caption is None:
+                f_caption = f"{title}"
+
+            try:
+                sent_message = await client.send_cached_media(
+                    chat_id=message.from_user.id,
+                    file_id=msg.get("file_id"),
+                    caption=f_caption,
+                    protect_content=msg.get('protect', False),
+                    reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton('⭐ 𝖩𝖠𝖵 𝖲𝖳𝖮𝖱𝖤', url='https://t.me/javsub_english')]])
+                )
+            except FloodWait as e:
+                await asyncio.sleep(e.x)
+                logger.warning(f"Floodwait of {e.x} sec.")
+                await client.send_cached_media(
+                    chat_id=message.from_user.id,
+                    file_id=msg.get("file_id"),
+                    caption=f_caption,
+                    protect_content=msg.get('protect', False)
+                )
+            except Exception as e:
+                logger.warning(e, exc_info=True)
+                await sts.edit("Error sending message.")
+                return
+
+            await sts.delete()
+            await asyncio.sleep(300)
+            if sent_message:
+                await sent_message.delete()
+
+        except Exception as e:
+            logger.warning(e, exc_info=True)
+            await sts.edit("Error processing the file.")
+
+    
+    
     elif data.split("-", 1)[0] == "DSTORE":
         sts = await message.reply("<b>Please wait...</b>")
         b_string = data.split("-", 1)[1]
