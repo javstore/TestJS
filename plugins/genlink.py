@@ -143,7 +143,7 @@ async def gen_link_single(bot, message):
     chat_id = int(match.group(4))
     msg_id = (match.group(5)
     chat_id = -1002071457616
-    if chat_id
+    if chat_id:
        # chat_id  = int(("-100" + chat_id))
         
 
