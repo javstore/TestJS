@@ -194,7 +194,7 @@ async def stop_button(bot, message):
 # LINK GENERATOR PHASE
 Db_channel_id = -1002071457616
 
-# Assuming CMD is defined somewhere in your code
+import re
 
 async def encode(string):
     string_bytes = string.encode("ascii")
@@ -207,31 +207,34 @@ def get_message_id(client, text):
         pattern = "https://t.me/(?:c/)?(.*)/(\d+)"
         matches = re.match(pattern, text)
         if matches:
+            channel_id = matches.group(1)
             msg_id = int(matches.group(2))
-            return msg_id
-    return 0
+            return msg_id, channel_id
+    return 0, None
 
 @Client.on_message(filters.command("genlink", CMD) & filters.chat(Db_channel_id))
 async def generate_link(client, message):
     try:
-        # Get the message ID using the get_message_id function
-        msg_id = get_message_id(client, message.text)
+        # Get the message ID and channel ID using the get_message_id function
+        msg_id, channel_id = get_message_id(client, message.text)
 
-        if not msg_id:
-            # Return or log an error if the message ID is not valid
+        if not msg_id or channel_id is None:
+            # Return or log an error if the message ID or channel ID is not valid
             return
 
-        # Calculating the base64-encoded string using the provided encode function
-        base64_string = await encode(f"get-{msg_id * abs(Db_channel_id)}")
+        # Convert channel_id to integer and check for equality with Db_channel_id
+        if int(channel_id) == Db_channel_id:
+            # Calculating the base64-encoded string using the provided encode function
+            base64_string = await encode(f"get-{msg_id * abs(Db_channel_id)}")
 
-        # Creating the link and reply markup
-        link = f"https://t.me/jav_store_robot?start={base64_string}"
-        reply_markup = InlineKeyboardMarkup(
-            [[InlineKeyboardButton("🔁 Share URL", url=f'https://telegram.me/share/url?url={link}')]]
-        )
+            # Creating the link and reply markup
+            link = f"https://t.me/jav_store_robot?start={base64_string}"
+            reply_markup = InlineKeyboardMarkup(
+                [[InlineKeyboardButton("🔁 Share URL", url=f'https://telegram.me/share/url?url={link}')]]
+            )
 
-        # Sending the generated link as a reply to the command message
-        await message.reply_text(f"<b>Here is your link</b>\n\n{link}", quote=True, reply_markup=reply_markup)
+            # Sending the generated link as a reply to the command message
+            await message.reply_text(f"<b>Here is your link</b>\n\n{link}", quote=True, reply_markup=reply_markup)
 
     except Exception as e:
         # Log the exception traceback
