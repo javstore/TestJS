@@ -1,6 +1,7 @@
-import re, asyncio, time, shutil, psutil, os, sys
-from pyrogram import Client, filters, enums
+import asyncio, os, sys
+from pyrogram import Client, filters
 from pyrogram.types import *
+from info import ADMINS
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 from telegraph import Telegraph
 
