@@ -216,4 +216,4 @@ async def telegraph_command(_, message):
     telegraph_link = post_to_telegraph_with_message(user_message)
 
     # Send the Telegraph URL to the user
-    await message.reply_text(f"Your message has been posted on Telegraph. Here's the link: {telegraph_link}")
+    await message.reply_text(f"Your message has been posted on Telegraph, Here's the link: {telegraph_link}")
