@@ -4,6 +4,8 @@ from pyrogram.types import *
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 from telegraph import Telegraph
 
+CMD = ["/", "."]
+
 # Initialize Telegraph
 telegraph = Telegraph(domain='telegra.ph')
 telegraph.create_account(short_name='JAV STORE', author_name='JAV STORE', author_url='https://telegram.me/javsub_english')
