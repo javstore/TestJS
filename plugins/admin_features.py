@@ -12,6 +12,12 @@ from telegraph import Telegraph
 import requests
 
 
+def post_to_telegraph_with_message(message):
+    text_content = f"<blockquote>Provided by JAV STORE</blockquote>{message}"
+    response = telegraph.create_page('Telegram Files', html_content=text_content)
+    return response['url']
+
+
 def post_to_telegraph(image_urls, dvd):
     t = TelegraphPoster(use_api=True)
     t.create_api_token('JAV STORE')
@@ -188,4 +194,25 @@ async def stop_button(bot, message):
     await msg.edit("**𝖡𝗈𝗍 𝖱𝖾𝗌𝗍𝖺𝗋𝗍𝖾𝖽 𝖲𝗎𝖼𝖼𝖾𝗌𝗌𝖿𝗎𝗅𝗅𝗒 ! 𝖱𝖾𝖺𝖽𝗒 𝖳𝗈 𝖬𝗈𝗏𝖾 𝖮𝗇 💯**")
     os.execl(sys.executable, sys.executable, *sys.argv)
 
+# Initialize Telegraph
+telegraph = Telegraph(domain='graph.org')
+telegraph.create_account(short_name='JAV STORE', author_name='JAV STORE', author_url='https://telegram.me/javsub_english')
+
+# Command handler for /telegraph
+@Client.on_message(filters.command("telegraph", CMD) & filters.user(ADMINS))
+async def telegraph_command(_, message):
+    # Check if there's a message attached or if there's additional text after the command
+    if message.reply_to_message and message.reply_to_message.text:
+        user_message = message.reply_to_message.text
+    elif len(message.text.split(maxsplit=1)) == 2:
+        user_message = message.text.split(maxsplit=1)[1]
+    else:
+        await message.reply_text("Please provide a message to post on Telegraph.")
+        return
+
+    # Post to Telegraph and get the URL
+    telegraph_link = post_to_telegraph_with_message(user_message)
+
+    # Send the Telegraph URL to the user
+    await message.reply_text(f"Your message has been posted on Telegraph, Here's the link: {telegraph_link}")
 
