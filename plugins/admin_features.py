@@ -10,6 +10,7 @@ from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 from html_telegraph_poster import TelegraphPoster
 from telegraph import Telegraph
 import requests
+from html import escape
 
 
 def post_to_telegraph_with_message(message):
