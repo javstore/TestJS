@@ -17,11 +17,6 @@ def post_to_telegraph_with_message(message):
     response = telegraph.create_page('Telegram Files', html_content=text_content)
     return response['url']
 
-def post_to_telegraph_with_content(content):
-    response = telegraph.create_page('Telegram Files', html_content=content)
-    return response['url']
-
-
 
 def post_to_telegraph(image_urls, dvd):
     t = TelegraphPoster(use_api=True)
@@ -202,34 +197,46 @@ async def stop_button(bot, message):
 
 
 # Initialize Telegraph
-telegraph = Telegraph(domain='graph.org')
+telegraph = Telegraph(domain='telegra.ph')
 telegraph.create_account(short_name='JAV STORE', author_name='JAV STORE', author_url='https://telegram.me/javsub_english')
 
+# Dictionary to store user inputs
+user_inputs = {}
+
+# Function to post to Telegraph
+def post_to_telegraph_with_content(content):
+    response = telegraph.create_page('Telegram Files', html_content=content)
+    return response['url']
+
 # Command handler for /telegraph
-@Client.on_message(filters.command("graph", CMD) & filters.user(ADMINS))
-async def telegraph_command(client, message):
+@Client.on_message(filters.command("telegraph", CMD) & filters.user(ADMINS))
+async def telegraph_command(_, message):
+    chat_id = message.chat.id
+
     # Ask the user for filename
-    filename_message = await message.reply_text("Please enter the filename:")
-    filename_response = await client.wait_for("message", filters=message.from_user)
+    await message.reply_text("Please enter the filename:")
+    filename_message = await Client.listen(lambda m: m.chat.id == chat_id)
+    user_inputs['filename'] = filename_message.text
 
     # Ask the user for download link
-    download_url_message = await message.reply_text("Please enter the download link:")
-    download_url_response = await client.wait_for("message", filters=message.from_user)
+    await message.reply_text("Please enter the download link:")
+    download_url_message = await Client.listen(lambda m: m.chat.id == chat_id)
+    user_inputs['download_url'] = download_url_message.text
 
     # Ask the user for password URL
-    password_url_message = await message.reply_text("Please enter the password URL:")
-    password_url_response = await client.wait_for("message", filters=message.from_user)
+    await message.reply_text("Please enter the password URL:")
+    password_url_message = await Client.listen(lambda m: m.chat.id == chat_id)
+    user_inputs['password_url'] = password_url_message.text
 
     # Construct the HTML content
     content = f"""
-    <blockquote>Provided by JAV STORE</blockquote>
-    <b>{filename_response.text}</b>
+    <b>{user_inputs['filename']}</b>
     <br>
     <br>
-    🔰 𝗗𝗼𝘄𝗻𝗹𝗼𝗮𝗱 𝗟𝗶𝗻𝗸: <a href="{download_url_response.text}">{download_url_response.text}</a>
+    🔰 𝗗𝗼𝘄𝗻𝗹𝗼𝗮𝗱 𝗟𝗶𝗻𝗸: <a href="{user_inputs['download_url']}">{user_inputs['download_url']}</a>
     <br>
     <br>
-    🔐 𝗣𝗮𝘀𝘀𝘄𝗼𝗿𝗱: <a href="{password_url_response.text}">{password_url_response.text}</a>
+    🔐 𝗣𝗮𝘀𝘀𝘄𝗼𝗿𝗱: <a href="{user_inputs['password_url']}">{user_inputs['password_url']}</a>
     <br>
     <br>
     <i>Note: Password Given in Video! Watch Carefully</i>
