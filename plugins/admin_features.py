@@ -4,7 +4,6 @@ from Script import script
 import re, asyncio, time, shutil, psutil, os, sys
 from pyrogram import Client, filters, enums
 from pyrogram.types import *
-from pyrogram.types import ForceReply
 from info import BOT_START_TIME, ADMINS, PICS
 from utils import humanbytes
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
@@ -17,6 +16,11 @@ def post_to_telegraph_with_message(message):
     text_content = f"<blockquote>Provided by JAV STORE</blockquote>{message}"
     response = telegraph.create_page('Telegram Files', html_content=text_content)
     return response['url']
+
+def post_to_telegraph_with_content(content):
+    response = telegraph.create_page('Telegram Files', html_content=content)
+    return response['url']
+
 
 
 def post_to_telegraph(image_urls, dvd):
@@ -196,46 +200,43 @@ async def stop_button(bot, message):
     os.execl(sys.executable, sys.executable, *sys.argv)
     
 
+
 # Initialize Telegraph
-telegraph = Telegraph(domain='telegra.ph')
+telegraph = Telegraph(domain='graph.org')
 telegraph.create_account(short_name='JAV STORE', author_name='JAV STORE', author_url='https://telegram.me/javsub_english')
 
 # Command handler for /telegraph
-@Client.on_message(filters.command("telegraph", CMD) & filters.user(ADMINS))
-async def telegraph_command(_, message):
+@Client.on_message(filters.command("graph", CMD) & filters.user(ADMINS))
+async def telegraph_command(client, message):
     # Ask the user for filename
-    await message.reply_text("Please enter the filename:", reply_markup=ForceReply(selective=True))
-    filename_message = await Client.listen(filters.text & filters.user(ADMINS))
-
-    filename = filename_message.text.strip()
+    filename_message = await message.reply_text("Please enter the filename:")
+    filename_response = await client.wait_for("message", filters=message.from_user)
 
     # Ask the user for download link
-    await filename_message.reply_text("Please enter the download link:", reply_markup=ForceReply(selective=True))
-    download_url_message = await Client.listen(filters.text & filters.user(ADMINS))
-
-    download_url = download_url_message.text.strip()
+    download_url_message = await message.reply_text("Please enter the download link:")
+    download_url_response = await client.wait_for("message", filters=message.from_user)
 
     # Ask the user for password URL
-    await download_url_message.reply_text("Please enter the password URL:", reply_markup=ForceReply(selective=True))
-    password_url_message = await Client.listen(filters.text & filters.user(ADMINS))
+    password_url_message = await message.reply_text("Please enter the password URL:")
+    password_url_response = await client.wait_for("message", filters=message.from_user)
 
-    password_url = password_url_message.text.strip()
-
-    # Create the message content
-    content = f"""<b>{filename}</b>
-<br>
-<br>
-🔰 𝗗𝗼𝘄𝗻𝗹𝗼𝗮𝗱 𝗟𝗶𝗻𝗸: <a href="{download_url}">https://javstore.in/video/protected-link</a>
-<br>
-<br>
-🔐 𝗣𝗮𝘀𝘀𝘄𝗼𝗿𝗱: <a href="{password_url}">https://teraboxapp.com/v/unlock-password-link</a>
-<br>
-<br>
-<i>Note: Password Given in Video! Watch Carefully</i>
-"""
+    # Construct the HTML content
+    content = f"""
+    <blockquote>Provided by JAV STORE</blockquote>
+    <b>{filename_response.text}</b>
+    <br>
+    <br>
+    🔰 𝗗𝗼𝘄𝗻𝗹𝗼𝗮𝗱 𝗟𝗶𝗻𝗸: <a href="{download_url_response.text}">{download_url_response.text}</a>
+    <br>
+    <br>
+    🔐 𝗣𝗮𝘀𝘀𝘄𝗼𝗿𝗱: <a href="{password_url_response.text}">{password_url_response.text}</a>
+    <br>
+    <br>
+    <i>Note: Password Given in Video! Watch Carefully</i>
+    """
 
     # Post to Telegraph and get the URL
-    telegraph_url = post_to_telegraph_with_message(content)
+    telegraph_url = post_to_telegraph_with_content(content)
 
     # Send the Telegraph URL to the user
     await password_url_message.reply_text(f"Your content has been posted on Telegraph. Here's the link: {telegraph_url}")
