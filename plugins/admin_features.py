@@ -208,7 +208,7 @@ async def telegraph_command(_, message):
     elif len(message.text.split(maxsplit=1)) == 2:
         user_message = message.text.split(maxsplit=1)[1]
     else:
-        await message.reply_text(script.TEMPLATE_TXT)
+        await message.reply_text(f"{script.TEMPLATE_TXT}")
         return
 
     # Post to Telegraph and get the URL
