@@ -4,6 +4,7 @@ from Script import script
 import re, asyncio, time, shutil, psutil, os, sys
 from pyrogram import Client, filters, enums
 from pyrogram.types import *
+from pyrogram.types import ForceReply
 from info import BOT_START_TIME, ADMINS, PICS
 from utils import humanbytes
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
@@ -193,26 +194,48 @@ async def stop_button(bot, message):
     await asyncio.sleep(3)
     await msg.edit("**𝖡𝗈𝗍 𝖱𝖾𝗌𝗍𝖺𝗋𝗍𝖾𝖽 𝖲𝗎𝖼𝖼𝖾𝗌𝗌𝖿𝗎𝗅𝗅𝗒 ! 𝖱𝖾𝖺𝖽𝗒 𝖳𝗈 𝖬𝗈𝗏𝖾 𝖮𝗇 💯**")
     os.execl(sys.executable, sys.executable, *sys.argv)
+    
 
 # Initialize Telegraph
-telegraph = Telegraph(domain='graph.org')
+telegraph = Telegraph(domain='telegra.ph')
 telegraph.create_account(short_name='JAV STORE', author_name='JAV STORE', author_url='https://telegram.me/javsub_english')
 
 # Command handler for /telegraph
 @Client.on_message(filters.command("telegraph", CMD) & filters.user(ADMINS))
 async def telegraph_command(_, message):
-    # Check if there's a message attached or if there's additional text after the command
-    if message.reply_to_message and message.reply_to_message.text:
-        user_message = message.reply_to_message.text
-    elif len(message.text.split(maxsplit=1)) == 2:
-        user_message = message.text.split(maxsplit=1)[1]
-    else:
-        await message.reply_text("Please provide a message to post on Telegraph.")
-        return
+    # Ask the user for filename
+    await message.reply_text("Please enter the filename:", reply_markup=ForceReply(selective=True))
+    filename_message = await Client.listen(filters.text & filters.user(ADMINS))
+
+    filename = filename_message.text.strip()
+
+    # Ask the user for download link
+    await filename_message.reply_text("Please enter the download link:", reply_markup=ForceReply(selective=True))
+    download_url_message = await Client.listen(filters.text & filters.user(ADMINS))
+
+    download_url = download_url_message.text.strip()
+
+    # Ask the user for password URL
+    await download_url_message.reply_text("Please enter the password URL:", reply_markup=ForceReply(selective=True))
+    password_url_message = await Client.listen(filters.text & filters.user(ADMINS))
+
+    password_url = password_url_message.text.strip()
+
+    # Create the message content
+    content = f"""<b>{filename}</b>
+<br>
+<br>
+🔰 𝗗𝗼𝘄𝗻𝗹𝗼𝗮𝗱 𝗟𝗶𝗻𝗸: <a href="{download_url}">https://javstore.in/video/protected-link</a>
+<br>
+<br>
+🔐 𝗣𝗮𝘀𝘀𝘄𝗼𝗿𝗱: <a href="{password_url}">https://teraboxapp.com/v/unlock-password-link</a>
+<br>
+<br>
+<i>Note: Password Given in Video! Watch Carefully</i>
+"""
 
     # Post to Telegraph and get the URL
-    telegraph_link = post_to_telegraph_with_message(user_message)
+    telegraph_url = post_to_telegraph_with_message(content)
 
     # Send the Telegraph URL to the user
-    await message.reply_text(f"Your message has been posted on Telegraph, Here's the link: {telegraph_link}")
-
+    await password_url_message.reply_text(f"Your content has been posted on Telegraph. Here's the link: {telegraph_url}")
