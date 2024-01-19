@@ -198,7 +198,7 @@ async def stop_button(bot, message):
 # Initialize Telegraph
 telegraph = Telegraph(domain='graph.org')
 telegraph.create_account(short_name='JAV STORE', author_name='JAV STORE', author_url='https://telegram.me/javsub_english')
-template = """<br><br>
+template = f"""<br><br>
 🔰 𝗗𝗼𝘄𝗻𝗹𝗼𝗮𝗱 𝗟𝗶𝗻𝗸: <a href="dddddd">https://javstore.in/video/protected-link</a>
 
 <br><br>
@@ -217,7 +217,7 @@ async def telegraph_command(_, message):
     elif len(message.text.split(maxsplit=1)) == 2:
         user_message = message.text.split(maxsplit=1)[1]
     else:
-        await message.reply_text(f"Please provide a message to post on Telegraph.\n\nHTML Template:\n`{template}`")
+        await message.reply_text(template, parse_mode=enums.ParseMode.HTML)
         return
 
     # Post to Telegraph and get the URL
