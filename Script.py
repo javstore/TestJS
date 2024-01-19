@@ -18,6 +18,16 @@ class script(object):
 <code>Refer the Respective Link of Post for Premium Videos</code>
 """
     
+    TEMPLATE_TXT = """<br><br>
+🔰 𝗗𝗼𝘄𝗻𝗹𝗼𝗮𝗱 𝗟𝗶𝗻𝗸: <a href="dddddd">https://javstore.in/video/protected-link</a>
+
+<br><br>
+🔐 𝗣𝗮𝘀𝘀𝘄𝗼𝗿𝗱: <a href="pppppp">https://teraboxapp.com/v/unlock-password-link</a>
+
+<br><br>
+<i>Note: Password Given in Video! Watch Carefully</i>
+"""
+    
     HELP_TXT = """🙋🏻‍♂️   𝖧𝖾𝗅𝗅𝗈𝗈𝗈  {} 🤓
 
 ○ 𝖠𝗏𝖺𝗂𝗅𝖺𝖻𝗅𝖾 𝖢𝗈𝗆𝗆𝖺𝗇𝖽𝗌
