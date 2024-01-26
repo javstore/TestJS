@@ -624,7 +624,7 @@ async def send_channeltxtmsg(bot, message):
         try:
             chat = await bot.get_chat(target_id)
             reply_text = message.reply_to_message.text or message.reply_to_message.caption
-            await bot.send_message(chat.id, reply_text, disable_web_page_preview=False, parse_mode=enums.ParseMode.MARKDOWN)
+            await bot.send_message(chat.id, reply_text, disable_web_page_preview=False)
             await message.reply_text(f"<b>Your message has been successfully sent to channel <code>{chat.id}</code>.</b>")
         except Exception as e:
             await message.reply_text(f"<b>Error :- <code>{e}</code></b>")
