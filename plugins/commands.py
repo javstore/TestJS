@@ -607,7 +607,7 @@ async def send_channelmsg(bot, message):
             return
         try:
             chat = await bot.get_chat(target_id)
-            await message.reply_to_message.copy(int(chat.id))
+            await message.reply_to_message.copy(int(chat.id), disable_web_page_preview=False)
             await message.reply_text(f"<b>Your message has been successfully sent to channel <code>{chat.id}</code>.</b>")
         except Exception as e:
             await message.reply_text(f"<b>Error :- <code>{e}</code></b>")
