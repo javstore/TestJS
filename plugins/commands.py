@@ -623,7 +623,7 @@ async def send_channeltxtmsg(bot, message):
             return
         try:
             chat = await bot.get_chat(target_id)
-            reply_text = message.reply_to_message.text or message.reply_to_message.caption
+            reply_text = message.reply_to_message.text.html
             reply_markup = message.reply_to_message.reply_markup
             await bot.send_message(chat.id, reply_text, reply_markup=reply_markup, disable_web_page_preview=False)
             await message.reply_text(f"<b>Your message has been successfully sent to channel <code>{chat.id}</code>.</b>")
