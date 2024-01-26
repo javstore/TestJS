@@ -5,58 +5,39 @@ from database.users_chats_db import db
 from info import ADMINS
 from utils import broadcast_messages, broadcast_messages_group
 import asyncio
-import logging
-
-
+        
 @Client.on_message(filters.command("broadcast") & filters.user(ADMINS) & filters.reply)
 async def verupikkals(bot, message):
     users = await db.get_all_users()
-    users = await users.to_list(None)
     b_msg = message.reply_to_message
     sts = await message.reply_text(
-        text=' Broadcasting your messages...'
+        text='🔊 Broadcasting your messages...'
     )
     start_time = time.time()
     total_users = await db.total_users_count()
     done = 0
     blocked = 0
     deleted = 0
-    failed = 0
+    failed =0
+
     success = 0
-
-    broadcast_messages_awaitables = []
-    for user in users:
-        broadcast_messages_awaitables.append(broadcast_messages(int(user['id']), b_msg))
-
-    results = await asyncio.gather(*broadcast_messages_awaitables)
-
-    for pti, sh in results:
+    async for user in users:
+        pti, sh = await broadcast_messages(int(user['id']), b_msg)
         if pti:
             success += 1
-        else:
+        elif pti == False:
             if sh == "Blocked":
-                blocked += 1
+                blocked+=1
             elif sh == "Deleted":
                 deleted += 1
             elif sh == "Error":
                 failed += 1
         done += 1
+        await asyncio.sleep(2)
         if not done % 20:
-            await sts.edit(f"Broadcast in progress:\n\nTotal Users {total_users}\nCompleted: {done} / {total_users}\nSuccess: {success}\nBlocked: {blocked}\nDeleted: {deleted}")
-
-    time_taken = datetime.timedelta(seconds=int(time.time() - start_time))
+            await sts.edit(f"Broadcast in progress:\n\nTotal Users {total_users}\nCompleted: {done} / {total_users}\nSuccess: {success}\nBlocked: {blocked}\nDeleted: {deleted}")    
+    time_taken = datetime.timedelta(seconds=int(time.time()-start_time))
     await sts.edit(f"Broadcast Completed:\nCompleted in {time_taken} seconds.\n\nTotal Users {total_users}\nCompleted: {done} / {total_users}\nSuccess: {success}\nBlocked: {blocked}\nDeleted: {deleted}")
-
-    # Schedule message deletion after 5 minutes
-    await asyncio.sleep(300)  # 5 minutes in seconds
-    try:
-        await bot.delete_messages(chat_id=message.chat.id, message_ids=[message.id])
-
-    except Exception as e:
-        logging.error(f"Failed to delete broadcast message: {e}")
-
-
-
 
 @Client.on_message(filters.command("group_broadcast") & filters.user(ADMINS) & filters.reply)
 async def broadcast_group(bot, message):
