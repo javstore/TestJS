@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="assets/logo.jpg">
+  <img src="assets/logo.png">
 </p>
 <h1 align="center">
   <b>JAV STORE BOT</b>
