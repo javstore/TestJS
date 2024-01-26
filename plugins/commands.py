@@ -614,6 +614,22 @@ async def send_channelmsg(bot, message):
     else:
         await message.reply_text("<b>Error: Command Incomplete!</b>")
 
+@Client.on_message(filters.command("csendtxt") & filters.user(ADMINS))
+async def send_channeltxtmsg(bot, message):
+    global target_id
+    if message.reply_to_message:
+        if target_id is None:
+            await message.reply_text("<b>Error: Target ID not set! Use /set_target {target_id}</b>")
+            return
+        try:
+            chat = await bot.get_chat(target_id)
+            reply_text = message.reply_to_message.text or message.reply_to_message.caption
+            await bot.send_message(chat.id, reply_text, disable_web_page_preview=False, parse_mode="html")
+            await message.reply_text(f"<b>Your message has been successfully sent to channel <code>{chat.id}</code>.</b>")
+        except Exception as e:
+            await message.reply_text(f"<b>Error :- <code>{e}</code></b>")
+    else:
+        await message.reply_text("<b>Error: Command Incomplete!</b>")
 
 @Client.on_message(filters.command('set_template'))
 async def save_template(client, message):
