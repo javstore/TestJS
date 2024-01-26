@@ -571,7 +571,7 @@ async def send_msg(bot, message):
                 out += f"{usr['id']}"
                 out += '\n'
             if str(user.id) in str(out):
-                await message.reply_to_message.copy(int(user.id))
+                await message.reply_to_message.copy(int(user.id), parse_mode="html")
                 success = True
             else:
                 success = False
