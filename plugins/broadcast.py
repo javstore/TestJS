@@ -18,16 +18,17 @@ async def verupikkals(bot, message):
     done = 0
     blocked = 0
     deleted = 0
-    failed =0
-
+    failed = 0
     success = 0
+
+    # Broadcast messages to users
     async for user in users:
         pti, sh = await broadcast_messages(int(user['id']), b_msg)
         if pti:
             success += 1
-        elif pti == False:
+        elif pti is False:
             if sh == "Blocked":
-                blocked+=1
+                blocked += 1
             elif sh == "Deleted":
                 deleted += 1
             elif sh == "Error":
@@ -35,9 +36,21 @@ async def verupikkals(bot, message):
         done += 1
         await asyncio.sleep(2)
         if not done % 20:
-            await sts.edit(f"Broadcast in progress:\n\nTotal Users {total_users}\nCompleted: {done} / {total_users}\nSuccess: {success}\nBlocked: {blocked}\nDeleted: {deleted}")    
-    time_taken = datetime.timedelta(seconds=int(time.time()-start_time))
+            await sts.edit(f"Broadcast in progress:\n\nTotal Users {total_users}\nCompleted: {done} / {total_users}\nSuccess: {success}\nBlocked: {blocked}\nDeleted: {deleted}")
+
+    # Wait for 10 minutes before deleting the broadcasted message
+    await asyncio.sleep(60)
+
+    # Delete the broadcasted message for each user
+    for user in users:
+        try:
+            await bot.delete_message(int(user['id']), b_msg.message_id)
+        except Exception as e:
+            print(f"Error deleting message for user {user['id']}: {e}")
+
+    time_taken = datetime.timedelta(seconds=int(time.time() - start_time))
     await sts.edit(f"Broadcast Completed:\nCompleted in {time_taken} seconds.\n\nTotal Users {total_users}\nCompleted: {done} / {total_users}\nSuccess: {success}\nBlocked: {blocked}\nDeleted: {deleted}")
+
 
 @Client.on_message(filters.command("group_broadcast") & filters.user(ADMINS) & filters.reply)
 async def broadcast_group(bot, message):
