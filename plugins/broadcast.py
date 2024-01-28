@@ -6,8 +6,7 @@ from info import ADMINS
 from utils import broadcast_messages, broadcast_messages_group
 import asyncio
         
-import asyncio
-import time
+
 
 # ... other imports
 
@@ -29,18 +28,18 @@ async def verupikkals(bot, message):
     success = 0
 
     async for user in users:
-        message_id, _ = await broadcast_messages(int(user['id']), b_msg)
+        message_id, pti = await broadcast_messages(int(user['id']), b_msg)
         # Store message ID for deletion
         delete_queue.append({
             "user_id": user["id"],
             "message_id": message_id,
             "delete_time": time.time() + 600  # 10 minutes in seconds
         })
-        if pti:
+        if pti is not None:
             success += 1
-        elif pti == False:
+        elif pti is False:
             if sh == "Blocked":
-                blocked+=1
+                blocked += 1
             elif sh == "Deleted":
                 deleted += 1
             elif sh == "Error":
@@ -68,7 +67,6 @@ async def delete_messages():
                     print(f"Error deleting message: {e}")
                 delete_queue.remove(item)
         await asyncio.sleep(1)  # Adjust sleep time as needed
-
 
 
 @Client.on_message(filters.command("group_broadcast") & filters.user(ADMINS) & filters.reply)
