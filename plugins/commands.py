@@ -119,77 +119,77 @@ async def start(client, message):
             await jm.delete()
         return
     
-    if data.split("-", 1)[0] == "BATCH":
-    try:
-        sts = await message.reply("<b>Please wait...</b>")
-        file_id = data.split("-", 1)[1]
-        msgs = BATCH_FILES.get(file_id)
-        if not msgs:
-            file = await client.download_media(file_id)
-            try: 
-                with open(file) as file_data:
-                    msgs = json.loads(file_data.read())
-            except:
-                await sts.edit("FAILED")
-                return await client.send_message(LOG_CHANNEL, "UNABLE TO OPEN FILE.")
-            os.remove(file)
-            BATCH_FILES[file_id] = msgs
+    if data.split("-", 1)[0] == "BATCH": 
+        try:
+            sts = await message.reply("<b>Please wait...</b>")
+            file_id = data.split("-", 1)[1]
+            msgs = BATCH_FILES.get(file_id)
+            if not msgs:
+                file = await client.download_media(file_id)
+                try: 
+                    with open(file) as file_data:
+                        msgs = json.loads(file_data.read())
+                except:
+                    await sts.edit("FAILED")
+                    return await client.send_message(LOG_CHANNEL, "UNABLE TO OPEN FILE.")
+                os.remove(file)
+                BATCH_FILES[file_id] = msgs
 
-        sent_messages = []
+            sent_messages = []
 
-        for msg in msgs:
-            title = msg.get("title")
-            size=get_size(int(msg.get("size", 0)))
-            f_caption=msg.get("caption", "")
-            if BATCH_FILE_CAPTION:
+            for msg in msgs:
+                title = msg.get("title")
+                size=get_size(int(msg.get("size", 0)))
+                f_caption=msg.get("caption", "")
+                if BATCH_FILE_CAPTION:
+                    try:
+                        f_caption=BATCH_FILE_CAPTION.format(file_name= '' if title is None else title, file_size='' if size is None else size, file_caption='' if f_caption is None else f_caption)
+                    except Exception as e:
+                        logger.exception(e)
+                        f_caption=f_caption
+                if f_caption is None:
+                    f_caption = f"{title}"
+
                 try:
-                    f_caption=BATCH_FILE_CAPTION.format(file_name= '' if title is None else title, file_size='' if size is None else size, file_caption='' if f_caption is None else f_caption)
+                    sent_messages.append(await client.send_cached_media(
+                        chat_id=message.from_user.id,
+                        file_id=msg.get("file_id"),
+                        caption=f_caption,
+                        protect_content=msg.get('protect', False),
+                        reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton('⭐ 𝖩𝖠𝖵 𝖲𝖳𝖮𝖱𝖤', url='https://t.me/javsub_english')]])
+                    ))
+                except FloodWait as e:
+                    await asyncio.sleep(e.x)
+                    logger.warning(f"Floodwait of {e.x} sec.")
+                    await client.send_cached_media(
+                        chat_id=message.from_user.id,
+                        file_id=msg.get("file_id"),
+                        caption=f_caption,
+                        protect_content=msg.get('protect', False)
+                    )
+                except UserIsBlocked:
+                    logger.warning("User is blocked. Handle this case appropriately.")
+                    continue
                 except Exception as e:
-                    logger.exception(e)
-                    f_caption=f_caption
-            if f_caption is None:
-                f_caption = f"{title}"
+                    logger.warning(e, exc_info=True)
+                    continue
+                await asyncio.sleep(1)
 
-            try:
-                sent_messages.append(await client.send_cached_media(
-                    chat_id=message.from_user.id,
-                    file_id=msg.get("file_id"),
-                    caption=f_caption,
-                    protect_content=msg.get('protect', False),
-                    reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton('⭐ 𝖩𝖠𝖵 𝖲𝖳𝖮𝖱𝖤', url='https://t.me/javsub_english')]])
-                ))
-            except FloodWait as e:
-                await asyncio.sleep(e.x)
-                logger.warning(f"Floodwait of {e.x} sec.")
-                await client.send_cached_media(
-                    chat_id=message.from_user.id,
-                    file_id=msg.get("file_id"),
-                    caption=f_caption,
-                    protect_content=msg.get('protect', False)
-                )
-            except UserIsBlocked:
-                logger.warning("User is blocked. Handle this case appropriately.")
-                continue
-            except Exception as e:
-                logger.warning(e, exc_info=True)
-                continue
-            await asyncio.sleep(1)
+            await sts.delete()
+            sent_messages.append(await client.send_sticker(
+                chat_id=message.from_user.id,
+                sticker="CAACAgUAAxkBAAELEnxlkXI_zNY3tF1CsF4hrJ4HUV6D9AAC-w0AAvWYiFRg6CxfjaywGDQE"
+            ))
+            await asyncio.sleep(300)
 
-        await sts.delete()
-        sent_messages.append(await client.send_sticker(
-            chat_id=message.from_user.id,
-            sticker="CAACAgUAAxkBAAELEnxlkXI_zNY3tF1CsF4hrJ4HUV6D9AAC-w0AAvWYiFRg6CxfjaywGDQE"
-        ))
-        await asyncio.sleep(300)
+            for msg in sent_messages:
+                if msg:
+                    await msg.delete()
 
-        for msg in sent_messages:
-            if msg:
-                await msg.delete()
-
-        return
-    except UserIsBlocked:
-        logger.warning("User is blocked before starting the batch.")
-        return
+            return
+        except UserIsBlocked:
+            logger.warning("User is blocked before starting the batch.")
+            return
 
     
     
