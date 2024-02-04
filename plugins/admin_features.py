@@ -125,6 +125,8 @@ async def av_command(_, message):
 <b>⚠️ ɪɴꜰᴏ ʙʏ Jᴀᴠ Sᴛᴏʀᴇ</b>
 """
 
+                if message.chat.type == "supergroup" or message.chat.type == "group":
+                    await message.delete()
                 # Send the photo with caption and inline button              
                 await message.reply_photo(photo=poster, caption=caption, reply_markup=reply_markup, parse_mode=enums.ParseMode.HTML)
             else:
