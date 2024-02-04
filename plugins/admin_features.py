@@ -142,7 +142,8 @@ async def check_alive(client, message):
         chat_id=message.chat.id,
         sticker="CAACAgIAAxkBAAELEzdlkq3YLomvHK4QAXUdHKwhqpmH6gADGgACFLvwSLdQCDPPbD-TNAQ"
     )
-    if message.chat.type == "supergroup" or message.chat.type == "group":
+    chat_type = message.chat.type
+    if chat_type in [types.ChatType.GROUP, types.ChatType.SUPERGROUP]:
         await message.delete()
 
 
