@@ -125,8 +125,6 @@ async def av_command(_, message):
 <b>⚠️ ɪɴꜰᴏ ʙʏ Jᴀᴠ Sᴛᴏʀᴇ</b>
 """
 
-                if message.chat.type == "supergroup" or message.chat.type == "group":
-                    await message.delete()
                 # Send the photo with caption and inline button              
                 await message.reply_photo(photo=poster, caption=caption, reply_markup=reply_markup, parse_mode=enums.ParseMode.HTML)
             else:
@@ -144,7 +142,8 @@ async def check_alive(client, message):
         chat_id=message.chat.id,
         sticker="CAACAgIAAxkBAAELEzdlkq3YLomvHK4QAXUdHKwhqpmH6gADGgACFLvwSLdQCDPPbD-TNAQ"
     )
-    await message.delete()
+    if message.chat.type == "supergroup" or message.chat.type == "group":
+        await message.delete()
 
 
 @Client.on_message(filters.command("help", CMD))
