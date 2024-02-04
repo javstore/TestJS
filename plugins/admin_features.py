@@ -36,6 +36,17 @@ def mins_to_hms(minutes):
     h, m = divmod(minutes, 60)
     return f"{int(h):2d}h {int(m):02d}min"
 
+from pyrogram import Client, filters
+
+CMD_PREFIX = "/"
+
+@Client.on_message(filters.command & filters.group)
+async def delete_command_messages(client, message):
+    # Check if the message starts with the specified command prefix
+    if message.text.startswith(CMD_PREFIX):
+        # Delete the command message
+        await message.delete()
+
 
 CMD = ["/", "."]
 
@@ -142,9 +153,7 @@ async def check_alive(client, message):
         chat_id=message.chat.id,
         sticker="CAACAgIAAxkBAAELEzdlkq3YLomvHK4QAXUdHKwhqpmH6gADGgACFLvwSLdQCDPPbD-TNAQ"
     )
-    chat_type = message.chat.type
-    if chat_type in [types.ChatType.GROUP, types.ChatType.SUPERGROUP]:
-        await message.delete()
+    await message.delete()
 
 
 @Client.on_message(filters.command("help", CMD))
