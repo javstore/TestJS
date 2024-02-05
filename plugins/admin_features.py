@@ -36,17 +36,6 @@ def mins_to_hms(minutes):
     h, m = divmod(minutes, 60)
     return f"{int(h):2d}h {int(m):02d}min"
 
-from pyrogram import Client, filters
-
-CMD_PREFIX = "/"
-
-@Client.on_message(filters.command & filters.group)
-async def delete_command_messages(client, message):
-    # Check if the message starts with the specified command prefix
-    if message.text.startswith(CMD_PREFIX):
-        # Delete the command message
-        await message.delete()
-
 
 CMD = ["/", "."]
 
