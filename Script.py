@@ -4,13 +4,12 @@ class script(object):
 
 ⚠️ 𝖯𝗈𝗐𝖾𝗋𝖾𝖽 𝖻𝗒 𝖩𝖠𝖵 𝖲𝖳𝖮𝖱𝖤"""
 
-    PAYMENT_TXT = """🤷‍♂️ 𝖶𝖺𝗇𝗍 𝗍𝗈 𝖶𝖺𝗍𝖼𝗁 𝗍𝗁𝖾 𝗏𝗂𝖽𝖾𝗈 𝗂𝗇 1080𝗉?
+    PAYMENT_TXT = """Pay ₹20 for 1 Video
+(Send Code and Get 1 Video in HD)
 
-⭐ 1080𝗉 𝖯𝗋𝖾𝗆𝗂𝗎𝗆 𝖰𝗎𝖺𝗅𝗂𝗍𝗒
-📂 𝖣𝗈𝗐𝗇𝗅𝗈𝖺𝖽 𝗍𝗁𝖾 𝖣𝗂𝗋𝖾𝖼𝗍 𝖥𝗂𝗅𝖾𝗌
-🚫 𝖭𝗈 𝖠𝖽𝗌
+Pay ₹99 𝖩𝗈𝗂𝗇 Premium Channel
 
-⚠️ 𝖩𝖴𝖲𝖳 𝖯𝖠𝖸 ₹39 𝖠𝖭𝖣 𝖤𝖭𝖩𝖮𝖸 𝖳𝖧𝖤 𝖵𝖨𝖣𝖤𝖮!"""
+💳 Dm to Pay @javstore_admin"""
     
     PAY_TXT = """<b>💵 𝖯𝖠𝖸 ₹39</b>
 (𝖦𝗉𝖺𝗒, 𝖯𝗁𝗈𝗇𝖾𝖯𝖾, 𝖯𝖺𝗒𝗍𝗆 𝖾𝗍𝖼,.)
