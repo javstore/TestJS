@@ -9,7 +9,7 @@ class script(object):
 
 Pay ₹99 𝖩𝗈𝗂𝗇 Premium Channel
 
-💳 Dm to Pay @javstore_admin"""
+💳 Dm to Pay <a href='http://telegram.me/javstore_adminbot'>@javstore_admin</a>"""
     
     PAY_TXT = """<b>💵 𝖯𝖠𝖸 ₹39</b>
 (𝖦𝗉𝖺𝗒, 𝖯𝗁𝗈𝗇𝖾𝖯𝖾, 𝖯𝖺𝗒𝗍𝗆 𝖾𝗍𝖼,.)
