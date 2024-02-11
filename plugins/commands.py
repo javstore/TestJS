@@ -72,15 +72,15 @@ async def start(client, message):
             parse_mode=enums.ParseMode.MARKDOWN
             )
         return
-    if len(message.command) == 2 and message.command[1] in ["subscribe", "error", "okay", "help", "payment"]:
-        buttons = [[
-            InlineKeyboardButton('💳 𝖯𝖠𝖸 𝖭𝖮𝖶', callback_data='pay')
-        ]]       
-        reply_markup = InlineKeyboardMarkup(buttons)
+    if len(message.command) == 2 and message.command[1] in ["subscribe", "buy", "premium", "help", "payment"]:
+        #buttons = [[
+        #    InlineKeyboardButton('💳 𝖯𝖠𝖸 𝖭𝖮𝖶', callback_data='pay')
+        #]]       
+        #reply_markup = InlineKeyboardMarkup(buttons)
         await message.reply_photo(
-            photo=random.choice(PICS),
+            photo="https://te.legra.ph/file/79e98c6239300e2ca08ef.jpg",
             caption=script.PAYMENT_TXT.format(message.from_user.mention, temp.U_NAME, temp.B_NAME),
-            reply_markup=reply_markup,
+            #reply_markup=reply_markup,
             parse_mode=enums.ParseMode.HTML
         )
         return
