@@ -78,7 +78,7 @@ async def start(client, message):
         #]]       
         #reply_markup = InlineKeyboardMarkup(buttons)
         await message.reply_photo(
-            photo="https://te.legra.ph/file/79e98c6239300e2ca08ef.jpg",
+            photo="https://te.legra.ph/file/5607af251b78934dde086.jpg",
             caption=script.PAYMENT_TXT.format(message.from_user.mention, temp.U_NAME, temp.B_NAME),
             #reply_markup=reply_markup,
             parse_mode=enums.ParseMode.HTML
