@@ -8,6 +8,7 @@ class script(object):
 (Send Code and Get 1 Video in HD)
 
 Pay ₹99 𝖩𝗈𝗂𝗇 Premium Channel
+(30 𝖣𝖺𝗒𝗌)
 
 💳 Dm to Pay <a href='http://telegram.me/javstore_adminbot'>@javstore_admin</a>"""
     
