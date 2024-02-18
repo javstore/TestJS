@@ -4,18 +4,22 @@ class script(object):
 
 ⚠️ 𝖯𝗈𝗐𝖾𝗋𝖾𝖽 𝖻𝗒 𝖩𝖠𝖵 𝖲𝖳𝖮𝖱𝖤"""
 
-    PAYMENT_TXT = """Pay ₹20 for 1 Video
-(Send Code and Get 1 Video in HD)
-
-Pay ₹99 𝖩𝗈𝗂𝗇 Premium Channel
+    PAYMENT_TXT = """𝖩𝖠𝖵 𝖲𝖳𝖮𝖱𝖤 𝖯𝗋𝖾𝗆𝗂𝗎𝗆 𝖲𝗎𝖻𝗌𝖼𝗋𝗂𝗉𝗍𝗂𝗈𝗇
 (30 𝖣𝖺𝗒𝗌)
 
-💳 Dm to Pay <a href='http://telegram.me/javstore_adminbot'>@javstore_admin</a>"""
-    
-    PAY_TXT = """<b>💵 𝖯𝖠𝖸 ₹39</b>
-(𝖦𝗉𝖺𝗒, 𝖯𝗁𝗈𝗇𝖾𝖯𝖾, 𝖯𝖺𝗒𝗍𝗆 𝖾𝗍𝖼,.)
+₹99 𝖮𝖭𝖫𝖸
 
-<code>Refer the Respective Link of Post for Premium Videos</code>
+• 𝖠𝖼𝖼𝖾𝗌𝗌 𝗍𝗈 𝖯𝗋𝗂𝗏𝖺𝗍𝖾 𝖢𝗁𝖺𝗇𝗇𝖾𝗅
+• 𝖯𝗋𝗂𝗈𝗋𝗂𝗍𝗒 𝖠𝖼𝖼𝖾𝗌𝗌 𝗍𝗈 𝖭𝖾𝗐 𝖴𝗉𝗅𝗈𝖺𝖽𝗌
+• 𝖶𝖺𝗍𝖼𝗁 𝗈𝗋 𝖣𝗈𝗐𝗇𝗅𝗈𝖺𝖽 𝗂𝗇 𝖧𝖣/𝖲𝖣
+• 𝖭𝗈 𝖠𝖽𝗌
+
+💳 𝖣𝗆 𝗍𝗈 𝖯𝖺𝗒 <a href='http://telegram.me/javstore_adminbot'>@javstore_admin</a>"""
+    
+    PAY_TXT = """<b>💵 𝖯𝖠𝖸 ₹99  or 1.70 USD</b>
+(𝖦𝗉𝖺𝗒, 𝖯𝗁𝗈𝗇𝖾𝖯𝖾, 𝖯𝖺𝗒𝗍𝗆 or Paypal)
+
+💳 𝖣𝗆 𝗍𝗈 𝖯𝖺𝗒 <a href='http://telegram.me/javstore_adminbot'>@javstore_admin
 """
     
     TEMPLATE_TXT = """<br><br>
