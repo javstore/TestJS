@@ -20,7 +20,7 @@ def is_enabled(value, default):
 SESSION = environ.get('SESSION', 'javsession')
 API_ID = int(environ.get('API_ID', '12581928'))
 API_HASH = environ.get('API_HASH', '9bd003806267466f904f91aa035d8991')
-BOT_TOKEN = environ.get('BOT_TOKEN', '5892738088:AAEfUnmvXCdsGmrFKbxB1xSLjquGAya1ygU')
+BOT_TOKEN = environ.get('BOT_TOKEN', '6554066079:AAGhYZev-qrIj6EzYu4pTsmX4fJ-zrZhuKA')
 PORT = environ.get("PORT", "8080")
 
 # Bot settings
