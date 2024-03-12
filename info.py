@@ -18,8 +18,8 @@ def is_enabled(value, default):
 
 # Bot information
 SESSION = environ.get('SESSION', 'avtime')
-API_ID = int(environ.get('API_ID', '12581928'))
-API_HASH = environ.get('API_HASH', '9bd003806267466f904f91aa035d8991')
+API_ID = int(environ.get('API_ID', '25123362'))
+API_HASH = environ.get('API_HASH', '21e915c99131a6fef3fc1502331aefaf')
 BOT_TOKEN = environ.get('BOT_TOKEN', '6554066079:AAGhYZev-qrIj6EzYu4pTsmX4fJ-zrZhuKA')
 PORT = environ.get("PORT", "8080")
 
