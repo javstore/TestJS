@@ -18,6 +18,14 @@ def post_to_telegraph_with_message(message):
     response = telegraph.create_page('Telegram Files', html_content=text_content)
     return response['url']
 
+def post_to_telegraph_as_img(image_urls, dvd):
+    text_content = f"<blockquote>Provided by JAV STORE</blockquote>"
+    for url in image_urls:
+        text_content += f'<img src="{url}">'
+
+    response = telegraph.create_page('Screenshots of {dvd}', html_content=text_content)
+    return response['url']
+
 
 def post_to_telegraph(image_urls, dvd):
     t = TelegraphPoster(use_api=True)
@@ -87,7 +95,7 @@ async def av_command(_, message):
                         screenshots[i] = screenshot.replace('-', 'jp-', 1)
 
                 # Posting screenshots to Telegraph and getting the URL
-                telegraph_url = post_to_telegraph(screenshots, dvd)
+                telegraph_url = post_to_telegraph_as_img(screenshots, dvd)
                 
                 # Create inline buttons
                 buttons = []
