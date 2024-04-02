@@ -7,8 +7,8 @@ from pyrogram.types import *
 from info import BOT_START_TIME, ADMINS, PICS
 from utils import humanbytes
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
-from html_telegraph_poster import TelegraphPoster
-from telegraph import Telegraph
+#from html_telegraph_poster import TelegraphPoster
+#from telegraph import Telegraph
 import requests
 from html import escape
 
