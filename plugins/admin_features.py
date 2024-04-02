@@ -23,7 +23,7 @@ def post_to_telegraph_as_img(image_urls, dvd):
     for url in image_urls:
         text_content += f'<img src="{url}">'
 
-    response = telegraph.create_page('Screenshots of {dvd}', html_content=text_content)
+    response = telegraph.create_page(f'Screenshots of {dvd}', html_content=text_content)
     return response['url']
 
 
