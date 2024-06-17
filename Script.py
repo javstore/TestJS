@@ -36,8 +36,8 @@ class script(object):
     HELP_TXT = """🙋🏻‍♂️   𝖧𝖾𝗅𝗅𝗈𝗈𝗈  {} 🤓
 
 ○ 𝖠𝗏𝖺𝗂𝗅𝖺𝖻𝗅𝖾 𝖢𝗈𝗆𝗆𝖺𝗇𝖽𝗌
-     
- /alive - Check I'm Alive..
+ /premium - Join Premium Subscription
+ /alive - Check I'm Alive
  /info - User info
  /ping - To get your ping
  /id - User id
