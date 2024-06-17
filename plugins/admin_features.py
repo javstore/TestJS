@@ -50,7 +50,7 @@ CMD = ["/", "."]
 @Client.on_message(filters.command(["avinfo", "av"], CMD))
 async def av_command(client: Client, message: Message):
     # Check if the user is an admin
-    if message.from_user.id not in ADMINS:
+    if message.from_user is None or message.from_user.id not in ADMINS:
         await message.reply("𝖠𝖽𝗆𝗂𝗇 𝖥𝖾𝖺𝗍𝗎𝗋𝖾𝗌 𝖭𝗈𝗍 𝖠𝗅𝗅𝗈𝗐𝖾𝖽!")
         return
     dvd_id = None
