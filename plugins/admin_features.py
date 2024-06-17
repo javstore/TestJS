@@ -47,7 +47,7 @@ def mins_to_hms(minutes):
 
 CMD = ["/", "."]
 
-@Client.on_message(filters.command("avinfo" , CMD) & filters.user(ADMINS))
+@Client.on_message(filters.command("avinfo" "av", CMD) & filters.user(ADMINS))
 async def av_command(_, message):
     dvd_id = None
     command = message.text.split(maxsplit=1)
