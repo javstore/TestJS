@@ -165,6 +165,14 @@ async def admin_panel(client, message):
         caption=script.ADMIN_TXT
     )
 
+@Client.on_message(filters.command("premium", CMD))
+async def premium(_, message):
+await message.reply_photo(
+            photo="https://te.legra.ph/file/4ce1bd1b630e31a5b9ee3.png",
+            caption=script.PAYMENT_TXT,
+            parse_mode=enums.ParseMode.HTML
+        )
+
 @Client.on_message(filters.command("ping", CMD))
 async def ping(_, message):
     start_t = time.time()
