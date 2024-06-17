@@ -174,12 +174,12 @@ async def ping(_, message):
     await rm.edit(f"𝖯𝗂𝗇𝗀!\n{time_taken_s:.3f} ms")
 
 @Client.on_message(filters.command("premium", CMD))
+async def premium(_, message):
 await message.reply_photo(
             photo="https://te.legra.ph/file/4ce1bd1b630e31a5b9ee3.png",
             caption=script.PAYMENT_TXT,
             parse_mode=enums.ParseMode.HTML
         )
-        return
 
 @Client.on_message(filters.command("status"))          
 async def stats(bot, update):
