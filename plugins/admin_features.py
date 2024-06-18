@@ -76,27 +76,22 @@ async def av_command(client: Client, message: Message):
 
                 # Extracting information from the JSON structure
                 page = f"https://r18.dev/videos/vod/movies/detail/-/id={content_id}"
-                dvd = combined_data['dvd_id']
-                title = combined_data['title_en']
-                preview = combined_data['sample_url']
-                poster = combined_data['jacket_full_url']
-                release_date = combined_data['release_date']
-                runtime = combined_data['runtime_mins']
+                dvd = combined_data.get('dvd_id', 'N/A')
+                title = combined_data.get('title_en', 'N/A')
+                preview = combined_data.get('sample_url', None)
+                poster = combined_data.get('jacket_full_url', None)
+                release_date = combined_data.get('release_date', 'N/A')
+                runtime = combined_data.get('runtime_mins', 0)
                 runtime = mins_to_hms(runtime)
-                studio = combined_data['maker_name_en']
-                if studio is not None:
-                    studio = studio.replace('\n', '')
-                else:
-                    studio = 'N/A'
-                label = combined_data['label_name_en']
+                studio = combined_data.get('maker_name_en', 'N/A').replace('\n', '')
+                label = combined_data.get('label_name_en', 'N/A')
                 director = combined_data['directors'][0]['name_romaji'] if 'directors' in combined_data and len(combined_data['directors']) > 0 else 'N/A'
-                actresses = ', '.join([actress['name_romaji'] for actress in combined_data['actresses']]) if 'actresses' in combined_data and len(combined_data['actresses']) > 0 else 'N/A'
-                series_name_en = combined_data['series_name_en'] if 'series_name_en' in combined_data else 'N/A'
-                if series_name_en is not None:
-                    series_name_en = series_name_en.replace('\n', '')
-                tags = ' '.join([f"#{category['name_en'].replace(' ', '').replace('-', '')}" for category in combined_data['categories'] if category.get('name_en') and '*' not in category['name_en']]) if 'categories' in combined_data else 'N/A'
+                actresses = ', '.join([actress['name_romaji'] for actress in combined_data.get('actresses', [])]) if 'actresses' in combined_data else 'N/A'
+                series_name_en = combined_data.get('series_name_en', 'N/A').replace('\n', '')
+                tags = ' '.join([f"#{category['name_en'].replace(' ', '').replace('-', '')}" for category in combined_data.get('categories', []) if category.get('name_en') and '*' not in category['name_en']]) if 'categories' in combined_data else 'N/A'
                 tags = tags.replace("'", "")
-                screenshots = [image['image_full'] for image in combined_data['gallery']] if 'gallery' in combined_data else []
+                screenshots = [image['image_full'] for image in combined_data.get('gallery', [])]
+                
                 # Loop through the screenshots and modify the URLs
                 for i, screenshot in enumerate(screenshots):
                     if 'jp-' not in screenshot:
