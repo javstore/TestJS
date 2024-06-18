@@ -83,11 +83,11 @@ async def av_command(client: Client, message: Message):
                 release_date = combined_data.get('release_date', 'N/A')
                 runtime = combined_data.get('runtime_mins', 0)
                 runtime = mins_to_hms(runtime)
-                studio = combined_data.get('maker_name_en', 'N/A').replace('\n', '')
+                studio = combined_data.get('maker_name_en', 'N/A')
                 label = combined_data.get('label_name_en', 'N/A')
                 director = combined_data['directors'][0]['name_romaji'] if 'directors' in combined_data and len(combined_data['directors']) > 0 else 'N/A'
                 actresses = ', '.join([actress['name_romaji'] for actress in combined_data.get('actresses', [])]) if 'actresses' in combined_data else 'N/A'
-                series_name_en = combined_data.get('series_name_en', 'N/A').replace('\n', '')
+                series_name_en = combined_data.get('series_name_en', 'N/A')
                 tags = ' '.join([f"#{category['name_en'].replace(' ', '').replace('-', '')}" for category in combined_data.get('categories', []) if category.get('name_en') and '*' not in category['name_en']]) if 'categories' in combined_data else 'N/A'
                 tags = tags.replace("'", "")
                 screenshots = [image['image_full'] for image in combined_data.get('gallery', [])]
