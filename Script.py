@@ -15,7 +15,7 @@ class script(object):
 • 𝖠𝖼𝖼𝖾𝗌𝗌 𝗍𝗈 𝖠𝗅𝗅 𝖢𝗈𝗇𝗍𝖾𝗇𝗍𝗌
 • 𝖭𝗈 𝖠𝖽𝗌
 
-💳 𝖣𝗆 𝗍𝗈 𝖯𝖺𝗒 <a href='http://telegram.me/javstore_adminbot'>@javstore_admin</a>"""
+💳 𝖣𝗆 𝗍𝗈 𝖯𝖺𝗒 <a href='https://telegram.me/javstore_adminbot?start=pay'>@javstore_admin</a>"""
     
     PAY_TXT = """<b>💵 𝖯𝖠𝖸 ₹99  or 1.70 USD</b>
 (𝖦𝗉𝖺𝗒, 𝖯𝗁𝗈𝗇𝖾𝖯𝖾, 𝖯𝖺𝗒𝗍𝗆 or Paypal)
