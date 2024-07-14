@@ -1,5 +1,7 @@
 import motor.motor_asyncio
 from info import DATABASE_NAME, DATABASE_URI, IMDB, IMDB_TEMPLATE, MELCOW_NEW_USERS, P_TTI_SHOW_OFF, SINGLE_BUTTON, SPELL_CHECK_REPLY, PROTECT_CONTENT, AUTO_DELETE, AUTO_FFILTER, MAX_BTN
+import datetime
+from info import *
 
 class Database:
     
@@ -14,6 +16,7 @@ class Database:
         return dict(
             id = id,
             name = name,
+            point = 0,
             ban_status=dict(
                 is_banned=False,
                 ban_reason="",
@@ -34,6 +37,24 @@ class Database:
     async def add_user(self, id, name):
         user = self.new_user(id, name)
         await self.col.insert_one(user)
+
+    async def update_point(self ,id):
+        await self.col.update_one({'id' : id} , {'$inc':{'point' : 100}})
+        point = (await self.col.find_one({'id' : id}))['point']
+        if point >= PREMIUM_POINT :
+            seconds = (REF_PREMIUM * 24 * 60 * 60)
+            oldEx =(await self.users.find_one({'id' : id}))
+            if oldEx :
+                expiry_time = oldEx['expiry_time'] + datetime.timedelta(seconds=seconds)
+            else: 
+                expiry_time = datetime.datetime.now() + datetime.timedelta(seconds=seconds)
+            user_data = {"id": id, "expiry_time": expiry_time}
+            await db.update_user(user_data)
+            await self.col.update_one({'id' : id} , {'$set':{'point' : 0}})
+
+    async def get_point(self , id):
+        newPoint = await self.col.find_one({'id' : id})
+        return newPoint['point'] if newPoint else None
     
     async def is_user_exist(self, id):
         user = await self.col.find_one({'id':int(id)})
