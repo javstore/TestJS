@@ -51,6 +51,10 @@ NO_RESULTS_MSG = bool(environ.get("NO_RESULTS_MSG", False))
 SUPPORT_CHAT_ID = -1001790929450
 REQST_CHANNEL_ID = -1001388365369
 
+# Refer and Earn
+REF_PREMIUM = 30
+PREMIUM_POINT = 1500
+
 # MongoDB information
 DATABASE_URI = environ.get('DATABASE_URI', "mongodb+srv://freakboy:freakboy@cluster0.qhvex0i.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
 DATABASE_NAME = environ.get('DATABASE_NAME', "javban")
