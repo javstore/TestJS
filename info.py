@@ -17,7 +17,7 @@ def is_enabled(value, default):
         return default
 
 # Bot information
-SESSION = environ.get('SESSION', 'kunjumani')
+SESSION = environ.get('SESSION', 'bombstar')
 API_ID = int(environ.get('API_ID', '5929089'))
 API_HASH = environ.get('API_HASH', '4c188a365d111e459c450333ecfba021')
 BOT_TOKEN = environ.get('BOT_TOKEN', '5614432630:AAEcYIB74yLHA1EmRMefRrbD19h7wlFgfLw')
@@ -53,8 +53,8 @@ REQST_CHANNEL_ID = -1001388365369
 
 # MongoDB information
 DATABASE_URI = environ.get('DATABASE_URI', "mongodb+srv://freakboy:freakboy@cluster0.qhvex0i.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
-DATABASE_NAME = environ.get('DATABASE_NAME', "demobot")
-COLLECTION_NAME = environ.get('COLLECTION_NAME', 'demobot')
+DATABASE_NAME = environ.get('DATABASE_NAME', "javban")
+COLLECTION_NAME = environ.get('COLLECTION_NAME', 'javban')
 
 # Others
 DELETE_CHANNELS = [int(dch) if id_pattern.search(dch) else dch for dch in environ.get('DELETE_CHANNELS', '0').split()]
