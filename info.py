@@ -17,10 +17,10 @@ def is_enabled(value, default):
         return default
 
 # Bot information
-SESSION = environ.get('SESSION', 'avtime')
-API_ID = int(environ.get('API_ID', '25123362'))
-API_HASH = environ.get('API_HASH', '21e915c99131a6fef3fc1502331aefaf')
-BOT_TOKEN = environ.get('BOT_TOKEN', '6554066079:AAGhYZev-qrIj6EzYu4pTsmX4fJ-zrZhuKA')
+SESSION = environ.get('SESSION', 'kunjumani')
+API_ID = int(environ.get('API_ID', '5929089'))
+API_HASH = environ.get('API_HASH', '4c188a365d111e459c450333ecfba021')
+BOT_TOKEN = environ.get('BOT_TOKEN', '5614432630:AAEcYIB74yLHA1EmRMefRrbD19h7wlFgfLw')
 PORT = environ.get("PORT", "8080")
 
 # Bot settings
@@ -36,11 +36,11 @@ MELCOW_VID = environ.get("MELCOW_VID", "https://graph.org/file/72dff2b65352ba85d
 SPELL_IMG = environ.get("SPELL_IMG", "https://telegra.ph/file/0593a3103ba1b9a5855bf.jpg")
 
 # Admins, Channels & Users
-ADMINS = [int(admin) if id_pattern.search(admin) else admin for admin in environ.get('ADMINS', "1120085236 1621366244").split()]
+ADMINS = [int(admin) if id_pattern.search(admin) else admin for admin in environ.get('ADMINS', '1091408108').split()]
 CHANNELS = [int(ch) if id_pattern.search(ch) else ch for ch in environ.get('CHANNELS', '').split()]
-auth_users = [int(user) if id_pattern.search(user) else user for user in environ.get('AUTH_USERS', '').split()]
+auth_users = [int(user) if id_pattern.search(user) else user for user in environ.get('AUTH_USERS', '1621366244').split()]
 AUTH_USERS = (auth_users + ADMINS) if auth_users else []
-auth_channel = environ.get('AUTH_CHANNEL', '-1001586402964')
+auth_channel = environ.get('AUTH_CHANNEL')
 auth_grp = environ.get('AUTH_GROUP')
 AUTH_CHANNEL = int(auth_channel) if auth_channel and id_pattern.search(auth_channel) else None
 AUTH_GROUPS = [int(ch) for ch in auth_grp.split()] if auth_grp else None
@@ -48,19 +48,19 @@ support_chat_id = environ.get('SUPPORT_CHAT_ID')
 reqst_channel = environ.get('REQST_CHANNEL_ID')
 REQST_CHANNEL = int(reqst_channel) if reqst_channel and id_pattern.search(reqst_channel) else None
 NO_RESULTS_MSG = bool(environ.get("NO_RESULTS_MSG", False))
-SUPPORT_CHAT_ID = -1001787919806
-REQST_CHANNEL_ID = -1002047962547
+SUPPORT_CHAT_ID = -1001790929450
+REQST_CHANNEL_ID = -1001388365369
 
 # MongoDB information
-DATABASE_URI = environ.get('DATABASE_URI', "mongodb+srv://JavStoreDB:javstoredb@cluster0.jkm158w.mongodb.net/?retryWrites=true&w=majority")
-DATABASE_NAME = environ.get('DATABASE_NAME', "JavStoreDB")
-COLLECTION_NAME = environ.get('COLLECTION_NAME', 'JavDB')
+DATABASE_URI = environ.get('DATABASE_URI', "mongodb+srv://freakboy:freakboy@cluster0.qhvex0i.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
+DATABASE_NAME = environ.get('DATABASE_NAME', "demobot")
+COLLECTION_NAME = environ.get('COLLECTION_NAME', 'demobot')
 
 # Others
 DELETE_CHANNELS = [int(dch) if id_pattern.search(dch) else dch for dch in environ.get('DELETE_CHANNELS', '0').split()]
 MAX_B_TN = environ.get("MAX_B_TN", "10")
 MAX_BTN = is_enabled((environ.get('MAX_BTN', "True")), True)
-LOG_CHANNEL = int(environ.get('LOG_CHANNEL', '-1001787919806'))
+LOG_CHANNEL = int(environ.get('LOG_CHANNEL', '-1001790929450'))
 SUPPORT_CHAT = environ.get('SUPPORT_CHAT', 'jav_sub_movies')
 P_TTI_SHOW_OFF = is_enabled((environ.get('P_TTI_SHOW_OFF', "False")), False)
 IMDB = is_enabled((environ.get('IMDB', "False")), True)
@@ -74,7 +74,7 @@ LONG_IMDB_DESCRIPTION = is_enabled(environ.get("LONG_IMDB_DESCRIPTION", "False")
 SPELL_CHECK_REPLY = is_enabled(environ.get("SPELL_CHECK_REPLY", "False"), False)
 MAX_LIST_ELM = environ.get("MAX_LIST_ELM", None)
 INDEX_REQ_CHANNEL = int(environ.get('INDEX_REQ_CHANNEL', LOG_CHANNEL))
-FILE_STORE_CHANNEL = [int(ch) for ch in (environ.get('FILE_STORE_CHANNEL', '-1001719057246')).split()]
+FILE_STORE_CHANNEL = [int(ch) for ch in (environ.get('FILE_STORE_CHANNEL', '')).split()]
 MELCOW_NEW_USERS = is_enabled((environ.get('MELCOW_NEW_USERS', "True")), True)
 PROTECT_CONTENT = is_enabled((environ.get('PROTECT_CONTENT', "False")), False)
 PUBLIC_FILE_STORE = is_enabled((environ.get('PUBLIC_FILE_STORE', "False")), False)
