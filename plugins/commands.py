@@ -44,45 +44,45 @@ async def start(client, message):
             parse_mode=enums.ParseMode.HTML
         )
         return
-    bypass_commands = ["subscribe", "buy", "premium", "help", "payment"]
+    if AUTH_CHANNEL and not await is_subscribed(client, message):
+        try:
+            invite_link = await client.create_chat_invite_link(int(AUTH_CHANNEL))
+        except ChatAdminRequired:
+            logger.error("Make sure Bot is admin in Forcesub channel")
+            return
+        btn = [
+            [
+                InlineKeyboardButton(
+                    "🤖 𝖩𝗈𝗂𝗇 𝖴𝗉𝖽𝖺𝗍𝖾𝗌 𝖢𝗁𝖺𝗇𝗇𝖾𝗅 🤖", url=invite_link.invite_link
+                )
+            ]
+        ]
 
-    # Check if the command is in the bypass list
-    if len(message.command) == 2 and message.command[1] in bypass_commands:
+        if message.command[1] != "subscribe" or message.command[1] != "send_all":
+            try:
+                kk, file_id = message.command[1].split("_", 1)
+                pre = 'checksubp' if kk == 'filep' else 'checksub' 
+                btn.append([InlineKeyboardButton("🔄 𝖳𝗋𝗒 𝖠𝗀𝖺𝗂𝗇 🔄", callback_data=f"{pre}#{file_id}")])
+            except (IndexError, ValueError):
+                btn.append([InlineKeyboardButton("🔄 𝖳𝗋𝗒 𝖠𝗀𝖺𝗂𝗇 🔄", url=f"https://t.me/{temp.U_NAME}?start={message.command[1]}")])
+        await client.send_message(
+            chat_id=message.from_user.id,
+            text="**Please Join My Updates Channel to use this Bot!**",
+            reply_markup=InlineKeyboardMarkup(btn),
+            parse_mode=enums.ParseMode.MARKDOWN
+            )
+        return
+    if len(message.command) == 2 and message.command[1] in ["subscribe", "buy", "premium", "help", "payment"]:
+        #buttons = [[
+        #    InlineKeyboardButton('💳 𝖯𝖠𝖸 𝖭𝖮𝖶', callback_data='pay')
+        #]]       
+        #reply_markup = InlineKeyboardMarkup(buttons)
         await message.reply_photo(
             photo="https://te.legra.ph/file/4ce1bd1b630e31a5b9ee3.png",
             caption=script.PAYMENT_TXT.format(message.from_user.mention, temp.U_NAME, temp.B_NAME),
             parse_mode=enums.ParseMode.HTML
         )
-    else:
-        # Perform the subscription check for other commands
-        if AUTH_CHANNEL and not await is_subscribed(client, message):
-            try:
-                invite_link = await client.create_chat_invite_link(int(AUTH_CHANNEL))
-            except ChatAdminRequired:
-                logger.error("Make sure Bot is admin in Forcesub channel")
-                return
-            btn = [
-                [
-                    InlineKeyboardButton(
-                        "🤖 𝖩𝗈𝗂𝗇 𝖢𝗁𝖺𝗇𝗇𝖾𝗅 🤖", url=invite_link.invite_link
-                    )
-                ]
-            ]
-
-            if message.command[1] != "subscribe" or message.command[1] != "send_all":
-                try:
-                    kk, file_id = message.command[1].split("_", 1)
-                    pre = 'checksubp' if kk == 'filep' else 'checksub' 
-                    btn.append([InlineKeyboardButton("📂 𝖦𝖾𝗍 𝖥𝗂𝗅𝖾𝗌 📂", callback_data=f"{pre}#{file_id}")])
-                except (IndexError, ValueError):
-                    btn.append([InlineKeyboardButton("📂 𝖦𝖾𝗍 𝖥𝗂𝗅𝖾𝗌 📂", url=f"https://t.me/{temp.U_NAME}?start={message.command[1]}")])
-            await client.send_message(
-                chat_id=message.from_user.id,
-                text="𝖯𝗅𝖾𝖺𝗌𝖾 𝖩𝗈𝗂𝗇 𝖩𝖠𝖵 𝖲𝖳𝖮𝖱𝖤 𝖢𝗁𝖺𝗇𝗇𝖾𝗅 𝗍𝗈 𝖦𝖾𝗍 𝖥𝗂𝗅𝖾𝗌 𝖿𝗋𝗈𝗆 𝗍𝗁𝗂𝗌 𝖡𝗈𝗍!",
-                reply_markup=InlineKeyboardMarkup(btn),
-                parse_mode=enums.ParseMode.MARKDOWN
-            )
-            return
+        return
     data = message.command[1]
     try:
         pre, file_id = data.split('_', 1)
