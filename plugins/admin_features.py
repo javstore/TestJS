@@ -44,7 +44,6 @@ def mins_to_hms(minutes):
     h, m = divmod(minutes, 60)
     return f"{int(h):2d}h {int(m):02d}min"
 
-
 from pyrogram import Client, filters
 from pyrogram.types import Message
 import requests
@@ -87,21 +86,21 @@ async def av_command(client: Client, message: Message):
         json_data = json.loads(script_tag.string)
         content_id = None
 
-        # Search for the `content_id` key in the JSON structure
+        # Search for the `contentId` key in the JSON structure
         def find_content_id(data):
-            if isinstance(data, dict):
+            if isinstance(data, dict):  # Check if `data` is a dictionary
                 if "contentId" in data:
                     return data["contentId"]
                 for key, value in data.items():
                     result = find_content_id(value)
                     if result:
                         return result
-            elif isinstance(data, list):
+            elif isinstance(data, list):  # Check if `data` is a list
                 for item in data:
                     result = find_content_id(item)
                     if result:
                         return result
-            return None
+            return None  # Return None if no `contentId` is found
 
         content_id = find_content_id(json_data)
         if not content_id:
@@ -196,6 +195,7 @@ async def av_command(client: Client, message: Message):
 
     except Exception as e:
         await message.reply_text(f"Error during video data extraction: {e}")
+ 
 
 @Client.on_message(filters.command("alive", CMD))
 async def check_alive(client, message):
