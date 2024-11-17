@@ -46,136 +46,84 @@ def mins_to_hms(minutes):
     h, m = divmod(minutes, 60)
     return f"{int(h):2d}h {int(m):02d}min"
 
+
+import requests
+from pyrogram import Client, filters
+from pyrogram.types import Message
+import re
+import json
+
 CMD = ["/", "."]
 
 @Client.on_message(filters.command(["avinfo", "av"], CMD))
 async def av_command(client: Client, message: Message):
     # Check if the user is an admin
     if message.from_user is None or message.from_user.id not in ADMINS:
-        await message.reply("Admin Features Not Allowed!")
+        await message.reply("𝖠𝖽𝗆𝗂𝗇 𝖥𝖾𝖺𝗍𝗎𝗋𝖾𝗌 𝖭𝗈𝗍 𝖠𝗅𝗅𝗈𝗐𝖾𝖽!")
         return
     
-    dvd_id = None
+    query = None
     command = message.text.split(maxsplit=1)
     if len(command) == 2:
-        dvd_id = command[1]
+        query = command[1]
     else:
         if message.reply_to_message and message.reply_to_message.text:
-            dvd_id = message.reply_to_message.text.strip()
-    
-    if dvd_id:
-        # Search URL
-        search_url = f"https://javtrailers.com/search/{dvd_id}"
+            query = message.reply_to_message.text.strip()
+            
+    if query:
+        search_url = f"https://javtrailers.com/search/{query}"
         headers = {
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
         }
-        
+
         try:
-            # Step 1: Fetch Search Page
             response = requests.get(search_url, headers=headers)
             if response.status_code == 200:
                 soup = BeautifulSoup(response.text, "html.parser")
-                script_tag = soup.find("script", {"type": "application/json", "id": "__NUXT_DATA__"})
+                json_data = extract_json_from_script(soup)
                 
-                if script_tag and script_tag.string:
-                    json_data = json.loads(script_tag.string)
-                    
-                    try:
-                        # Extract the first result content_id
-                        all_data = json_data
-                        content_id = all_data[6]  # Assuming 6 is the key for the first result
-                        extracted_content_id = all_data[all_data.index(content_id) + 1]
-                    except (IndexError, KeyError, TypeError) as e:
-                        await message.reply_text(f"Failed to extract content ID: {e}")
-                        return
-                    
-                    # Step 2: Fetch Video Page
-                    video_url = f"https://javtrailers.com/video/{extracted_content_id}"
-                    video_response = requests.get(video_url, headers=headers)
-                    
-                    if video_response.status_code == 200:
-                        video_soup = BeautifulSoup(video_response.content, "html.parser")
-                        metadata = {}
-                        
-                        try:
-                            metadata['title'] = video_soup.find('h1', class_='lead').get_text(strip=True)
-                            metadata['release_date'] = video_soup.find('span', string='Release Date:').find_next_sibling(string=True).strip()
-                            duration_text = video_soup.find('span', string='Duration:').find_next_sibling(string=True).strip()
-                            
-                            # Convert Duration
-                            if "mins" in duration_text:
-                                total_minutes = int(duration_text.replace("mins", "").strip())
-                                hours = total_minutes // 60
-                                minutes = total_minutes % 60
-                                metadata['duration'] = f"{hours}h {minutes}m"
-                            else:
-                                metadata['duration'] = duration_text
-                            
-                            metadata['studio'] = video_soup.find('span', string='Studio:').find_next('a').get_text(strip=True)
-                            categories_section = video_soup.find('span', string='Categories:').parent
-                            metadata['categories'] = ' '.join(f"#{a.get_text(strip=True).replace(' ', '_')}" for a in categories_section.find_all('a'))
-                            cast_section = video_soup.find('span', string='Cast(s):').parent
-                            metadata['casts'] = ', '.join(a.get_text(strip=True) for a in cast_section.find_all('a'))
-                        except AttributeError as e:
-                            await message.reply_text(f"Failed to extract some metadata: {e}")
-                            return
-                        
-                        # Locate URLs in JSON Data
-                        script_tag = video_soup.find("script", {"type": "application/json", "id": "__NUXT_DATA__"})
-                        if script_tag and script_tag.string:
-                            json_data = json.loads(script_tag.string)
-                            
-                            def classify_urls(data):
-                                posters, previews, screenshots = [], [], []
-                                if isinstance(data, dict):
-                                    for value in data.values():
-                                        p, pr, s = classify_urls(value)
-                                        posters.extend(p)
-                                        previews.extend(pr)
-                                        screenshots.extend(s)
-                                elif isinstance(data, list):
-                                    for item in data:
-                                        p, pr, s = classify_urls(item)
-                                        posters.extend(p)
-                                        previews.extend(pr)
-                                        screenshots.extend(s)
-                                elif isinstance(data, str):
-                                    if "http" in data:
-                                        if data.endswith('.mp4'):
-                                            previews.append(data)
-                                        elif data.endswith('pl.jpg'):
-                                            posters.append(data)
-                                        elif data.endswith('.jpg'):
-                                            screenshots.append(data)
-                                return posters, previews, screenshots
-                            
-                            posters, previews, screenshots = classify_urls(json_data)
-                            
-                            # Modify Screenshot URLs
-                            modified_screenshots = [re.sub(r'(?<=\w)-', 'jp-', url) for url in screenshots]
-                            
-                            # Prepare the message
-                            reply_message = (
-                                f"**Title**: {metadata['title']}\n"
-                                f"**Release Date**: {metadata['release_date']}\n"
-                                f"**Duration**: {metadata['duration']}\n"
-                                f"**Studio**: {metadata['studio']}\n"
-                                f"**Categories**: {metadata['categories']}\n"
-                                f"**Cast(s)**: {metadata['casts']}\n\n"
-                                f"**Posters**:\n" + '\n'.join(posters) + "\n\n"
-                                f"**Previews**:\n" + '\n'.join(previews) + "\n\n"
-                                f"**Screenshots**:\n" + '\n'.join(modified_screenshots)
-                            )
-                            
-                            await message.reply_text(reply_message, parse_mode=enums.ParseMode.MARKDOWN)
-                        else:
-                            await message.reply_text("Failed to retrieve media URLs.")
-                    else:
-                        await message.reply_text("Failed to fetch the video page.")
+                if json_data:
+                    all_data = json_data
+                    content_id = all_data[6]
+                    content_data = all_data[all_data.index(content_id) + 1]
+
+                    # Get video metadata
+                    title = content_data.get('title', 'N/A')
+                    dvd_id = content_data.get('dvd_id', 'N/A')
+                    release_date = content_data.get('release_date', 'N/A')
+                    duration = content_data.get('duration', 'N/A')
+                    studio = content_data.get('studio', 'N/A')
+                    categories = ' '.join([f"#{cat.replace(' ', '_')}" for cat in content_data.get('categories', [])])
+                    casts = ', '.join([cast['name'] for cast in content_data.get('casts', [])])
+
+                    # Get URLs for posters, previews, and screenshots
+                    posters = [url for url in content_data.get('posters', []) if 'jpg' in url]
+                    previews = [url for url in content_data.get('previews', []) if 'mp4' in url]
+                    screenshots = [url for url in content_data.get('screenshots', [])]
+
+                    # Prepare the response
+                    response_message = f"""
+<b>{title}</b> - {dvd_id}
+<i>Release Date:</i> {release_date}
+<i>Duration:</i> {duration}
+<i>Studio:</i> {studio}
+<i>Categories:</i> {categories}
+<i>Casts:</i> {casts}
+
+<b>Posters:</b>
+{', '.join(posters)}
+
+<b>Previews:</b>
+{', '.join(previews)}
+
+<b>Screenshots:</b>
+{', '.join(screenshots)}
+"""
+                    await message.reply_text(response_message, parse_mode="html")
                 else:
-                    await message.reply_text("No JSON data found in the search page.")
+                    await message.reply_text("No content found for the given query.")
             else:
-                await message.reply_text(f"Failed to fetch the search page. Status code: {response.status_code}")
+                await message.reply_text("Error fetching data.")
         except requests.RequestException as e:
             await message.reply_text(f"Error fetching data: {e}")
     else:
