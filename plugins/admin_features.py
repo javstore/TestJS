@@ -44,158 +44,140 @@ def mins_to_hms(minutes):
     h, m = divmod(minutes, 60)
     return f"{int(h):2d}h {int(m):02d}min"
 
-from pyrogram import Client, filters
-from pyrogram.types import Message
-import requests
-from bs4 import BeautifulSoup
-import json
-import re
-
 CMD = ["/", "."]
 
 @Client.on_message(filters.command(["avinfo", "av"], CMD))
 async def av_command(client: Client, message: Message):
-    query = None
+    # Check if the user is an admin
+    if message.from_user is None or message.from_user.id not in ADMINS:
+        await message.reply("Admin Features Not Allowed!")
+        return
+    
+    dvd_id = None
     command = message.text.split(maxsplit=1)
     if len(command) == 2:
-        query = command[1].strip()
-    elif message.reply_to_message and message.reply_to_message.text:
-        query = message.reply_to_message.text.strip()
-
-    if not query:
+        dvd_id = command[1]
+    else:
+        if message.reply_to_message and message.reply_to_message.text:
+            dvd_id = message.reply_to_message.text.strip()
+    
+    if dvd_id:
+        # Search URL
+        search_url = f"https://javtrailers.com/search/{dvd_id}"
+        headers = {
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
+        }
+        
+        try:
+            # Step 1: Fetch Search Page
+            response = requests.get(search_url, headers=headers)
+            if response.status_code == 200:
+                soup = BeautifulSoup(response.text, "html.parser")
+                script_tag = soup.find("script", {"type": "application/json", "id": "__NUXT_DATA__"})
+                
+                if script_tag and script_tag.string:
+                    json_data = json.loads(script_tag.string)
+                    
+                    try:
+                        # Extract the first result content_id
+                        all_data = json_data
+                        content_id = all_data[6]  # Assuming 6 is the key for the first result
+                        extracted_content_id = all_data[all_data.index(content_id) + 1]
+                    except (IndexError, KeyError, TypeError) as e:
+                        await message.reply_text(f"Failed to extract content ID: {e}")
+                        return
+                    
+                    # Step 2: Fetch Video Page
+                    video_url = f"https://javtrailers.com/video/{extracted_content_id}"
+                    video_response = requests.get(video_url, headers=headers)
+                    
+                    if video_response.status_code == 200:
+                        video_soup = BeautifulSoup(video_response.content, "html.parser")
+                        metadata = {}
+                        
+                        try:
+                            metadata['title'] = video_soup.find('h1', class_='lead').get_text(strip=True)
+                            metadata['release_date'] = video_soup.find('span', string='Release Date:').find_next_sibling(string=True).strip()
+                            duration_text = video_soup.find('span', string='Duration:').find_next_sibling(string=True).strip()
+                            
+                            # Convert Duration
+                            if "mins" in duration_text:
+                                total_minutes = int(duration_text.replace("mins", "").strip())
+                                hours = total_minutes // 60
+                                minutes = total_minutes % 60
+                                metadata['duration'] = f"{hours}h {minutes}m"
+                            else:
+                                metadata['duration'] = duration_text
+                            
+                            metadata['studio'] = video_soup.find('span', string='Studio:').find_next('a').get_text(strip=True)
+                            categories_section = video_soup.find('span', string='Categories:').parent
+                            metadata['categories'] = ' '.join(f"#{a.get_text(strip=True).replace(' ', '_')}" for a in categories_section.find_all('a'))
+                            cast_section = video_soup.find('span', string='Cast(s):').parent
+                            metadata['casts'] = ', '.join(a.get_text(strip=True) for a in cast_section.find_all('a'))
+                        except AttributeError as e:
+                            await message.reply_text(f"Failed to extract some metadata: {e}")
+                            return
+                        
+                        # Locate URLs in JSON Data
+                        script_tag = video_soup.find("script", {"type": "application/json", "id": "__NUXT_DATA__"})
+                        if script_tag and script_tag.string:
+                            json_data = json.loads(script_tag.string)
+                            
+                            def classify_urls(data):
+                                posters, previews, screenshots = [], [], []
+                                if isinstance(data, dict):
+                                    for value in data.values():
+                                        p, pr, s = classify_urls(value)
+                                        posters.extend(p)
+                                        previews.extend(pr)
+                                        screenshots.extend(s)
+                                elif isinstance(data, list):
+                                    for item in data:
+                                        p, pr, s = classify_urls(item)
+                                        posters.extend(p)
+                                        previews.extend(pr)
+                                        screenshots.extend(s)
+                                elif isinstance(data, str):
+                                    if "http" in data:
+                                        if data.endswith('.mp4'):
+                                            previews.append(data)
+                                        elif data.endswith('pl.jpg'):
+                                            posters.append(data)
+                                        elif data.endswith('.jpg'):
+                                            screenshots.append(data)
+                                return posters, previews, screenshots
+                            
+                            posters, previews, screenshots = classify_urls(json_data)
+                            
+                            # Modify Screenshot URLs
+                            modified_screenshots = [re.sub(r'(?<=\w)-', 'jp-', url) for url in screenshots]
+                            
+                            # Prepare the message
+                            reply_message = (
+                                f"**Title**: {metadata['title']}\n"
+                                f"**Release Date**: {metadata['release_date']}\n"
+                                f"**Duration**: {metadata['duration']}\n"
+                                f"**Studio**: {metadata['studio']}\n"
+                                f"**Categories**: {metadata['categories']}\n"
+                                f"**Cast(s)**: {metadata['casts']}\n\n"
+                                f"**Posters**:\n" + '\n'.join(posters) + "\n\n"
+                                f"**Previews**:\n" + '\n'.join(previews) + "\n\n"
+                                f"**Screenshots**:\n" + '\n'.join(modified_screenshots)
+                            )
+                            
+                            await message.reply_text(reply_message, parse_mode=enums.ParseMode.MARKDOWN)
+                        else:
+                            await message.reply_text("Failed to retrieve media URLs.")
+                    else:
+                        await message.reply_text("Failed to fetch the video page.")
+                else:
+                    await message.reply_text("No JSON data found in the search page.")
+            else:
+                await message.reply_text(f"Failed to fetch the search page. Status code: {response.status_code}")
+        except requests.RequestException as e:
+            await message.reply_text(f"Error fetching data: {e}")
+    else:
         await message.reply_text("Please provide a valid query after the command.")
-        return
-
-    # Step 1: Search for content ID
-    search_url = f"https://javtrailers.com/search/{query}"
-    headers = {
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
-    }
-
-    try:
-        response = requests.get(search_url, headers=headers)
-        response.raise_for_status()
-        soup = BeautifulSoup(response.text, "html.parser")
-        script_tag = soup.find("script", {"type": "application/json", "id": "__NUXT_DATA__"})
-
-        if not script_tag or not script_tag.string:
-            await message.reply_text("No content ID found for the provided query.")
-            return
-
-        # Parse JSON and extract content_id dynamically
-        json_data = json.loads(script_tag.string)
-        content_id = None
-
-        # Search for the `contentId` key in the JSON structure
-        def find_content_id(data):
-            if isinstance(data, dict):  # Check if `data` is a dictionary
-                if "contentId" in data:
-                    return data["contentId"]
-                for key, value in data.items():
-                    result = find_content_id(value)
-                    if result:
-                        return result
-            elif isinstance(data, list):  # Check if `data` is a list
-                for item in data:
-                    result = find_content_id(item)
-                    if result:
-                        return result
-            return None  # Return None if no `contentId` is found
-
-        content_id = find_content_id(json_data)
-        if not content_id:
-            await message.reply_text("No content ID found for the provided query.")
-            return
-
-    except Exception as e:
-        await message.reply_text(f"Error during content ID extraction: {e}")
-        return
-
-    # Step 2: Fetch video metadata
-    video_url = f"https://javtrailers.com/video/{content_id}"
-    try:
-        response = requests.get(video_url, headers=headers)
-        response.raise_for_status()
-        soup = BeautifulSoup(response.text, "html.parser")
-
-        # Extract metadata
-        lead_title = soup.find('h1', class_='lead').text.strip()
-        dvd_id = soup.find('span', string='DVD ID:').find_next_sibling(string=True).strip()
-        title = lead_title.replace(dvd_id, '').strip()
-        release_date = soup.find('span', string='Release Date:').find_next_sibling(string=True).strip()
-
-        # Format duration from "108 mins" to "2h 5m"
-        duration_text = soup.find('span', string='Duration:').find_next_sibling(string=True).strip()
-        total_minutes = int(duration_text.replace("mins", "").strip())
-        duration = f"{total_minutes // 60}h {total_minutes % 60}m"
-
-        studio = soup.find('span', string='Studio:').find_next('a').text.strip()
-
-        # Extract and format categories
-        categories_section = soup.find('span', string='Categories:').parent
-        categories = ' '.join(f"#{a.text.strip().replace(' ', '_')}" for a in categories_section.find_all('a'))
-
-        # Extract cast(s) and remove non-ASCII characters
-        cast_section = soup.find('span', string='Cast(s):').parent
-        casts = ' '.join(a.text.strip() for a in cast_section.find_all('a'))
-        casts = re.sub(r'[^\x00-\x7F]+', '', casts).strip()
-
-        # Extract and categorize URLs
-        script_tag = soup.find("script", {"type": "application/json", "id": "__NUXT_DATA__"})
-        json_data = json.loads(script_tag.string)
-
-        def find_urls(data):
-            posters, previews, screenshots = [], [], []
-            if isinstance(data, dict):
-                for value in data.values():
-                    p, pr, s = find_urls(value)
-                    posters.extend(p)
-                    previews.extend(pr)
-                    screenshots.extend(s)
-            elif isinstance(data, list):
-                for item in data:
-                    p, pr, s = find_urls(item)
-                    posters.extend(p)
-                    previews.extend(pr)
-                    screenshots.extend(s)
-            elif isinstance(data, str):
-                if query in data or data.endswith('.mp4'):
-                    if data.endswith('pl.jpg'):
-                        posters.append(data)
-                    elif data.endswith('.mp4'):
-                        previews.append(data)
-                    elif data.endswith('.jpg'):
-                        screenshots.append(data)
-            return posters, previews, screenshots
-
-        posters, previews, screenshots = find_urls(json_data)
-
-        # Modify screenshot URLs
-        modified_screenshots = [
-            re.sub(r'(?<=\w)-', 'jp-', url) for url in screenshots
-        ]
-
-        # Build the response message
-        response_message = (
-            f"<b>Title:</b> {title}\n"
-            f"<b>DVD ID:</b> {dvd_id}\n"
-            f"<b>Content ID:</b> {content_id}\n"
-            f"<b>Release Date:</b> {release_date}\n"
-            f"<b>Duration:</b> {duration}\n"
-            f"<b>Studio:</b> {studio}\n"
-            f"<b>Categories:</b> {categories}\n"
-            f"<b>Cast(s):</b> {casts}\n\n"
-            f"<b>Posters:</b>\n" + '\n'.join(posters) + "\n\n"
-            f"<b>Previews:</b>\n" + '\n'.join(previews) + "\n\n"
-            f"<b>Screenshots:</b>\n" + '\n'.join(modified_screenshots)
-        )
-
-        # Send the response
-        await message.reply_text(response_message, parse_mode="html")
-
-    except Exception as e:
-        await message.reply_text(f"Error during video data extraction: {e}")
- 
 
 @Client.on_message(filters.command("alive", CMD))
 async def check_alive(client, message):
