@@ -56,14 +56,13 @@ CMD = ["/", "."]
 
 @Client.on_message(filters.command(["avinfo", "av"], CMD))
 async def av_command(client: Client, message: Message):
-    # Extract the query provided by the user
     query = None
     command = message.text.split(maxsplit=1)
     if len(command) == 2:
         query = command[1].strip()
     elif message.reply_to_message and message.reply_to_message.text:
         query = message.reply_to_message.text.strip()
-    
+
     if not query:
         await message.reply_text("Please provide a valid query after the command.")
         return
@@ -84,8 +83,31 @@ async def av_command(client: Client, message: Message):
             await message.reply_text("No content ID found for the provided query.")
             return
 
+        # Parse JSON and extract content_id dynamically
         json_data = json.loads(script_tag.string)
-        content_id = json_data[json_data.index(6) + 1]  # Extracting content ID
+        content_id = None
+
+        # Search for the `content_id` key in the JSON structure
+        def find_content_id(data):
+            if isinstance(data, dict):
+                if "contentId" in data:
+                    return data["contentId"]
+                for key, value in data.items():
+                    result = find_content_id(value)
+                    if result:
+                        return result
+            elif isinstance(data, list):
+                for item in data:
+                    result = find_content_id(item)
+                    if result:
+                        return result
+            return None
+
+        content_id = find_content_id(json_data)
+        if not content_id:
+            await message.reply_text("No content ID found for the provided query.")
+            return
+
     except Exception as e:
         await message.reply_text(f"Error during content ID extraction: {e}")
         return
