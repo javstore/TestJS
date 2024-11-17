@@ -20,7 +20,7 @@ def is_enabled(value, default):
 SESSION = environ.get('SESSION', 'bombstar')
 API_ID = int(environ.get('API_ID', '5929089'))
 API_HASH = environ.get('API_HASH', '4c188a365d111e459c450333ecfba021')
-BOT_TOKEN = environ.get('BOT_TOKEN', '5614432630:AAEcYIB74yLHA1EmRMefRrbD19h7wlFgfLw')
+BOT_TOKEN = environ.get('BOT_TOKEN', '5825162076:AAFLPra1KAJvcSzQh5jJqK6lDmpK0wECSt0')
 PORT = environ.get("PORT", "8080")
 
 # Bot settings
