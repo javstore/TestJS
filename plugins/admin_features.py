@@ -46,14 +46,25 @@ def mins_to_hms(minutes):
     h, m = divmod(minutes, 60)
     return f"{int(h):2d}h {int(m):02d}min"
 
-
 import requests
+from bs4 import BeautifulSoup
 from pyrogram import Client, filters
 from pyrogram.types import Message
-import re
 import json
+import re
 
 CMD = ["/", "."]
+
+def extract_json_from_script(soup):
+    """ Extract JSON data from the <script> tag containing __NUXT_DATA__ """
+    script_tag = soup.find("script", {"type": "application/json", "id": "__NUXT_DATA__"})
+    if script_tag and script_tag.string:
+        try:
+            json_data = json.loads(script_tag.string)
+            return json_data
+        except json.JSONDecodeError:
+            return None
+    return None
 
 @Client.on_message(filters.command(["avinfo", "av"], CMD))
 async def av_command(client: Client, message: Message):
