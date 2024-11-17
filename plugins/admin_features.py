@@ -66,6 +66,25 @@ def extract_json_from_script(soup):
             return None
     return None
 
+import requests
+from bs4 import BeautifulSoup
+from pyrogram import Client, filters
+from pyrogram.types import Message
+import json
+
+CMD = ["/", "."]
+
+def extract_json_from_script(soup):
+    """ Extract JSON data from the <script> tag containing __NUXT_DATA__ """
+    script_tag = soup.find("script", {"type": "application/json", "id": "__NUXT_DATA__"})
+    if script_tag and script_tag.string:
+        try:
+            json_data = json.loads(script_tag.string)
+            return json_data
+        except json.JSONDecodeError:
+            return None
+    return None
+
 @Client.on_message(filters.command(["avinfo", "av"], CMD))
 async def av_command(client: Client, message: Message):
     # Check if the user is an admin
@@ -94,26 +113,32 @@ async def av_command(client: Client, message: Message):
                 json_data = extract_json_from_script(soup)
                 
                 if json_data:
-                    all_data = json_data
-                    content_id = all_data[6]
-                    content_data = all_data[all_data.index(content_id) + 1]
+                    # Let's inspect json_data first to ensure it's the correct structure
+                    print(json_data)  # This will help you understand its structure
+                    
+                    # Assuming json_data is a list, the content_id is expected to be at index 6
+                    # and content_data is at the index immediately after that.
+                    content_id = json_data[6]
+                    content_data = json_data[json_data.index(content_id) + 1]
+                    
+                    # Ensure that content_data is a dictionary
+                    if isinstance(content_data, dict):
+                        # Now we can safely extract values from the dictionary
+                        title = content_data.get('title', 'N/A')
+                        dvd_id = content_data.get('dvd_id', 'N/A')
+                        release_date = content_data.get('release_date', 'N/A')
+                        duration = content_data.get('duration', 'N/A')
+                        studio = content_data.get('studio', 'N/A')
+                        categories = ' '.join([f"#{cat.replace(' ', '_')}" for cat in content_data.get('categories', [])])
+                        casts = ', '.join([cast['name'] for cast in content_data.get('casts', [])])
 
-                    # Get video metadata
-                    title = content_data.get('title', 'N/A')
-                    dvd_id = content_data.get('dvd_id', 'N/A')
-                    release_date = content_data.get('release_date', 'N/A')
-                    duration = content_data.get('duration', 'N/A')
-                    studio = content_data.get('studio', 'N/A')
-                    categories = ' '.join([f"#{cat.replace(' ', '_')}" for cat in content_data.get('categories', [])])
-                    casts = ', '.join([cast['name'] for cast in content_data.get('casts', [])])
+                        # Get URLs for posters, previews, and screenshots
+                        posters = [url for url in content_data.get('posters', []) if 'jpg' in url]
+                        previews = [url for url in content_data.get('previews', []) if 'mp4' in url]
+                        screenshots = [url for url in content_data.get('screenshots', [])]
 
-                    # Get URLs for posters, previews, and screenshots
-                    posters = [url for url in content_data.get('posters', []) if 'jpg' in url]
-                    previews = [url for url in content_data.get('previews', []) if 'mp4' in url]
-                    screenshots = [url for url in content_data.get('screenshots', [])]
-
-                    # Prepare the response
-                    response_message = f"""
+                        # Prepare the response message
+                        response_message = f"""
 <b>{title}</b> - {dvd_id}
 <i>Release Date:</i> {release_date}
 <i>Duration:</i> {duration}
@@ -130,7 +155,9 @@ async def av_command(client: Client, message: Message):
 <b>Screenshots:</b>
 {', '.join(screenshots)}
 """
-                    await message.reply_text(response_message, parse_mode="html")
+                        await message.reply_text(response_message, parse_mode="html")
+                    else:
+                        await message.reply_text("The content data is not in the expected format.")
                 else:
                     await message.reply_text("No content found for the given query.")
             else:
