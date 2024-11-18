@@ -53,9 +53,6 @@ import re
 import json
 from html_telegraph_poster import TelegraphPoster
 
-# Define your admin list
-ADMINS = [1234567890]  # Replace with actual admin user IDs
-
 # Helper function to extract URLs
 def extract_urls(data, extensions):
     urls = []
