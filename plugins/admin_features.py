@@ -200,6 +200,8 @@ async def av_command(client: Client, message: Message):
     else:
         await message.reply_text("𝖯𝗅𝖾𝖺𝗌𝖾 𝗉𝗋𝗈𝗏𝗂𝖽𝖾 𝖺 𝗏𝖺𝗅𝗂𝖽 query 𝖺𝖿𝗍𝖾𝗋 𝗍𝗁𝖾 𝖼𝗈𝗆𝗆𝖺𝗇𝖽.")
 
+CMD = ["/", "."]
+
 @Client.on_message(filters.command("alive", CMD))
 async def check_alive(client, message):
     await client.send_sticker(
