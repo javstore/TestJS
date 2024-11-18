@@ -190,6 +190,8 @@ async def av_command(client: Client, message):
                                     modified_url = re.sub(r'(\d+)-', r'\1jp-', url)
                                     screenshot_urls.append(modified_url)
 
+                            telegraph_url = None
+                            
                             # Upload screenshots to Telegra.ph
                             if screenshot_urls:
                                 t = TelegraphPoster(use_api=True)
