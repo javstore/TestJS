@@ -217,20 +217,19 @@ async def av_command(client: Client, message):
 <b>Provided by JAV STORE</b>
 """
 
-                            buttons = [
-                                [
-                                    InlineKeyboardButton('Preview', url=preview_urls[0] if preview_urls else ""),
-                                    InlineKeyboardButton('Screenshots', url=telegraph_url)
-                                ],
-                                [
-                                    InlineKeyboardButton(f'{dvd_id}', url=f"https://javtrailers.com/video/{content_id}")
-                                ]
-                            ]
-                            reply_markup = InlineKeyboardMarkup(buttons)
+                            #buttons = [
+                            #    [
+                              #      InlineKeyboardButton('Preview', url=preview_urls[0] if preview_urls else ""),
+                              #      InlineKeyboardButton('Screenshots', url=telegraph_url)
+                               # ],
+                              #  [
+                              #      InlineKeyboardButton(f'{dvd_id}', url=f"https://javtrailers.com/video/{content_id}")
+                               # ]
+                         #   ]
+                           # reply_markup = InlineKeyboardMarkup(buttons)
 
-                            pic = "https://pics.dmm.co.jp/digital/video/juq00591/juq00591pl.jpg"
                             # Send the photo with caption and inline button
-                            await message.reply_photo(photo=pic, caption=caption, reply_markup=reply_markup, parse_mode=enums.ParseMode.HTML)
+                            await message.reply_photo(photo=poster_url, caption=caption, parse_mode=enums.ParseMode.HTML)
                         else:
                             await message.reply_text("JSON data not found.")
                     else:
