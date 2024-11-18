@@ -161,10 +161,6 @@ async def av_command(client: Client, message):
 
                             # Function to extract URLs from JSON data
                             def extract_urls(data, extensions):
-                                if not isinstance(data, (dict, list, str)):
-                                    print(f"Unexpected data type: {type(data)}")
-                                    return []
-
                                 urls = []
                                 if isinstance(data, dict):
                                     for key, value in data.items():
