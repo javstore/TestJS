@@ -47,118 +47,138 @@ def mins_to_hms(minutes):
     return f"{int(h):2d}h {int(m):02d}min"
 
 
-import requests
-from bs4 import BeautifulSoup
-import json
-import re
 from pyrogram import Client, filters
 from pyrogram.types import Message
+import requests
+import re
+from bs4 import BeautifulSoup
+import json
 
 CMD = ["/", "."]
+headers = {
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
+}
+
+def fetch_json_data(query):
+    """Fetch JSON data from the webpage."""
+    url = f"https://javtrailers.com/video/{query}"
+    response = requests.get(url, headers=headers)
+    if response.status_code != 200:
+        return None
+
+    soup = BeautifulSoup(response.text, "html.parser")
+    script_tag = soup.find("script", {"type": "application/json", "id": "__NUXT_DATA__"})
+    if not script_tag:
+        return None
+    return json.loads(script_tag.string)
+
+def extract_video_details(query):
+    """Extract video details from the page."""
+    url = f"https://javtrailers.com/video/{query}"
+    response = requests.get(url, headers=headers)
+    if response.status_code != 200:
+        return None
+
+    soup = BeautifulSoup(response.text, "html.parser")
+    try:
+        details = {
+            "title": soup.find('h1', class_='lead').text.strip(),
+            "dvd_id": soup.find('span', string='DVD ID:').find_next_sibling(string=True).strip(),
+            "content_id": soup.find('span', string='Content ID:').find_next_sibling(string=True).strip(),
+            "release_date": soup.find('span', string='Release Date:').find_next_sibling(string=True).strip(),
+            "duration": soup.find('span', string='Duration:').find_next_sibling(string=True).strip(),
+            "studio": soup.find('span', string='Studio:').find_next('a').text.strip(),
+            "categories": ' '.join(f"#{a.text.strip().replace(' ', '_')}" for a in soup.find('span', string='Categories:').parent.find_all('a')),
+            "casts": ', '.join(a.text.strip() for a in soup.find('span', string='Cast(s):').parent.find_all('a')).strip()
+        }
+        details["casts"] = re.sub(r'[^\x00-\x7F]+', '', details["casts"])
+        return details
+    except AttributeError:
+        return None
+
+def classify_urls(data, query):
+    """Classify URLs into posters, previews, and screenshots."""
+    posters, previews, screenshots = [], [], []
+
+    def classify(item):
+        if isinstance(item, str) and item.startswith('https://'):
+            if query in item or item.endswith('.mp4'):
+                if item.endswith('.mp4'):
+                    previews.append(item)
+                elif item.endswith('pl.jpg'):
+                    posters.append(item)
+                elif item.endswith('.jpg'):
+                    screenshots.append(item)
+        elif isinstance(item, (dict, list)):
+            for sub_item in item.values() if isinstance(item, dict) else item:
+                classify(sub_item)
+
+    classify(data)
+    return posters, previews, screenshots
+
+def modify_screenshots(screenshots):
+    """Modify screenshot URLs."""
+    return [re.sub(r'(?<=\w)-', 'jp-', url) for url in screenshots]
 
 @Client.on_message(filters.command(["avinfo", "av"], CMD))
 async def av_command(client: Client, message: Message):
-    # Check if the user is an admin (optional, can be removed if not needed)
+    # Check if the user is an admin
     if message.from_user is None or message.from_user.id not in ADMINS:
-        await message.reply("𝖠𝖽𝗆𝗂𝗇 𝖥𝖾𝖺𝗍𝗎𝗋𝖾𝗌 𝖭𝗈𝗍 𝖠𝗅𝗅𝗈𝗐𝖾𝖽!")
+        await message.reply("Admin features not allowed!")
         return
-    
-    dvd_id = None
+
+    query = None
     command = message.text.split(maxsplit=1)
     if len(command) == 2:
-        dvd_id = command[1]
-    else:
-        if message.reply_to_message and message.reply_to_message.text:
-            dvd_id = message.reply_to_message.text.strip()
-            
-    if dvd_id: 
-        # Fetch video details from the provided query
-        video_details = fetch_video_details(dvd_id)
-        if not video_details:
-            await message.reply_text("No details found for the provided DVD ID.")
-            return
-        
-        # Prepare the result message
-        reply_text = f"""
-        **{video_details['title']}**
-        <i>DVD ID:</i> {video_details['dvd_id']}
-        <i>Content ID:</i> {video_details['content_id']}
-        <i>Release Date:</i> {video_details['release_date']}
-        <i>Duration:</i> {video_details['duration']}
-        <i>Studio:</i> {video_details['studio']}
-        <i>Categories:</i> {video_details['categories']}
-        <i>Cast(s):</i> {video_details['casts']}
+        query = command[1]
+    elif message.reply_to_message and message.reply_to_message.text:
+        query = message.reply_to_message.text.strip()
 
-        **Posters:**
-        {', '.join(video_details['posters'])}
-        
-        **Previews:**
-        {', '.join(video_details['previews'])}
-        
-        **Screenshots:**
-        {', '.join(video_details['screenshots'])}
-        """
-        
-        await message.reply_text(reply_text, parse_mode="HTML")
-        
-    else:
-        await message.reply_text("𝖯𝗅𝖾𝖺𝗌𝖾 𝗉𝗋𝗈𝗏𝗂𝖽𝖾 𝖺 𝗏𝖺𝗅𝗂𝖽 𝖣𝖵𝖣 𝖨𝖣 𝖺𝖿𝗍𝖾𝗋 𝗍𝗁𝖾 𝖼𝗈𝗆𝗺𝗮𝗇𝖽.")
+    if not query:
+        await message.reply("Please provide a valid query after the command.")
+        return
 
-# Function to fetch and parse video details
-def fetch_video_details(query):
-    url = f"https://javtrailers.com/video/{query}"
-    
-    headers = {
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
-    }
-    
-    # Send a GET request to the video page
-    response = requests.get(url, headers=headers)
-    if response.status_code != 200:
-        print(f"Failed to fetch the video page. Status code: {response.status_code}")
-        return None
+    # Fetch JSON data
+    json_data = fetch_json_data(query)
+    if not json_data:
+        await message.reply("Failed to fetch JSON data. The video might not exist.")
+        return
 
-    # Parse the HTML content of the page
-    soup = BeautifulSoup(response.text, "html.parser")
+    # Classify URLs
+    posters, previews, screenshots = classify_urls(json_data, query)
 
-    # Extract the video details
-    lead_title = soup.find('h1', class_='lead').text.strip()
-    dvd_id = soup.find('span', string='DVD ID:').find_next_sibling(string=True).strip()
-    title = lead_title.replace(dvd_id, '').strip()
-    
-    content_id = soup.find('span', string='Content ID:').find_next_sibling(string=True).strip()
-    release_date = soup.find('span', string='Release Date:').find_next_sibling(string=True).strip()
-    duration = soup.find('span', string='Duration:').find_next_sibling(string=True).strip()
-    studio = soup.find('span', string='Studio:').find_next('a').text.strip()
-    
-    # Extract categories
-    categories_section = soup.find('span', string='Categories:').parent
-    categories = ' '.join(f"#{a.text.strip().replace(' ', '_')}" for a in categories_section.find_all('a'))
-    
-    # Extract cast(s)
-    cast_section = soup.find('span', string='Cast(s):').parent
-    casts = ', '.join(a.text.strip() for a in cast_section.find_all('a'))
-    casts = re.sub(r'[^\x00-\x7F]+', '', casts).strip()
+    # Modify screenshots
+    screenshots = modify_screenshots(screenshots)
 
-    # Extract URLs (Posters, Previews, Screenshots)
-    posters = [img['src'] for img in soup.find_all('img', class_='poster-image')]
-    previews = [video['src'] for video in soup.find_all('video', class_='preview-video')]
-    screenshots = [img['src'] for img in soup.find_all('img', class_='screenshot-image')]
+    # Extract video details
+    video_details = extract_video_details(query)
+    if not video_details:
+        await message.reply("Failed to extract video details.")
+        return
 
-    # Return the details as a dictionary
-    return {
-        "title": title,
-        "dvd_id": dvd_id,
-        "content_id": content_id,
-        "release_date": release_date,
-        "duration": duration,
-        "studio": studio,
-        "categories": categories,
-        "casts": casts,
-        "posters": posters,
-        "previews": previews,
-        "screenshots": screenshots
-    }
+    # Build message
+    message_text = f"""<code>{video_details['dvd_id']}</code> | {video_details['title']}
+<i>DVD ID: {video_details['dvd_id']}</i>
+<i>Release Date: {video_details['release_date']}</i>
+<i>Duration: {video_details['duration']}</i>
+<i>Studio: {video_details['studio']}</i>
+<i>Categories: {video_details['categories']}</i>
+<i>Cast(s): {video_details['casts']}</i>
+
+<b>Posters:</b>
+{', '.join(posters) if posters else 'No posters found'}
+
+<b>Previews:</b>
+{', '.join(previews) if previews else 'No previews found'}
+
+<b>Screenshots:</b>
+{', '.join(screenshots) if screenshots else 'No screenshots found'}
+
+<b>⚠️ Info by JAV Store</b>
+"""
+
+    # Send the message
+    await message.reply(message_text, parse_mode="HTML")
 
 @Client.on_message(filters.command("alive", CMD))
 async def check_alive(client, message):
