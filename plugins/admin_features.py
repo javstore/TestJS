@@ -229,7 +229,7 @@ async def av_command(client: Client, message):
                             reply_markup = InlineKeyboardMarkup(buttons)
 
                             # Send the photo with caption and inline button
-                            await message.reply_photo(photo=poster_url, caption=caption, reply_markup=reply_markup, parse_mode=enums.ParseMode.HTML)
+                            await message.reply_photo(photo="https://pics.dmm.co.jp/digital/video/juq00591/juq00591pl.jpg", caption=caption, reply_markup=reply_markup, parse_mode=enums.ParseMode.HTML)
                         else:
                             await message.reply_text("JSON data not found.")
                     else:
