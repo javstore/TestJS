@@ -61,7 +61,7 @@ headers = {
 
 def fetch_json_data(query):
     """Fetch JSON data from the webpage."""
-    url = f"https://javtrailers.com/video/{query}"
+    url = f"https://javtrailers.com/search/{query}"
     response = requests.get(url, headers=headers)
     if response.status_code != 200:
         return None
