@@ -47,8 +47,8 @@ def mins_to_hms(minutes):
     return f"{int(h):2d}h {int(m):02d}min"
 
 import requests
-from pyrogram import Client, filters, enums
-from pyrogram.types import Message, InlineKeyboardButton, InlineKeyboardMarkup
+#from pyrogram import Client, filters, enums
+#from pyrogram.types import Message, InlineKeyboardButton, InlineKeyboardMarkup
 import re
 import json
 from html_telegraph_poster import TelegraphPoster
@@ -83,7 +83,7 @@ import requests
 from bs4 import BeautifulSoup
 import json
 import re
-from pyrogram import Client, filters, enums
+#from pyrogram import Client, filters, enums
 from html_telegraph_poster import TelegraphPoster
 
 # Headers for the requests
@@ -228,8 +228,9 @@ async def av_command(client: Client, message):
                             ]
                             reply_markup = InlineKeyboardMarkup(buttons)
 
+                            pic = "https://pics.dmm.co.jp/digital/video/juq00591/juq00591pl.jpg"
                             # Send the photo with caption and inline button
-                            await message.reply_photo(photo="https://pics.dmm.co.jp/digital/video/juq00591/juq00591pl.jpg", caption=caption, reply_markup=reply_markup, parse_mode=enums.ParseMode.HTML)
+                            await message.reply_photo(photo=pic, caption=caption, reply_markup=reply_markup, parse_mode=enums.ParseMode.HTML)
                         else:
                             await message.reply_text("JSON data not found.")
                     else:
