@@ -200,10 +200,12 @@ async def av_command(client: Client, message):
                                 for screenshot_url in screenshot_urls:
                                     text_content += f'<img src="{screenshot_url}">'
                                 telegraph_post = t.post(
-                                    title=f'Screenshots of {title}', author='JAV STORE', text=text_content
+                                    title=f'Screenshots of Video', author='JAV STORE', text=text_content
                                 )
                                 telegraph_url = telegraph_post['url']
-                                print("Screenshots:", telegraph_url)
+                                print(f"Screenshots: {telegraph_url}")
+                                print(f"Poster: {poster_url}")
+                                print(f"Preview {preview_urls}")
 
                             # Send the result to Telegram
                             caption = f"""<code>{dvd_id}</code> | {title}
@@ -229,7 +231,7 @@ async def av_command(client: Client, message):
                            # reply_markup = InlineKeyboardMarkup(buttons)
 
                             # Send the photo with caption and inline button
-                            await message.reply_photo(photo=poster_url, caption=caption, parse_mode=enums.ParseMode.HTML)
+                            await message.reply_photo(photo=poster_url, caption=caption)
                         else:
                             await message.reply_text("JSON data not found.")
                     else:
