@@ -44,6 +44,7 @@ def mins_to_hms(minutes):
     h, m = divmod(minutes, 60)
     return f"{int(h):2d}h {int(m):02d}min"
 
+
 from pyrogram import Client, filters
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, Message
 from pyrogram import enums
@@ -119,7 +120,7 @@ async def av_command(client: Client, message: Message):
             casts = ' '.join(a.text.strip() for a in cast_section.find_all('a'))
             casts = re.sub(r'[^\x00-\x7F]+', '', casts).strip()
 
-            # Step 3: Fetch poster, preview, and screenshots
+            # Step 3: Fetch JSON data and classify URLs
             video_details_url = f"https://javtrailers.com/video/{content_id}"
             details_response = requests.get(video_details_url, headers=headers)
             if details_response.status_code != 200:
@@ -134,38 +135,30 @@ async def av_command(client: Client, message: Message):
 
             json_data = json.loads(script_tag.string)
 
-            def extract_urls(data, extensions):
+            def extract_urls(data):
+                """Recursively extract all URLs from JSON data."""
                 urls = []
                 if isinstance(data, dict):
                     for key, value in data.items():
-                        urls.extend(extract_urls(value, extensions))
+                        urls.extend(extract_urls(value))
                 elif isinstance(data, List):
                     for item in data:
-                        urls.extend(extract_urls(item, extensions))
-                elif isinstance(data, str):
-                    if any(data.endswith(ext) for ext in extensions):
-                        urls.append(data)
+                        urls.extend(extract_urls(item))
+                elif isinstance(data, str) and data.startswith("http"):
+                    urls.append(data)
                 return urls
 
-            extensions = [".jpg", ".mp4", ".m3u8"]
-            urls = extract_urls(json_data, extensions)
+            all_urls = extract_urls(json_data)
 
-            poster_url = None
-            preview_urls = []
-            screenshot_urls = []
+            # Classify URLs
+            poster_url = next((url for url in all_urls if url.endswith("pl.jpg")), None)
+            preview_urls = [url for url in all_urls if url.endswith((".mp4", ".m3u8"))]
+            screenshot_urls = [re.sub(r'(\d+)-', r'\1jp-', url) for url in all_urls if re.search(r'\d+\.jpg$', url)]
 
-            for url in urls:
-                if url.endswith("pl.jpg"):  # Poster URL
-                    poster_url = url
-                elif url.endswith((".mp4", ".m3u8")):  # Preview URL
-                    preview_urls.append(url)
-                    break
-                elif re.search(r'\d+\.jpg$', url):  # Screenshot URL
-                    modified_url = re.sub(r'(\d+)-', r'\1jp-', url)
-                    screenshot_urls.append(modified_url)
-
-            # Print poster URL for debugging
+            # Debugging: Print all extracted URLs
             print(f"Poster URL: {poster_url}")
+            print(f"Preview URLs: {preview_urls}")
+            print(f"Screenshot URLs: {screenshot_urls}")
 
             # Upload screenshots to Telegra.ph
             telegraph_url = "No screenshots available"
@@ -212,7 +205,6 @@ async def av_command(client: Client, message: Message):
             await message.reply_text(f"Error fetching data: {e}")
     else:
         await message.reply_text("𝖯𝗅𝖾𝖺𝗌𝖾 𝗉𝗋𝗈𝗏𝗂𝖽𝖾 𝖺 𝗏𝖺𝗅𝗂𝖽 Query 𝖺𝖿𝗍𝖾𝗋 𝗍𝗁𝖾 𝖼𝗈𝗆𝗆𝖺𝗇𝖽.")
-
 
 @Client.on_message(filters.command("alive", CMD))
 async def check_alive(client, message):
