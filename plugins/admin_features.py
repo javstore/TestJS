@@ -168,14 +168,14 @@ async def av_command(client: Client, message: Message):
                 InlineKeyboardButton('𝖲𝖼𝗋𝖾𝖾𝗇𝗌𝗁𝗈𝗍𝗌', url=f"{telegraph_url}")
             ])
             buttons.append([
-                InlineKeyboardButton(f'{dvd}', url=f"{video_url}")
+                InlineKeyboardButton(f'{dvd_id}', url=f"{video_url}")
             ])
         else:
             buttons.append([
                 InlineKeyboardButton('𝖲𝖼𝗋𝖾𝖾𝗇𝗌𝗁𝗈𝗍𝗌', url=f"{telegraph_url}")
             ])
             buttons.append([
-                InlineKeyboardButton(f'{dvd}', url=f"{video_url}")
+                InlineKeyboardButton(f'{dvd_id}', url=f"{video_url}")
             ])
         
         reply_markup = InlineKeyboardMarkup(buttons)
