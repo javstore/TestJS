@@ -138,7 +138,7 @@ async def av_command(client: Client, message: Message):
                                     extensions = [".jpg", ".mp4", ".m3u8"]
                                     urls = extract_urls(json_data, extensions)
 
-                                    poster = []
+                                    poster = None
                                     preview = None
                                     screenshots = []
 
@@ -197,6 +197,7 @@ async def av_command(client: Client, message: Message):
 
 <b>⚠️ ɪɴꜰᴏ ʙʏ Jᴀᴠ Sᴛᴏʀᴇ</b>
 """
+                                    print(f"Poster URL: {poster}")
                                     await message.reply_photo(photo=poster, caption=caption, reply_markup=reply_markup, parse_mode=enums.ParseMode.HTML)
                                 else:
                                     await message.reply_text("JSON data not found in the script tag.")
