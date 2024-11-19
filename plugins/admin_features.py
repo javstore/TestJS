@@ -56,7 +56,6 @@ from pyrogram import enums
 
 # Define your command prefixes and admin user IDs
 CMD = ["/", "."]
-ADMINS = [123456789]  # Replace with actual admin IDs
 
 # Headers for requests
 headers = {
