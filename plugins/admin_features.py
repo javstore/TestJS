@@ -162,15 +162,22 @@ async def av_command(client: Client, message: Message):
         # Prepare buttons
         buttons = []
 
-        if preview_urls:
-            preview_button = [InlineKeyboardButton('𝖯𝗋𝖾𝗏𝗂𝖾𝗐', url=f"{preview_urls[0]}")]
-            buttons.append(preview_button)
-
         if screenshot_urls and telegraph_url:
-            buttons.append([InlineKeyboardButton('𝖲𝖼𝗋𝖾𝖾𝗇𝗌𝗁𝗈𝗍𝗌', url=f"{telegraph_url}")])
-
-        buttons.append([InlineKeyboardButton(f'{dvd_id}', url=f"{video_url}")])
-
+            buttons.append([
+                InlineKeyboardButton('𝖯𝗋𝖾𝗏𝗂𝖾𝗐', url=f"{preview_urls[0]}"),
+                InlineKeyboardButton('𝖲𝖼𝗋𝖾𝖾𝗇𝗌𝗁𝗈𝗍𝗌', url=f"{telegraph_url}")
+            ])
+            buttons.append([
+                InlineKeyboardButton(f'{dvd}', url=f"{video_url}")
+            ])
+        else:
+            buttons.append([
+                InlineKeyboardButton('𝖲𝖼𝗋𝖾𝖾𝗇𝗌𝗁𝗈𝗍𝗌', url=f"{telegraph_url}")
+            ])
+            buttons.append([
+                InlineKeyboardButton(f'{dvd}', url=f"{video_url}")
+            ])
+        
         reply_markup = InlineKeyboardMarkup(buttons)
 
         # Step 4: Reply to the user
