@@ -139,7 +139,7 @@ async def av_command(client: Client, message: Message):
                 if isinstance(data, dict):
                     for key, value in data.items():
                         urls.extend(extract_urls(value, extensions))
-                elif isinstance(data, list):
+                elif isinstance(data, List):
                     for item in data:
                         urls.extend(extract_urls(item, extensions))
                 elif isinstance(data, str):
