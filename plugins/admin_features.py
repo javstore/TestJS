@@ -12,6 +12,7 @@ from telegraph import Telegraph
 import requests
 from bs4 import BeautifulSoup
 import json
+from urllib.parse import urlparse
 from html import escape
 
 
