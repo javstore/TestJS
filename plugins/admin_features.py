@@ -44,15 +44,6 @@ def mins_to_hms(minutes):
     h, m = divmod(minutes, 60)
     return f"{int(h):2d}h {int(m):02d}min"
 
-import requests
-from bs4 import BeautifulSoup
-import json
-import re
-from html_telegraph_poster import TelegraphPoster
-from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, enums
-from pyrogram import Client, filters
-from pyrogram.types import Message
-
 # Headers for the requests
 headers = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
@@ -142,7 +133,7 @@ async def av_command(client: Client, message: Message):
         if isinstance(data, dict):
             for key, value in data.items():
                 urls.extend(extract_urls(value))
-        elif isinstance(data, list):
+        elif isinstance(data, List):
             for item in data:
                 urls.extend(extract_urls(item))
         elif isinstance(data, str) and data.startswith("http"):
