@@ -43,10 +43,12 @@ def post_to_telegraph(image_urls, dvd):
     telegraph_post = t.post(title=f'Screenshots of {dvd}', author='JAV STORE', text=text_content)
     return telegraph_post['url']
 
+# Convert Minutes to HH:MM
 def mins_to_hms(minutes):
-    h, m = divmod(minutes, 60)
-    return f"{int(h):2d}h {int(m):02d}min"
-
+    hours = minutes // 60
+    mins = minutes % 60
+    return f"{hours}h {mins}min"
+    
 # Define your command prefixes and admin user IDs
 CMD = ["/", "."]
 
@@ -102,7 +104,8 @@ async def av_command(client: Client, message: Message):
         title = lead_title.replace(dvd_id, '', 1).strip()
         content_id = video_soup.find('span', string='Content ID:').find_next_sibling(string=True).strip()
         release_date = video_soup.find('span', string='Release Date:').find_next_sibling(string=True).strip()
-        runtime = video_soup.find('span', string='Duration:').find_next_sibling(string=True).strip()
+        duration = video_soup.find('span', string='Duration:').find_next_sibling(string=True).strip()
+        runtime = mins_to_hms(int(duration.replace(' mins', '')))
         studio = video_soup.find('span', string='Studio:').find_next('a').text.strip()
 
         categories_section = video_soup.find('span', string='Categories:').parent
