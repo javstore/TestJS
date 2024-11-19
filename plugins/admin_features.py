@@ -99,7 +99,7 @@ async def av_command(client: Client, message: Message):
 
         lead_title = video_soup.find('h1', class_='lead').text.strip()
         dvd_id = video_soup.find('span', string='DVD ID:').find_next_sibling(string=True).strip()
-        title = lead_title.replace(dvd_id, '').strip()
+        title = lead_title.replace(dvd_id, '', 1).strip()
         content_id = video_soup.find('span', string='Content ID:').find_next_sibling(string=True).strip()
         release_date = video_soup.find('span', string='Release Date:').find_next_sibling(string=True).strip()
         runtime = video_soup.find('span', string='Duration:').find_next_sibling(string=True).strip()
