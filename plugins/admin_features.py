@@ -138,7 +138,7 @@ async def av_command(client: Client, message: Message):
                                     extensions = [".jpg", ".mp4", ".m3u8"]
                                     urls = extract_urls(json_data, extensions)
 
-                                    poster = None
+                                    poster = []
                                     preview = None
                                     screenshots = []
 
