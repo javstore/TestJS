@@ -82,7 +82,7 @@ async def av_command(client: Client, message: Message):
         search_response.raise_for_status()
 
         search_soup = BeautifulSoup(search_response.content, 'html.parser')
-        a_tag = soup.find('a', href=lambda x: x and '/video/' in x)
+        a_tag = search_soup.find('a', href=lambda x: x and '/video/' in x)
         
         if not a_tag:
             await message.reply_text("No valid video link found.")
