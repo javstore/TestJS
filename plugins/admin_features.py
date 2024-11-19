@@ -44,15 +44,20 @@ def mins_to_hms(minutes):
     h, m = divmod(minutes, 60)
     return f"{int(h):2d}h {int(m):02d}min"
 
-
-from pyrogram import Client, filters
-from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, Message
-from pyrogram import enums
 import requests
 from bs4 import BeautifulSoup
 import json
 import re
 from html_telegraph_poster import TelegraphPoster
+from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, enums
+from pyrogram import Client, filters
+from pyrogram.types import Message
+
+# Headers for the requests
+headers = {
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
+    "Accept-Language": "en-US,en;q=0.9"
+}
 
 CMD = ["/", "."]
 
@@ -67,144 +72,95 @@ async def av_command(client: Client, message: Message):
     command = message.text.split(maxsplit=1)
     if len(command) == 2:
         query = command[1]
-    else:
-        if message.reply_to_message and message.reply_to_message.text:
-            query = message.reply_to_message.text.strip()
+    elif message.reply_to_message and message.reply_to_message.text:
+        query = message.reply_to_message.text.strip()
 
-    if query:
-        try:
-            # Step 1: Fetch the first video URL from the search results
-            search_url = f"https://javtrailers.com/search/{query}"
-            headers = {
-                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
-                "Accept-Language": "en-US,en;q=0.9"
-            }
-            search_response = requests.get(search_url, headers=headers)
-
-            if search_response.status_code != 200:
-                await message.reply_text("Failed to retrieve the search page.")
-                return
-
-            search_soup = BeautifulSoup(search_response.content, 'html.parser')
-            card_container = search_soup.find("div", class_="card-container")
-            if not card_container:
-                await message.reply_text("No valid video link found.")
-                return
-
-            a_tag = card_container.find("a", href=True)
-            if not a_tag:
-                await message.reply_text("No valid video link found.")
-                return
-
-            video_url = "https://javtrailers.com" + a_tag['href']
-
-            # Step 2: Fetch video details
-            video_response = requests.get(video_url, headers=headers)
-            if video_response.status_code != 200:
-                await message.reply_text("Failed to retrieve the video page.")
-                return
-
-            video_soup = BeautifulSoup(video_response.content, 'html.parser')
-            lead_title = video_soup.find('h1', class_='lead').text.strip()
-            dvd_id = video_soup.find('span', string='DVD ID:').find_next_sibling(string=True).strip()
-            title = lead_title.replace(dvd_id, '').strip()
-            content_id = video_soup.find('span', string='Content ID:').find_next_sibling(string=True).strip()
-            release_date = video_soup.find('span', string='Release Date:').find_next_sibling(string=True).strip()
-            duration = video_soup.find('span', string='Duration:').find_next_sibling(string=True).strip()
-            studio = video_soup.find('span', string='Studio:').find_next('a').text.strip()
-
-            categories_section = video_soup.find('span', string='Categories:').parent
-            categories = ' '.join(f"#{a.text.strip().replace(' ', '_')}" for a in categories_section.find_all('a'))
-
-            cast_section = video_soup.find('span', string='Cast(s):').parent
-            casts = ' '.join(a.text.strip() for a in cast_section.find_all('a'))
-            casts = re.sub(r'[^\x00-\x7F]+', '', casts).strip()
-
-            # Step 3: Fetch JSON data and classify URLs
-            video_details_url = f"https://javtrailers.com/video/{content_id}"
-            details_response = requests.get(video_details_url, headers=headers)
-            if details_response.status_code != 200:
-                await message.reply_text("Failed to fetch video details page.")
-                return
-
-            soup = BeautifulSoup(details_response.text, "html.parser")
-            script_tag = soup.find("script", {"type": "application/json", "id": "__NUXT_DATA__"})
-            if not script_tag:
-                await message.reply_text("JSON data not found in the script tag.")
-                return
-
-            json_data = json.loads(script_tag.string)
-
-            def extract_urls(data):
-                """Recursively extract all URLs from JSON data."""
-                urls = []
-                if isinstance(data, dict):
-                    for key, value in data.items():
-                        urls.extend(extract_urls(value))
-                elif isinstance(data, List):
-                    for item in data:
-                        urls.extend(extract_urls(item))
-                elif isinstance(data, str) and data.startswith("http"):
-                    urls.append(data)
-                return urls
-
-            all_urls = extract_urls(json_data)
-
-            # Classify URLs
-            poster_url = next((url for url in all_urls if url.endswith("pl.jpg")), None)
-            preview_urls = [url for url in all_urls if url.endswith((".mp4", ".m3u8"))]
-            screenshot_urls = [re.sub(r'(\d+)-', r'\1jp-', url) for url in all_urls if re.search(r'\d+\.jpg$', url)]
-
-            # Debugging: Print all extracted URLs
-            print(f"Poster URL: {poster_url}")
-            print(f"Preview URLs: {preview_urls}")
-            print(f"Screenshot URLs: {screenshot_urls}")
-
-            # Upload screenshots to Telegra.ph
-            telegraph_url = "No screenshots available"
-            if screenshot_urls:
-                t = TelegraphPoster(use_api=True)
-                t.create_api_token('JAV STORE')
-                text_content = "<blockquote>Provided by JAV STORE</blockquote>"
-                for screenshot_url in screenshot_urls:
-                    text_content += f'<img src="{screenshot_url}">'
-                telegraph_post = t.post(
-                    title=f'Screenshots of {title}', author='JAV STORE', text=text_content
-                )
-                telegraph_url = telegraph_post['url']
-
-            # Prepare buttons and caption
-            buttons = []
-            if preview_urls:
-                buttons.append([
-                    InlineKeyboardButton('𝖯𝗋𝖾𝗏𝗂𝖾𝗐', url=preview_urls[0]),
-                    InlineKeyboardButton('𝖲𝖼𝗋𝖾𝖾𝗇𝗌𝗁𝗈𝗍𝗌', url=telegraph_url)
-                ])
-            buttons.append([
-                InlineKeyboardButton(f'{dvd_id}', url=video_url)
-            ])
-            reply_markup = InlineKeyboardMarkup(buttons)
-
-            caption = f"""<code>{dvd_id}</code> | {title}
-<i>𝖣𝖵𝖣 𝖨𝖣 : {dvd_id}</i>
-<i>Categories: {categories}</i>
-<i>𝖱𝖾𝗅𝖾𝖺𝗌𝖾 𝖣𝖺𝗍𝖾 : {release_date}</i>
-<i>𝖱𝗎𝗇𝗍𝗂𝗆𝖾 : {duration}</i>
-<i>Cast(s) : {casts}</i>
-<i>𝖲𝗍𝗎𝖽𝗂𝗈 : {studio}</i>
-
-<b>⚠️ ɪɴꜰᴏ ʙʏ Jᴀᴠ Sᴛᴏʀᴇ</b>
-"""
-
-            # Send the photo with caption and inline button              
-            if poster_url:
-                await message.reply_photo(photo=poster_url, caption=caption, reply_markup=reply_markup, parse_mode=enums.ParseMode.HTML)
-            else:
-                await message.reply_text("Poster image not found.")
-        except requests.RequestException as e:
-            await message.reply_text(f"Error fetching data: {e}")
-    else:
+    if not query:
         await message.reply_text("𝖯𝗅𝖾𝖺𝗌𝖾 𝗉𝗋𝗈𝗏𝗂𝖽𝖾 𝖺 𝗏𝖺𝗅𝗂𝖽 Query 𝖺𝖿𝗍𝖾𝗋 𝗍𝗁𝖾 𝖼𝗈𝗆𝗆𝖺𝗇𝖽.")
+        return
+
+    # Step 1: Fetch the first video URL from the search results
+    search_url = f"https://javtrailers.com/search/{query}"
+    search_response = requests.get(search_url, headers=headers)
+
+    if search_response.status_code != 200:
+        await message.reply_text("Failed to retrieve the search page.")
+        return
+
+    search_soup = BeautifulSoup(search_response.content, 'html.parser')
+    card_container = search_soup.find("div", class_="card-container")
+    if not card_container:
+        await message.reply_text("No card container found.")
+        return
+
+    a_tag = card_container.find("a", href=True)
+    if not a_tag:
+        await message.reply_text("No valid video link found.")
+        return
+
+    video_url = "https://javtrailers.com" + a_tag['href']
+
+    # Step 2: Fetch the video details from the video URL
+    video_response = requests.get(video_url, headers=headers)
+    if video_response.status_code != 200:
+        await message.reply_text("Failed to retrieve the video page.")
+        return
+
+    video_soup = BeautifulSoup(video_response.content, 'html.parser')
+    lead_title = video_soup.find('h1', class_='lead').text.strip()
+    dvd_id = video_soup.find('span', string='DVD ID:').find_next_sibling(string=True).strip()
+    content_id = video_soup.find('span', string='Content ID:').find_next_sibling(string=True).strip()
+    release_date = video_soup.find('span', string='Release Date:').find_next_sibling(string=True).strip()
+    duration = video_soup.find('span', string='Duration:').find_next_sibling(string=True).strip()
+    studio = video_soup.find('span', string='Studio:').find_next('a').text.strip()
+
+    categories_section = video_soup.find('span', string='Categories:').parent
+    categories = ' '.join(f"#{a.text.strip().replace(' ', '_')}" for a in categories_section.find_all('a'))
+
+    cast_section = video_soup.find('span', string='Cast(s):').parent
+    casts = ' '.join(a.text.strip() for a in cast_section.find_all('a'))
+    casts = re.sub(r'[^\x00-\x7F]+', '', casts).strip()
+
+    # Step 3: Fetch JSON data and classify URLs
+    video_details_url = f"https://javtrailers.com/video/{content_id}"
+    details_response = requests.get(video_details_url, headers=headers)
+    if details_response.status_code != 200:
+        await message.reply_text("Failed to fetch video details page.")
+        return
+
+    soup = BeautifulSoup(details_response.text, "html.parser")
+    script_tag = soup.find("script", {"type": "application/json", "id": "__NUXT_DATA__"})
+    if not script_tag:
+        await message.reply_text("JSON data not found in the script tag.")
+        return
+
+    json_data = json.loads(script_tag.string)
+
+    def extract_urls(data):
+        """Recursively extract all URLs from JSON data."""
+        urls = []
+        if isinstance(data, dict):
+            for key, value in data.items():
+                urls.extend(extract_urls(value))
+        elif isinstance(data, list):
+            for item in data:
+                urls.extend(extract_urls(item))
+        elif isinstance(data, str) and data.startswith("http"):
+            urls.append(data)
+        return urls
+
+    # Extract all URLs
+    all_urls = extract_urls(json_data)
+
+    # Debugging: Print all extracted URLs
+    print("All Extracted URLs:")
+    for url in all_urls:
+        print(url)
+
+    # Stop the function here for debugging purposes
+    await message.reply_text("Check logs for extracted URLs.")
+    return
+
 
 @Client.on_message(filters.command("alive", CMD))
 async def check_alive(client, message):
