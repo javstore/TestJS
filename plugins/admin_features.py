@@ -47,13 +47,6 @@ def mins_to_hms(minutes):
     return f"{int(h):2d}h {int(m):02d}min"
 
 
-import requests
-from bs4 import BeautifulSoup
-import json
-import re
-from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, enums
-from pyrogram import Client, filters
-from pyrogram.types import Message
 
 # Headers for the requests
 headers = {
