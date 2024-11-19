@@ -47,6 +47,13 @@ def mins_to_hms(minutes):
     return f"{int(h):2d}h {int(m):02d}min"
 
 
+import requests
+from bs4 import BeautifulSoup
+import json
+import re
+from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, enums
+from pyrogram import Client, filters
+from pyrogram.types import Message
 
 # Headers for the requests
 headers = {
@@ -124,7 +131,7 @@ async def av_command(client: Client, message: Message):
     screenshot_urls = []
 
     for url in urlz:
-        if url.endswith("pl.jpg"):  # Poster URL
+        if not poster_url and "pl.jpg" in url:  # First URL with "pl.jpg" as poster
             poster_url = url
         elif url.endswith((".mp4", ".m3u8")):  # Preview URL
             preview_urls.append(url)
