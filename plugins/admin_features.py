@@ -44,24 +44,16 @@ def mins_to_hms(minutes):
     h, m = divmod(minutes, 60)
     return f"{int(h):2d}h {int(m):02d}min"
 
-
 from pyrogram import Client, filters
-from pyrogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton
-from bs4 import BeautifulSoup
+from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, Message
+from pyrogram import enums
 import requests
+from bs4 import BeautifulSoup
 import json
 import re
 from html_telegraph_poster import TelegraphPoster
-from pyrogram import enums
 
-# Define your command prefixes and admin user IDs
 CMD = ["/", "."]
-
-# Headers for requests
-headers = {
-    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
-    "Accept-Language": "en-US,en;q=0.9"
-}
 
 @Client.on_message(filters.command(["avinfo", "av"], CMD))
 async def av_command(client: Client, message: Message):
@@ -74,143 +66,148 @@ async def av_command(client: Client, message: Message):
     command = message.text.split(maxsplit=1)
     if len(command) == 2:
         query = command[1]
-    elif message.reply_to_message and message.reply_to_message.text:
-        query = message.reply_to_message.text.strip()
+    else:
+        if message.reply_to_message and message.reply_to_message.text:
+            query = message.reply_to_message.text.strip()
 
     if query:
         try:
+            # Step 1: Fetch the first video URL from the search results
             search_url = f"https://javtrailers.com/search/{query}"
+            headers = {
+                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
+                "Accept-Language": "en-US,en;q=0.9"
+            }
             search_response = requests.get(search_url, headers=headers)
 
-            if search_response.status_code == 200:
-                search_soup = BeautifulSoup(search_response.content, 'html.parser')
-                card_container = search_soup.find("div", class_="card-container")
+            if search_response.status_code != 200:
+                await message.reply_text("Failed to retrieve the search page.")
+                return
 
-                if card_container:
-                    a_tag = card_container.find("a", href=True)
-                    if a_tag:
-                        video_url = "https://javtrailers.com" + a_tag['href']
+            search_soup = BeautifulSoup(search_response.content, 'html.parser')
+            card_container = search_soup.find("div", class_="card-container")
+            if not card_container:
+                await message.reply_text("No valid video link found.")
+                return
 
-                        # Fetch video details
-                        video_response = requests.get(video_url, headers=headers)
-                        if video_response.status_code == 200:
-                            video_soup = BeautifulSoup(video_response.content, 'html.parser')
+            a_tag = card_container.find("a", href=True)
+            if not a_tag:
+                await message.reply_text("No valid video link found.")
+                return
 
-                            lead_title = video_soup.find('h1', class_='lead').text.strip()
-                            dvd_id = video_soup.find('span', string='DVD ID:').find_next_sibling(string=True).strip()
-                            title = lead_title.replace(dvd_id, '').strip()
-                            content_id = video_soup.find('span', string='Content ID:').find_next_sibling(string=True).strip()
-                            release_date = video_soup.find('span', string='Release Date:').find_next_sibling(string=True).strip()
-                            runtime = video_soup.find('span', string='Duration:').find_next_sibling(string=True).strip()
-                            studio = video_soup.find('span', string='Studio:').find_next('a').text.strip()
+            video_url = "https://javtrailers.com" + a_tag['href']
 
-                            categories_section = video_soup.find('span', string='Categories:').parent
-                            categories = ' '.join(f"#{a.text.strip().replace(' ', '_')}" for a in categories_section.find_all('a'))
+            # Step 2: Fetch video details
+            video_response = requests.get(video_url, headers=headers)
+            if video_response.status_code != 200:
+                await message.reply_text("Failed to retrieve the video page.")
+                return
 
-                            cast_section = video_soup.find('span', string='Cast(s):').parent
-                            cast = ' '.join(a.text.strip() for a in cast_section.find_all('a'))
-                            cast = re.sub(r'[^\x00-\x7F]+', '', cast).strip()
+            video_soup = BeautifulSoup(video_response.content, 'html.parser')
+            lead_title = video_soup.find('h1', class_='lead').text.strip()
+            dvd_id = video_soup.find('span', string='DVD ID:').find_next_sibling(string=True).strip()
+            title = lead_title.replace(dvd_id, '').strip()
+            content_id = video_soup.find('span', string='Content ID:').find_next_sibling(string=True).strip()
+            release_date = video_soup.find('span', string='Release Date:').find_next_sibling(string=True).strip()
+            duration = video_soup.find('span', string='Duration:').find_next_sibling(string=True).strip()
+            studio = video_soup.find('span', string='Studio:').find_next('a').text.strip()
 
-                            # Fetch additional details like poster, preview, and screenshots
-                            video_details_url = f"https://javtrailers.com/video/{content_id}"
-                            details_response = requests.get(video_details_url, headers=headers)
+            categories_section = video_soup.find('span', string='Categories:').parent
+            categories = ' '.join(f"#{a.text.strip().replace(' ', '_')}" for a in categories_section.find_all('a'))
 
-                            if details_response.status_code == 200:
-                                soup = BeautifulSoup(details_response.text, "html.parser")
-                                script_tag = soup.find("script", {"type": "application/json", "id": "__NUXT_DATA__"})
+            cast_section = video_soup.find('span', string='Cast(s):').parent
+            casts = ' '.join(a.text.strip() for a in cast_section.find_all('a'))
+            casts = re.sub(r'[^\x00-\x7F]+', '', casts).strip()
 
-                                if script_tag:
-                                    json_data = json.loads(script_tag.string)
+            # Step 3: Fetch poster, preview, and screenshots
+            video_details_url = f"https://javtrailers.com/video/{content_id}"
+            details_response = requests.get(video_details_url, headers=headers)
+            if details_response.status_code != 200:
+                await message.reply_text("Failed to fetch video details page.")
+                return
 
-                                    def extract_urls(data, extensions):
-                                        urls = []
-                                        if isinstance(data, dict):
-                                            for key, value in data.items():
-                                                urls.extend(extract_urls(value, extensions))
-                                        elif isinstance(data, List):
-                                            for item in data:
-                                                urls.extend(extract_urls(item, extensions))
-                                        elif isinstance(data, str):
-                                            if any(data.endswith(ext) for ext in extensions):
-                                                urls.append(data)
-                                        return urls
+            soup = BeautifulSoup(details_response.text, "html.parser")
+            script_tag = soup.find("script", {"type": "application/json", "id": "__NUXT_DATA__"})
+            if not script_tag:
+                await message.reply_text("JSON data not found in the script tag.")
+                return
 
-                                    extensions = [".jpg", ".mp4", ".m3u8"]
-                                    urls = extract_urls(json_data, extensions)
+            json_data = json.loads(script_tag.string)
 
-                                    poster = None
-                                    preview = None
-                                    screenshots = []
+            def extract_urls(data, extensions):
+                urls = []
+                if isinstance(data, dict):
+                    for key, value in data.items():
+                        urls.extend(extract_urls(value, extensions))
+                elif isinstance(data, list):
+                    for item in data:
+                        urls.extend(extract_urls(item, extensions))
+                elif isinstance(data, str):
+                    if any(data.endswith(ext) for ext in extensions):
+                        urls.append(data)
+                return urls
 
-                                    for url in urls:
-                                        if url.endswith("pl.jpg"):  # Poster URL
-                                            poster = url
-                                        elif url.endswith((".mp4", ".m3u8")):  # Preview URL
-                                            preview = url
-                                            break
-                                        elif re.search(r'\d+\.jpg$', url):  # Screenshot URL
-                                            modified_url = re.sub(r'(\d+)-', r'\1jp-', url)
-                                            screenshots.append(modified_url)
+            extensions = [".jpg", ".mp4", ".m3u8"]
+            urls = extract_urls(json_data, extensions)
 
-                                    # Upload screenshots to Telegra.ph
-                                    telegraph_url = None
-                                    if screenshots:
-                                        t = TelegraphPoster(use_api=True)
-                                        t.create_api_token('JAV STORE')
-                                        text_content = "<blockquote>Provided by JAV STORE</blockquote>"
-                                        for screenshot in screenshots:
-                                            text_content += f'<img src="{screenshot}">'
-                                        telegraph_post = t.post(
-                                            title=f'Screenshots of {title}', author='JAV STORE', text=text_content
-                                        )
-                                        telegraph_url = telegraph_post['url']
+            poster_url = None
+            preview_urls = []
+            screenshot_urls = []
 
-                                    # Prepare buttons
-                                    buttons = []
+            for url in urls:
+                if url.endswith("pl.jpg"):  # Poster URL
+                    poster_url = url
+                elif url.endswith((".mp4", ".m3u8")):  # Preview URL
+                    preview_urls.append(url)
+                    break
+                elif re.search(r'\d+\.jpg$', url):  # Screenshot URL
+                    modified_url = re.sub(r'(\d+)-', r'\1jp-', url)
+                    screenshot_urls.append(modified_url)
 
-                                    if preview is not None:
-                                        buttons.append([
-                                            InlineKeyboardButton('𝖯𝗋𝖾𝗏𝗂𝖾𝗐', url=f"{preview}"),
-                                            InlineKeyboardButton('𝖲𝖼𝗋𝖾𝖾𝗇𝗌𝗁𝗈𝗍𝗌', url=f"{telegraph_url}")
-                                        ])
-                                        buttons.append([
-                                            InlineKeyboardButton(f'{dvd_id}', url=f"{video_url}")
-                                        ])
-                                    else:
-                                        buttons.append([
-                                            InlineKeyboardButton('𝖲𝖼𝗋𝖾𝖾𝗇𝗌𝗁𝗈𝗍𝗌', url=f"{telegraph_url}")
-                                        ])
-                                        buttons.append([
-                                            InlineKeyboardButton(f'{dvd_id}', url=f"{video_url}")
-                                        ])
+            # Print poster URL for debugging
+            print(f"Poster URL: {poster_url}")
 
-                                    reply_markup = InlineKeyboardMarkup(buttons)
+            # Upload screenshots to Telegra.ph
+            telegraph_url = "No screenshots available"
+            if screenshot_urls:
+                t = TelegraphPoster(use_api=True)
+                t.create_api_token('JAV STORE')
+                text_content = "<blockquote>Provided by JAV STORE</blockquote>"
+                for screenshot_url in screenshot_urls:
+                    text_content += f'<img src="{screenshot_url}">'
+                telegraph_post = t.post(
+                    title=f'Screenshots of {title}', author='JAV STORE', text=text_content
+                )
+                telegraph_url = telegraph_post['url']
 
-                                    # Send the photo with caption and inline button
-                                    caption = f"""<code>{dvd_id}</code> | {title}
+            # Prepare buttons and caption
+            buttons = []
+            if preview_urls:
+                buttons.append([
+                    InlineKeyboardButton('𝖯𝗋𝖾𝗏𝗂𝖾𝗐', url=preview_urls[0]),
+                    InlineKeyboardButton('𝖲𝖼𝗋𝖾𝖾𝗇𝗌𝗁𝗈𝗍𝗌', url=telegraph_url)
+                ])
+            buttons.append([
+                InlineKeyboardButton(f'{dvd_id}', url=video_url)
+            ])
+            reply_markup = InlineKeyboardMarkup(buttons)
+
+            caption = f"""<code>{dvd_id}</code> | {title}
 <i>𝖣𝖵𝖣 𝖨𝖣 : {dvd_id}</i>
 <i>Categories: {categories}</i>
 <i>𝖱𝖾𝗅𝖾𝖺𝗌𝖾 𝖣𝖺𝗍𝖾 : {release_date}</i>
-<i>𝖱𝗎𝗇𝗍𝗂𝗆𝖾 : {runtime}</i>
-<i>Cast(s) : {cast}</i>
+<i>𝖱𝗎𝗇𝗍𝗂𝗆𝖾 : {duration}</i>
+<i>Cast(s) : {casts}</i>
 <i>𝖲𝗍𝗎𝖽𝗂𝗈 : {studio}</i>
 
 <b>⚠️ ɪɴꜰᴏ ʙʏ Jᴀᴠ Sᴛᴏʀᴇ</b>
 """
-                                    print(f"Poster URL: {poster}")
-                                    await message.reply_photo(photo=poster, caption=caption, reply_markup=reply_markup, parse_mode=enums.ParseMode.HTML)
-                                else:
-                                    await message.reply_text("JSON data not found in the script tag.")
-                            else:
-                                await message.reply_text("Failed to fetch video details page.")
-                        else:
-                            await message.reply_text("Failed to retrieve the video page.")
-                    else:
-                        await message.reply_text("No valid video link found.")
-                else:
-                    await message.reply_text("No card container found.")
+
+            # Send the photo with caption and inline button              
+            if poster_url:
+                await message.reply_photo(photo=poster_url, caption=caption, reply_markup=reply_markup, parse_mode=enums.ParseMode.HTML)
             else:
-                await message.reply_text("Failed to retrieve the search page.")
+                await message.reply_text("Poster image not found.")
         except requests.RequestException as e:
             await message.reply_text(f"Error fetching data: {e}")
     else:
