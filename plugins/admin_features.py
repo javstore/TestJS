@@ -109,7 +109,7 @@ async def av_command(client: Client, message: Message):
         categories = ' '.join(f"#{a.text.strip().replace(' ', '_')}" for a in categories_section.find_all('a'))
 
         cast_section = video_soup.find('span', string='Cast(s):').parent
-        cast = ' '.join(a.text.strip() for a in cast_section.find_all('a'))
+        cast = ', '.join(a.text.strip() for a in cast_section.find_all('a'))
         cast = re.sub(r'[^\x00-\x7F]+', '', cast).strip()
 
         # Step 3: Extract URLs from JSON
