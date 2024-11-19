@@ -133,6 +133,14 @@ async def av_command(client: Client, message: Message):
             re.sub(r'(\d+)-', r'\1jp-', url) for url in urlz if re.search(r'\d+\.jpg$', url)
         ]
 
+        # Download and save the poster locally
+        poster_path = None
+        if poster_url:
+            poster_response = requests.get(poster_url, headers=headers)
+            poster_path = f"{content_id}_poster.jpg"
+            with open(poster_path, "wb") as f:
+                f.write(poster_response.content)
+
         # Upload screenshots to Telegra.ph
         telegraph_url = None
         if screenshot_urls:
@@ -150,13 +158,13 @@ async def av_command(client: Client, message: Message):
         buttons = []
 
         if preview_urls:
-            buttons.append([
-                InlineKeyboardButton('𝖯𝗋𝖾𝗏𝗂𝖾𝗐', url=f"{preview_urls[0]}"),
-                InlineKeyboardButton('𝖲𝖼𝗋𝖾𝖾𝗇𝗌𝗁𝗈𝗍𝗌', url=f"{telegraph_url}")
-            ])
-        buttons.append([
-            InlineKeyboardButton(f'{dvd_id}', url=f"{video_url}")
-        ])
+            preview_button = [InlineKeyboardButton('𝖯𝗋𝖾𝗏𝗂𝖾𝗐', url=f"{preview_urls[0]}")]
+            buttons.append(preview_button)
+
+        if screenshot_urls and telegraph_url:
+            buttons.append([InlineKeyboardButton('𝖲𝖼𝗋𝖾𝖾𝗇𝗌𝗁𝗈𝗍𝗌', url=f"{telegraph_url}")])
+
+        buttons.append([InlineKeyboardButton(f'{dvd_id}', url=f"{video_url}")])
 
         reply_markup = InlineKeyboardMarkup(buttons)
 
@@ -171,7 +179,9 @@ async def av_command(client: Client, message: Message):
 
 <b>⚠️ ɪɴꜰᴏ ʙʏ Jᴀᴠ Sᴛᴏʀᴇ</b>
 """
-        await message.reply_photo(photo=poster_url, caption=caption, reply_markup=reply_markup, parse_mode=enums.ParseMode.HTML)
+        if poster_path:
+            await message.reply_photo(photo=poster_path, caption=caption, reply_markup=reply_markup, parse_mode=enums.ParseMode.HTML)
+            os.remove(poster_path)  # Remove the poster after sending
 
     except Exception as e:
         await message.reply_text(f"Error: {e}")
