@@ -46,6 +46,8 @@ def mins_to_hms(minutes):
     h, m = divmod(minutes, 60)
     return f"{int(h):2d}h {int(m):02d}min"
 
+
+
 # Headers for the requests
 headers = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
@@ -58,7 +60,7 @@ CMD = ["/", "."]
 async def av_command(client: Client, message: Message):
     # Check if the user is an admin
     if message.from_user is None or message.from_user.id not in ADMINS:
-        await message.reply("𝖠𝖽𝗆𝗂𝗇 𝖥𝖾𝖺𝗍𝗎𝗋𝖾𝗌 𝖭𝗈𝗍 𝖠𝗅𝗅𝗈𝗐𝖾𝖽!")
+        await message.reply("𝖠𝖽𝗆𝗂𝗇 𝖥𝖾𝖺𝗍𝗎𝗋𝖾𝗌 𝖭𝗈𝗍 𝖠𝗅𝗅𝗈𝗐𝖾𝗉!")
         return
 
     query = None
@@ -100,60 +102,67 @@ async def av_command(client: Client, message: Message):
         return
 
     video_soup = BeautifulSoup(video_response.content, 'html.parser')
-    lead_title = video_soup.find('h1', class_='lead').text.strip()
-    dvd_id = video_soup.find('span', string='DVD ID:').find_next_sibling(string=True).strip()
     content_id = video_soup.find('span', string='Content ID:').find_next_sibling(string=True).strip()
-    release_date = video_soup.find('span', string='Release Date:').find_next_sibling(string=True).strip()
-    duration = video_soup.find('span', string='Duration:').find_next_sibling(string=True).strip()
-    studio = video_soup.find('span', string='Studio:').find_next('a').text.strip()
 
-    categories_section = video_soup.find('span', string='Categories:').parent
-    categories = ' '.join(f"#{a.text.strip().replace(' ', '_')}" for a in categories_section.find_all('a'))
-
-    cast_section = video_soup.find('span', string='Cast(s):').parent
-    casts = ' '.join(a.text.strip() for a in cast_section.find_all('a'))
-    casts = re.sub(r'[^\x00-\x7F]+', '', casts).strip()
-
-    # Step 3: Fetch JSON data and classify URLs
+    # Step 3: Use the provided script for image extraction
     video_details_url = f"https://javtrailers.com/video/{content_id}"
     details_response = requests.get(video_details_url, headers=headers)
-    if details_response.status_code != 200:
-        await message.reply_text("Failed to fetch video details page.")
-        return
+    soup = BeautifulSoup(details_response.text, 'html.parser')
+    script_tag = soup.find('script', id="__NUXT_DATA__")
 
-    soup = BeautifulSoup(details_response.text, "html.parser")
-    script_tag = soup.find("script", {"type": "application/json", "id": "__NUXT_DATA__"})
     if not script_tag:
-        await message.reply_text("JSON data not found in the script tag.")
+        await message.reply_text("Script with id='__NUXT_DATA__' not found.")
         return
 
     json_data = json.loads(script_tag.string)
+    json_string = json.dumps(json_data)
+    urlz = re.findall(r'https?://[^\s"]+', json_string)
 
-    def extract_urls(data):
-        """Recursively extract all URLs from JSON data."""
-        urls = []
-        if isinstance(data, dict):
-            for key, value in data.items():
-                urls.extend(extract_urls(value))
-        elif isinstance(data, List):
-            for item in data:
-                urls.extend(extract_urls(item))
-        elif isinstance(data, str) and data.startswith("http"):
-            urls.append(data)
-        return urls
+    # Categorize URLs
+    poster_url = None
+    preview_urls = []
+    screenshot_urls = []
 
-    # Extract all URLs
-    all_urls = extract_urls(json_data)
+    for url in urlz:
+        if url.endswith("pl.jpg"):  # Poster URL
+            poster_url = url
+        elif url.endswith((".mp4", ".m3u8")):  # Preview URL
+            preview_urls.append(url)
+        elif re.search(r'\d+\.jpg$', url):  # Screenshot URL
+            modified_url = re.sub(r'(\d+)-', r'\1jp-', url)
+            screenshot_urls.append(modified_url)
 
-    # Debugging: Print all extracted URLs
-    print("All Extracted URLs:")
-    for url in all_urls:
-        print(url)
+    # Debug: Print extracted URLs
+    print("Extracted URLs:", urlz)
+    print("Poster URL:", poster_url)
+    print("Preview URLs:", preview_urls)
+    print("Screenshot URLs:", screenshot_urls)
 
-    # Stop the function here for debugging purposes
-    await message.reply_text("Check logs for extracted URLs.")
-    return
+    # If no valid URLs found
+    if not poster_url and not preview_urls and not screenshot_urls:
+        await message.reply_text("No valid URLs found for this video.")
+        return
 
+    # Create InlineKeyboard buttons
+    buttons = []
+
+    if preview_urls:
+        buttons.append([
+            InlineKeyboardButton('𝖯𝗋𝖾𝗏𝗂𝖾𝗐', url=preview_urls[0]),
+            InlineKeyboardButton('𝖲𝖼𝗋𝖾𝖾𝗇𝗌𝗁𝗈𝗍𝗌', url=f"{screenshot_urls[0]}" if screenshot_urls else "N/A")
+        ])
+    if poster_url:
+        buttons.append([
+            InlineKeyboardButton('𝖯𝗈𝗌𝗍𝖾𝗋', url=poster_url)
+        ])
+
+    reply_markup = InlineKeyboardMarkup(buttons)
+
+    # Step 4: Reply to the user with results
+    caption = f"""<code>{content_id}</code>
+<b>⚠️ ɪɴꜰᴏ ʙʏ Jᴀᴠ Sᴛᴏʀᴇ</b>"""
+
+    await message.reply_photo(photo=poster_url if poster_url else None, caption=caption, reply_markup=reply_markup, parse_mode=enums.ParseMode.HTML)
 
 @Client.on_message(filters.command("alive", CMD))
 async def check_alive(client, message):
