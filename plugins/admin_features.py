@@ -10,6 +10,8 @@ from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 #from html_telegraph_poster import TelegraphPoster
 from telegraph import Telegraph
 import requests
+from bs4 import BeautifulSoup
+import json
 from html import escape
 
 
