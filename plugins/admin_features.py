@@ -42,7 +42,34 @@ def post_to_telegraph(image_urls, dvd):
     # Post to Telegra.ph
     telegraph_post = t.post(title=f'Screenshots of {dvd}', author='JAV STORE', text=text_content)
     return telegraph_post['url']
-            
+
+import requests
+from urllib.parse import urljoin
+
+# URL of the playlist
+url = "https://cc3001.dmm.co.jp/hlsvideo/freepv/1/1st/1stars947/playlist.m3u8"
+
+try:
+    # Send a GET request to fetch the playlist content
+    response = requests.get(url)
+    response.raise_for_status()  # Raise an error for HTTP issues
+    
+    # Split the content into lines
+    lines = response.text.splitlines()
+    
+    # Filter lines that are URLs ending in .m3u8
+    m3u8_urls = [line for line in lines if line.endswith(".m3u8")]
+    
+    # Get the 2nd URL and modify it
+    second_url = m3u8_urls[1]
+    full_url = urljoin(url, second_url)
+    modified_url = full_url.replace("hlsvideo", "litevideo").replace(".m3u8", ".mp4")
+    
+    print(f"Second URL: {modified_url}")
+
+except requests.RequestException as e:
+    print(f"Error fetching playlist: {e}")
+
 # Convert Minutes to HH:MM
 def mins_to_hms(minutes):
     hours = minutes // 60
@@ -157,6 +184,18 @@ async def av_command(client: Client, message: Message):
 
         # Prepare buttons
         buttons = []
+        preview = preview_urls[0]
+        if preview.endswith(".m3u8"):
+            response = requests.get(preview)
+            response.raise_for_status()
+            lines = response.text.splitlines()
+            m3u8_urls = [line for line in lines if line.endswith(".m3u8")]
+            second_url = m3u8_urls[1]
+            full_url = urljoin(url, second_url)
+            modified_url = full_url.replace("hlsvideo", "litevideo").replace(".m3u8", ".mp4")
+            preview = modified_url
+        else:
+            preview = preview_urls[0]
 
         if screenshot_urls and telegraph_url:
             buttons.append([
