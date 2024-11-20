@@ -46,27 +46,6 @@ def post_to_telegraph(image_urls, dvd):
 import requests
 from urllib.parse import urljoin
 
-# URL of the playlist
-url = "https://cc3001.dmm.co.jp/hlsvideo/freepv/1/1st/1stars947/playlist.m3u8"
-
-try:
-    # Send a GET request to fetch the playlist content
-    response = requests.get(url)
-    response.raise_for_status()  # Raise an error for HTTP issues
-    
-    # Split the content into lines
-    lines = response.text.splitlines()
-    
-    # Filter lines that are URLs ending in .m3u8
-    m3u8_urls = [line for line in lines if line.endswith(".m3u8")]
-    
-    # Get the 2nd URL and modify it
-    second_url = m3u8_urls[1]
-    full_url = urljoin(url, second_url)
-    modified_url = full_url.replace("hlsvideo", "litevideo").replace(".m3u8", ".mp4")
-    
-    print(f"Second URL: {modified_url}")
-
 except requests.RequestException as e:
     print(f"Error fetching playlist: {e}")
 
@@ -199,7 +178,7 @@ async def av_command(client: Client, message: Message):
 
         if screenshot_urls and telegraph_url:
             buttons.append([
-                InlineKeyboardButton('𝖯𝗋𝖾𝗏𝗂𝖾𝗐', url=f"{preview_urls[0]}"),
+                InlineKeyboardButton('𝖯𝗋𝖾𝗏𝗂𝖾𝗐', url=f"{preview}"),
                 InlineKeyboardButton('𝖲𝖼𝗋𝖾𝖾𝗇𝗌𝗁𝗈𝗍𝗌', url=f"{telegraph_url}")
             ])
             buttons.append([
@@ -207,7 +186,7 @@ async def av_command(client: Client, message: Message):
             ])
         else:
             buttons.append([
-                InlineKeyboardButton('𝖯𝗋𝖾𝗏𝗂𝖾𝗐', url=f"{preview_urls[0]}")
+                InlineKeyboardButton('𝖯𝗋𝖾𝗏𝗂𝖾𝗐', url=f"{preview}")
             ])
             buttons.append([
                 InlineKeyboardButton(f'{dvd_id}', url=f"{video_url}")
