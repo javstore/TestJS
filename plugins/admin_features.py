@@ -43,12 +43,6 @@ def post_to_telegraph(image_urls, dvd):
     telegraph_post = t.post(title=f'Screenshots of {dvd}', author='JAV STORE', text=text_content)
     return telegraph_post['url']
 
-import requests
-from urllib.parse import urljoin
-
-except requests.RequestException as e:
-    print(f"Error fetching playlist: {e}")
-
 # Convert Minutes to HH:MM
 def mins_to_hms(minutes):
     hours = minutes // 60
