@@ -144,8 +144,9 @@ async def av_command(client: Client, message: Message):
         # Categorize URLs
         poster_url = next((url for url in urlz if "pl.jpg" in url), None)
         preview_urls = [url for url in urlz if url.endswith((".mp4", ".m3u8"))]
-        if url.endswith(".m3u8"):
-            return extract_and_get_second_url(preview_urls) or preview_urls
+        for url in preview_urls:
+            if url.endswith(".m3u8"):
+                return extract_and_get_second_url(preview_urls) or preview_urls
         return preview_urls
         screenshot_urls = [
             re.sub(r'(\d+)-', r'\1jp-', url) if urlparse(url).netloc == 'pics.dmm.co.jp' else re.sub(r'https?://[^\s/]+', 'https://pics.dmm.co.jp', re.sub(r'(\d+)-', r'\1jp-', url))
