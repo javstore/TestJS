@@ -164,7 +164,7 @@ async def av_command(client: Client, message: Message):
             lines = response.text.splitlines()
             m3u8_urls = [line for line in lines if line.endswith(".m3u8")]
             second_url = m3u8_urls[1]
-            full_url = urljoin(url, second_url)
+            full_url = urljoin(preview, second_url)
             modified_url = full_url.replace("hlsvideo", "litevideo").replace(".m3u8", ".mp4")
             preview = modified_url
         else:
