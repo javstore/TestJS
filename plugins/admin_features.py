@@ -158,7 +158,7 @@ async def av_command(client: Client, message: Message):
         # Prepare buttons
         buttons = []
 
-        if telegraph_url:
+        if screenshot_urls and telegraph_url:
             buttons.append([
                 InlineKeyboardButton('𝖯𝗋𝖾𝗏𝗂𝖾𝗐', url=f"{preview_urls[0]}"),
                 InlineKeyboardButton('𝖲𝖼𝗋𝖾𝖾𝗇𝗌𝗁𝗈𝗍𝗌', url=f"{telegraph_url}")
@@ -168,7 +168,7 @@ async def av_command(client: Client, message: Message):
             ])
         else:
             buttons.append([
-                InlineKeyboardButton('𝖲𝖼𝗋𝖾𝖾𝗇𝗌𝗁𝗈𝗍𝗌', url=f"{telegraph_url}")
+                InlineKeyboardButton('𝖯𝗋𝖾𝗏𝗂𝖾𝗐', url=f"{preview_urls[0]}")
             ])
             buttons.append([
                 InlineKeyboardButton(f'{dvd_id}', url=f"{video_url}")
