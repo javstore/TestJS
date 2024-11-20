@@ -129,10 +129,10 @@ async def av_command(client: Client, message: Message):
         poster_url = next((url for url in urlz if "pl.jpg" in url), None)
         preview_urls = [url for url in urlz if url.endswith((".mp4", ".m3u8"))]
         screenshot_urls = [
-            re.sub(r'(\d+)-', r'\1jp-', url) if urlparse(url).netloc == 'pics.dmm.co.jp' else None
-            for url in urlz
-            if re.search(r'\d+\.jpg$', url) and "jp-" not in url
+            re.sub(r'(\d+)-', r'\1jp-', url) if urlparse(url).netloc == 'pics.dmm.co.jp' else re.sub(r'https?://[^\s/]+', 'https://pics.dmm.co.jp', re.sub(r'(\d+)-', r'\1jp-', url))
+            for url in urlz if re.search(r'\d+\.jpg$', url)
         ]
+        screenshot_urls = [url for url in screenshot_urls if re.search(r'-jp\d+\.jpg$', url)]
 
         # Download and save the poster locally
         poster_path = None
