@@ -95,22 +95,21 @@ async def av_command(client: Client, message: Message):
         video_response.raise_for_status()
         video_soup = BeautifulSoup(video_response.content, 'html.parser')
 
-        lead_title = video_soup.find('h1', class_='lead').text.strip()
-        dvd_id = video_soup.find('span', string='DVD ID:').find_next_sibling(string=True).strip()
-        title = lead_title.replace(dvd_id, '', 1).strip()
-        content_id = video_soup.find('span', string='Content ID:').find_next_sibling(string=True).strip()
-        release_date = video_soup.find('span', string='Release Date:').find_next_sibling(string=True).strip()
-        duration = video_soup.find('span', string='Duration:').find_next_sibling(string=True).strip()
-        runtime = mins_to_hms(int(duration.replace(' mins', '')))
-        studio = video_soup.find('span', string='Studio:').find_next('a').text.strip()
+        lead_title = video_soup.find('h1', class_='lead').text.strip() if video_soup.find('h1', class_='lead') else "N/A"
+        dvd_id = video_soup.find('span', string='DVD ID:').find_next_sibling(string=True).strip() if video_soup.find('span', string='DVD ID:') else "N/A"
+        title = lead_title.replace(dvd_id, '', 1).strip() if lead_title != "N/A" and dvd_id != "N/A" else "N/A"
+        content_id = video_soup.find('span', string='Content ID:').find_next_sibling(string=True).strip() if video_soup.find('span', string='Content ID:') else "N/A"
+        release_date = video_soup.find('span', string='Release Date:').find_next_sibling(string=True).strip() if video_soup.find('span', string='Release Date:') else "N/A"
+        duration = video_soup.find('span', string='Duration:').find_next_sibling(string=True).strip() if video_soup.find('span', string='Duration:') else "N/A"
+        runtime = mins_to_hms(int(duration.replace(' mins', ''))) if duration != "N/A" else "N/A"
+        studio = video_soup.find('span', string='Studio:').find_next('a').text.strip() if video_soup.find('span', string='Studio:') and video_soup.find('span', string='Studio:').find_next('a') else "N/A"
 
-        categories_section = video_soup.find('span', string='Categories:').parent
-        categories = ' '.join(f"#{a.text.strip().replace(' ', '_')}" for a in categories_section.find_all('a'))
+        categories_section = video_soup.find('span', string='Categories:')
+        categories = ' '.join(f"#{a.text.strip().replace(' ', '_')}" for a in categories_section.parent.find_all('a')) if categories_section else "N/A"
 
-        cast_section = video_soup.find('span', string='Cast(s):').parent
-        cast = ', '.join(a.text.strip() for a in cast_section.find_all('a'))
-        cast = re.sub(r'[^\x00-\x7F]+', '', cast).strip()
-
+        cast_section = video_soup.find('span', string='Cast(s):')
+        cast = ', '.join(a.text.strip() for a in cast_section.parent.find_all('a')) if cast_section else "N/A"
+        cast = re.sub(r'[^\x00-\x7F]+', '', cast).strip() if cast != "N/A" else "N/A"
         # Step 3: Extract URLs from JSON
         video_details_url = f"https://javtrailers.com/video/{content_id}"
         details_response = requests.get(video_details_url, headers=headers)
