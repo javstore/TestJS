@@ -55,7 +55,7 @@ def extract_and_get_second_url(playlist_url):
         
         second_url = m3u8_urls[1]
         full_url = urljoin(playlist_url, second_url)
-        return full_url.replace("hlsvideo", "litevideo").replace(".m3u8", ".mp4")
+        return second_url.replace("hlsvideo", "litevideo").replace(".m3u8", ".mp4")
     except requests.RequestException:
         return None
             
