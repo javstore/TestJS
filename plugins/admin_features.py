@@ -12,7 +12,7 @@ from telegraph import Telegraph
 import requests
 from bs4 import BeautifulSoup
 import json
-from urllib.parse import urlparse
+from urllib.parse import urlparse, urljoin
 from html import escape
 
 
@@ -43,6 +43,22 @@ def post_to_telegraph(image_urls, dvd):
     telegraph_post = t.post(title=f'Screenshots of {dvd}', author='JAV STORE', text=text_content)
     return telegraph_post['url']
 
+def extract_and_get_second_url(playlist_url):
+    try:
+        response = requests.get(playlist_url)
+        response.raise_for_status()
+        lines = response.text.splitlines()
+        m3u8_urls = [line for line in lines if line.endswith(".m3u8")]
+        
+        if len(m3u8_urls) < 2:
+            return None
+        
+        second_url = m3u8_urls[1]
+        full_url = urljoin(playlist_url, second_url)
+        return full_url.replace("hlsvideo", "litevideo").replace(".m3u8", ".mp4")
+    except requests.RequestException:
+        return None
+            
 # Convert Minutes to HH:MM
 def mins_to_hms(minutes):
     hours = minutes // 60
@@ -128,6 +144,9 @@ async def av_command(client: Client, message: Message):
         # Categorize URLs
         poster_url = next((url for url in urlz if "pl.jpg" in url), None)
         preview_urls = [url for url in urlz if url.endswith((".mp4", ".m3u8"))]
+        if url.endswith(".m3u8"):
+            return extract_and_get_second_url(preview_urls) or preview_urls
+        return preview_urls
         screenshot_urls = [
             re.sub(r'(\d+)-', r'\1jp-', url) if urlparse(url).netloc == 'pics.dmm.co.jp' else re.sub(r'https?://[^\s/]+', 'https://pics.dmm.co.jp', re.sub(r'(\d+)-', r'\1jp-', url))
             for url in urlz
