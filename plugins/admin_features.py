@@ -12,7 +12,7 @@ from telegraph import Telegraph
 import requests
 from bs4 import BeautifulSoup
 import json
-from urllib.parse import urlparse, urljoin
+from urllib.parse import urlparse, urlunparse, urljoin
 from html import escape
 
 
@@ -127,7 +127,17 @@ async def av_command(client: Client, message: Message):
 
         # Categorize URLs
         poster_url = next((url for url in urlz if "pl.jpg" in url), None)
-        preview_urls = [url for url in urlz if url.endswith((".mp4", ".m3u8"))]
+
+        preview_urls = []
+        for url in urlz:
+            if url.endswith(".mp4"):
+                parsed_url = urlparse(url)
+                if parsed_url.netloc != "cc3001.dmm.co.jp":
+                    url = urlunparse(parsed_url._replace(netloc="cc3001.dmm.co.jp"))
+                preview_urls.append(url)
+            elif url.endswith(".m3u8"):
+                preview_urls.append(url)
+
         screenshot_urls = [
             re.sub(r'(\d+)-', r'\1jp-', url) if urlparse(url).netloc == 'pics.dmm.co.jp' else re.sub(r'https?://[^\s/]+', 'https://pics.dmm.co.jp', re.sub(r'(\d+)-', r'\1jp-', url))
             for url in urlz
