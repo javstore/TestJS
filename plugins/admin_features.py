@@ -200,12 +200,12 @@ async def av_command(client: Client, message: Message):
 
         # Step 4: Reply to the user
         caption = f"""<code>{dvd_id}</code> | {title}
-<i>𝖣𝖵𝖣 𝖨𝖣 : {dvd_id}</i>
-<i>Categories: {categories}</i>
-<i>𝖱𝖾𝗅𝖾𝖺𝗌𝖾 𝖣𝖺𝗍𝖾 : {release_date}</i>
-<i>𝖱𝗎𝗇𝗍𝗂𝗆𝖾 : {runtime}</i>
-<i>Cast(s) : {cast}</i>
-<i>𝖲𝗍𝗎𝖽𝗂𝗈 : {studio}</i>
+<b>DVD ID :</b> {dvd_id}
+<b>Categories :</b> {categories}
+<b>Release Date :</b> {release_date}
+<b>Runtime :</b> {runtime}
+<b>Cast(s) :</b> {cast}
+<b>Studio :</b> {studio}
 
 <b>⚠️ ɪɴꜰᴏ ʙʏ Jᴀᴠ Sᴛᴏʀᴇ</b>
 """
