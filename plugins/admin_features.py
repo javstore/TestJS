@@ -97,7 +97,7 @@ async def av_command(client: Client, message: Message):
 
         lead_title = video_soup.find('h1', class_='lead').text.strip() if video_soup.find('h1', class_='lead') else "N/A"
         dvd_id = video_soup.find('span', string='DVD ID:').find_next_sibling(string=True).strip() if video_soup.find('span', string='DVD ID:') else "N/A"
-        title = lead_title.replace(dvd_id, '', 1).strip() if lead_title != "N/A" and dvd_id != "N/A" else "N/A"
+        title = ''.join(lead_title.split()[1:]) if lead_title != "N/A" else "N/A"
         content_id = video_soup.find('span', string='Content ID:').find_next_sibling(string=True).strip() if video_soup.find('span', string='Content ID:') else "N/A"
         release_date = video_soup.find('span', string='Release Date:').find_next_sibling(string=True).strip() if video_soup.find('span', string='Release Date:') else "N/A"
         duration = video_soup.find('span', string='Duration:').find_next_sibling(string=True).strip() if video_soup.find('span', string='Duration:') else "N/A"
