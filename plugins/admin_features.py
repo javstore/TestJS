@@ -81,7 +81,7 @@ async def av_command(client: Client, message: Message):
         search_response = requests.get(search_url, headers=headers)
         search_response.raise_for_status()
 
-        card_container = search_soup.find("div", class_="card-container")
+        card_container = search_response.find("div", class_="card-container")
         if not card_container:
             await message.reply_text("No card container found.")
             return
