@@ -81,8 +81,14 @@ async def av_command(client: Client, message: Message):
         search_response = requests.get(search_url, headers=headers)
         search_response.raise_for_status()
 
-        search_soup = BeautifulSoup(search_response.content, 'html.parser')
-        a_tag = search_soup.find('a', href=lambda x: x and '/video/' in x)
+        card_container = search_soup.find("div", class_="card-container")
+        if not card_container:
+            await message.reply_text("No card container found.")
+            return
+        a_tag = card_container.find("a", href=True)
+
+        #search_soup = BeautifulSoup(search_response.content, 'html.parser')
+        #a_tag = search_soup.find('a', href=lambda x: x and '/video/' in x)
         
         if not a_tag:
             await message.reply_text("No valid video link found.")
