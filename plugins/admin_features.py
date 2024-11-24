@@ -111,8 +111,8 @@ async def av_command(client: Client, message: Message):
         cast = ', '.join(a.text.strip() for a in cast_section.parent.find_all('a')) if cast_section else "N/A"
         cast = re.sub(r'[^\x00-\x7F]+', '', cast).strip() if cast != "N/A" else "N/A"
         director_section = video_soup.find('span', string='Director:')
-        director = ', '.join(a.text.strip() for a in cast_section.parent.find_all('a')) if cast_section else "N/A"
-        director = re.sub(r'[^\x00-\x7F]+', '', cast).strip() if cast != "N/A" else "N/A"
+        director = director_section.find_next_sibling(string=True).strip() if director_section else "N/A"
+        director = re.sub(r'[^\x00-\x7F]+', '', director).strip() if director != "N/A" else "N/A"
 
         # Step 3: Extract URLs from JSON
         video_details_url = f"https://javtrailers.com/video/{content_id}"
