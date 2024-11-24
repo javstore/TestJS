@@ -208,7 +208,7 @@ async def av_command(client: Client, message: Message):
 <b>Release Date :</b> {release_date}
 <b>Runtime :</b> {runtime}
 <b>Cast(s) :</b> {cast}
-<b>Director :</b> {studio}
+<b>Director :</b> {director}
 <b>Studio :</b> {studio}
 
 <b>⚠️ ɪɴꜰᴏ ʙʏ Jᴀᴠ Sᴛᴏʀᴇ</b>
