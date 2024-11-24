@@ -141,7 +141,7 @@ async def av_command(client: Client, message: Message):
                 preview_urls.append(url)
             elif url.endswith(".m3u8"):
                 preview_urls.append(url)
-            else:
+            elif not (url.endswith(".mp4") or url.endswith(".m3u8")):
                 preview_urls.append("https://preview-not-found.com/")
 
         screenshot_urls = [
