@@ -102,7 +102,6 @@ async def av_command(client: Client, message: Message):
         release_date = video_soup.find('span', string='Release Date:').find_next_sibling(string=True).strip() if video_soup.find('span', string='Release Date:') else "N/A"
         duration = video_soup.find('span', string='Duration:').find_next_sibling(string=True).strip() if video_soup.find('span', string='Duration:') else "N/A"
         runtime = mins_to_hms(int(duration.replace(' mins', ''))) if duration != "N/A" else "N/A"
-        director = video_soup.find('span', string='Director:').find_next('a').text.strip() if video_soup.find('span', string='Director:') and video_soup.find('span', string='Director:').find_next('a') else "N/A"
         studio = video_soup.find('span', string='Studio:').find_next('a').text.strip() if video_soup.find('span', string='Studio:') and video_soup.find('span', string='Studio:').find_next('a') else "N/A"
 
         categories_section = video_soup.find('span', string='Categories:')
@@ -111,6 +110,10 @@ async def av_command(client: Client, message: Message):
         cast_section = video_soup.find('span', string='Cast(s):')
         cast = ', '.join(a.text.strip() for a in cast_section.parent.find_all('a')) if cast_section else "N/A"
         cast = re.sub(r'[^\x00-\x7F]+', '', cast).strip() if cast != "N/A" else "N/A"
+        director_section = video_soup.find('span', string='Director:')
+        director = ', '.join(a.text.strip() for a in cast_section.parent.find_all('a')) if cast_section else "N/A"
+        director = re.sub(r'[^\x00-\x7F]+', '', cast).strip() if cast != "N/A" else "N/A"
+
         # Step 3: Extract URLs from JSON
         video_details_url = f"https://javtrailers.com/video/{content_id}"
         details_response = requests.get(video_details_url, headers=headers)
