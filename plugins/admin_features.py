@@ -141,6 +141,8 @@ async def av_command(client: Client, message: Message):
                 preview_urls.append(url)
             elif url.endswith(".m3u8"):
                 preview_urls.append(url)
+        if not preview_urls:
+            preview_urls.append("https://preview-not-found.com/")
                 
         screenshot_urls = [
             re.sub(r'(\d+)-', r'\1jp-', url) if urlparse(url).netloc == 'pics.dmm.co.jp' else re.sub(r'https?://[^\s/]+', 'https://pics.dmm.co.jp', re.sub(r'(\d+)-', r'\1jp-', url))
