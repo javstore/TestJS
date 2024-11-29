@@ -105,7 +105,7 @@ async def av_command(client: Client, message: Message):
         studio = video_soup.find('span', string='Studio:').find_next('a').text.strip() if video_soup.find('span', string='Studio:') and video_soup.find('span', string='Studio:').find_next('a') else "N/A"
 
         categories_section = video_soup.find('span', string='Categories:')
-        categories = ' '.join(f"#{a.text.strip().replace(' ', '_')}" for a in categories_section.parent.find_all('a')) if categories_section else "N/A"
+        categories = ' '.join(f"#{a.text.strip().replace(' ', '_').replace('-', '_')}" for a in categories_section.parent.find_all('a')) if categories_section else "N/A"
 
         cast_section = video_soup.find('span', string='Cast(s):')
         cast = ', '.join(a.text.strip() for a in cast_section.parent.find_all('a')) if cast_section else "N/A"
@@ -173,8 +173,9 @@ async def av_command(client: Client, message: Message):
 
         # Prepare buttons
         buttons = []
-        preview = preview_urls[0] if preview_urls else "https://preview-not-found.com/"
+        preview = preview_urls[0]
         if preview.endswith(".m3u8"):
+            preview = 'https://temp.javtrailers.com/' + preview
             response = requests.get(preview)
             response.raise_for_status()
             lines = response.text.splitlines()
@@ -184,7 +185,7 @@ async def av_command(client: Client, message: Message):
             modified_url = full_url.replace("hlsvideo", "litevideo").replace(".m3u8", ".mp4")
             preview = modified_url
         else:
-            preview = preview_urls[0]
+            preview = 'https://temp.javtrailers.com/' + preview_urls[0]
 
         if screenshot_urls and telegraph_url:
             buttons.append([
